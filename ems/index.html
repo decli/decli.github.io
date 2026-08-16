@@ -3,6 +3,26 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Google tag (gtag.js) —— decli.github.io 下几个站共用同一个 property，
+     这样「从门户点进来、退出去又开了别的站」是一次会话、一条路径。
+     分站在报表里靠 site 参数和 page_path 前缀切开。 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y7H2JMNX74"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  // 浏览器明说了不要被追踪就不发
+  var dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+  if (dnt !== '1' && dnt !== 'yes') {
+    gtag('config', 'G-Y7H2JMNX74', {
+      anonymize_ip: true,
+      allow_google_signals: false,
+      allow_ad_personalization_signals: false,
+      site: 'ems'
+    });
+  }
+</script>
 <title>EMS 外贸营销系统 · 体验版</title>
 <meta name="description" content="AI Agent 驱动的外贸全链路增长系统 — 从找到买家到收到货款，跑在同一套数据上。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232563eb'/><text y='72' x='50' text-anchor='middle' font-size='58' font-family='system-ui' font-weight='700' fill='white'>E</text></svg>">
