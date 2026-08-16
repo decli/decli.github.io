@@ -4,29 +4,40 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#070d1c" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#f4f6fb" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#060a18" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f5f7fc" media="(prefers-color-scheme: light)" />
 
     <title>decli · 作品集</title>
     <meta
       name="description"
-      content="decli 做的几个在线工具与系统：信风 Tradewind 外贸全流程管理、EMS 外贸营销系统、WxMark 微信公众号排版工具。全部免注册，打开即用。"
+      content="decli 做的十几个在线工具、浏览器扩展、油猴脚本与移动应用：信风 Tradewind 外贸全流程管理、EMS 外贸营销系统、WxMark 公众号排版、IP 归属地监控、职得投 JobOrNot 等。全部免注册，打开即用。"
     />
+    <meta name="keywords" content="decli,作品集,外贸管理系统,公众号排版,Chrome 扩展,油猴脚本,开源项目" />
     <meta name="author" content="decli" />
     <meta name="copyright" content="© 2026 decli" />
     <link rel="canonical" href="https://decli.github.io/" />
-    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="alternate" hreflang="zh-CN" href="https://decli.github.io/" />
+    <link rel="alternate" hreflang="en" href="https://decli.github.io/" />
+    <link rel="alternate" hreflang="x-default" href="https://decli.github.io/" />
+    <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="decli" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:locale:alternate" content="en_US" />
     <meta property="og:url" content="https://decli.github.io/" />
     <meta property="og:title" content="decli · 作品集" />
     <meta
       property="og:description"
-      content="几个在线工具与系统：外贸全流程管理、外贸营销、公众号排版。全部免注册，打开即用。"
+      content="在线工具、浏览器扩展、油猴脚本与移动应用。全部免注册，打开即用，数据留在你自己的设备上。"
     />
     <meta property="og:image" content="https://decli.github.io/ftms/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="decli · 作品集" />
+    <meta name="twitter:description" content="在线工具、浏览器扩展、油猴脚本与移动应用。全部免注册，打开即用。" />
+    <meta name="twitter:image" content="https://decli.github.io/ftms/og.png" />
 
     <link rel="icon" href="/ftms/favicon.svg" type="image/svg+xml" />
 
@@ -50,413 +61,405 @@
       }
     </script>
 
+    <!-- 结构化数据：把作品集本身声明成一个「集合页」，
+         配合 sites.js 里那份清单，搜索引擎和 AI 引擎都读得懂这页在列什么 -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "ProfilePage",
-        "url": "https://decli.github.io/",
-        "mainEntity": { "@type": "Person", "name": "decli", "url": "https://github.com/decli" }
+        "@graph": [
+          {
+            "@type": "ProfilePage",
+            "@id": "https://decli.github.io/#page",
+            "url": "https://decli.github.io/",
+            "name": "decli · 作品集",
+            "inLanguage": ["zh-CN", "en"],
+            "mainEntity": { "@id": "https://decli.github.io/#me" }
+          },
+          {
+            "@type": "Person",
+            "@id": "https://decli.github.io/#me",
+            "name": "decli",
+            "url": "https://decli.github.io/",
+            "sameAs": ["https://github.com/decli"]
+          }
+        ]
       }
     </script>
 
     <style>
-      /* ─────────────────────────────────────────────────────────────
-         一个入口页，收纳若干子站。
+      /* ═══════════════════════════════════════════════════════════════
+         decli · 作品集
 
-         ── 加一个站要改哪里 ──
-         只改文件底部那个 SITES 数组，一条六行。样式、搜索、键盘、埋点
-         全都是跟着数据走的 —— 加站不该顺带改一次布局。
+         ── 加一个项目要改哪里 ──
+         只改 sites.js。分类、筛选、搜索、埋点、中英文全都跟着数据走，
+         这个文件一个字都不用动。
 
-         ── 为什么用「风场 + 光晕跟随」──
-         这两样是 /ftms/ 里已经在用的视觉语言。入口页跟子站长得像，
-         点进去才不会有「换了一个网站」的断裂感；而且这两个效果都是纯 CSS，
-         没有任何依赖，一张图片都不下载。
-         ───────────────────────────────────────────────────────────── */
+         ── 视觉：为什么是「极光 + 风场 + 光晕」──
+         这三样都是 /ftms/ 里已经在用的语言。入口页跟子站长得像，点进去
+         才不会有「换了一个网站」的断裂感。而且全是纯 CSS：
+         没有依赖，没有图片，没有字体请求，首屏就是这一个文件。
+
+         动效克制：极光 40 秒一圈、风场 26 秒一轮，位移都很小。
+         入口页要的是「有呼吸」，不是「在动」—— 动得看得出来就抢注意力了。
+         `prefers-reduced-motion` 下全部停掉。
+         ═══════════════════════════════════════════════════════════════ */
 
       :root {
-        --bg: #f4f6fb;
-        --bg-2: #e9edf7;
-        --card: rgba(255, 255, 255, 0.72);
+        --bg: #f5f7fc;
+        --card: rgba(255, 255, 255, 0.66);
         --card-solid: #fff;
-        --line: rgba(20, 34, 72, 0.1);
-        --line-strong: rgba(20, 34, 72, 0.18);
-        --text: #131c30;
+        --line: rgba(18, 32, 68, 0.09);
+        --line-2: rgba(18, 32, 68, 0.16);
+        --text: #101828;
         --text-2: #4a566d;
-        --text-3: #7a86a0;
-        --brand-1: #3b5bd6;
-        --brand-2: #6f8dff;
-        --glow: rgba(59, 91, 214, 0.14);
-        --shadow: 0 18px 40px -24px rgba(19, 28, 48, 0.4);
-        --wind: rgba(59, 91, 214, 0.24);
-      }
-      :root[data-theme="dark"],
-      :root:not([data-theme="light"]) {
+        --text-3: #7b879e;
+        --brand: #3b5bd6;
+        --brand-2: #7c5cff;
+        --brand-3: #06b6d4;
+        --live: #0f9d58;
+        --glow: rgba(59, 91, 214, 0.13);
+        --shadow: 0 20px 44px -26px rgba(16, 24, 40, 0.42);
+        --shadow-lg: 0 28px 60px -30px rgba(16, 24, 40, 0.5);
+        --wind: rgba(59, 91, 214, 0.2);
+        --aurora-1: rgba(124, 92, 255, 0.24);
+        --aurora-2: rgba(6, 182, 212, 0.2);
+        --aurora-3: rgba(59, 91, 214, 0.22);
         color-scheme: light;
       }
       @media (prefers-color-scheme: dark) {
         :root:not([data-theme="light"]) {
-          --bg: #070d1c;
-          --bg-2: #0d1730;
-          --card: rgba(21, 31, 54, 0.6);
-          --card-solid: #151f36;
-          --line: rgba(150, 178, 240, 0.14);
-          --line-strong: rgba(150, 178, 240, 0.28);
-          --text: #e9eefc;
-          --text-2: #a9b6d4;
-          --text-3: #7d8bab;
-          --brand-1: #6f8dff;
-          --brand-2: #9db4ff;
-          --glow: rgba(120, 152, 255, 0.2);
-          --shadow: 0 22px 50px -26px rgba(0, 0, 0, 0.8);
-          --wind: rgba(143, 169, 255, 0.34);
+          --bg: #060a18;
+          --card: rgba(20, 28, 50, 0.56);
+          --card-solid: #141c32;
+          --line: rgba(150, 178, 240, 0.13);
+          --line-2: rgba(150, 178, 240, 0.26);
+          --text: #eaf0ff;
+          --text-2: #a6b3d2;
+          --text-3: #78849f;
+          --brand: #7c9bff;
+          --brand-2: #a78bfa;
+          --brand-3: #22d3ee;
+          --live: #34d399;
+          --glow: rgba(124, 155, 255, 0.2);
+          --shadow: 0 24px 54px -28px rgba(0, 0, 0, 0.85);
+          --shadow-lg: 0 32px 70px -32px rgba(0, 0, 0, 0.9);
+          --wind: rgba(143, 169, 255, 0.3);
+          --aurora-1: rgba(124, 92, 255, 0.3);
+          --aurora-2: rgba(6, 182, 212, 0.22);
+          --aurora-3: rgba(59, 91, 214, 0.28);
           color-scheme: dark;
         }
       }
       :root[data-theme="dark"] {
-        --bg: #070d1c;
-        --bg-2: #0d1730;
-        --card: rgba(21, 31, 54, 0.6);
-        --card-solid: #151f36;
-        --line: rgba(150, 178, 240, 0.14);
-        --line-strong: rgba(150, 178, 240, 0.28);
-        --text: #e9eefc;
-        --text-2: #a9b6d4;
-        --text-3: #7d8bab;
-        --brand-1: #6f8dff;
-        --brand-2: #9db4ff;
-        --glow: rgba(120, 152, 255, 0.2);
-        --shadow: 0 22px 50px -26px rgba(0, 0, 0, 0.8);
-        --wind: rgba(143, 169, 255, 0.34);
+        --bg: #060a18;
+        --card: rgba(20, 28, 50, 0.56);
+        --card-solid: #141c32;
+        --line: rgba(150, 178, 240, 0.13);
+        --line-2: rgba(150, 178, 240, 0.26);
+        --text: #eaf0ff;
+        --text-2: #a6b3d2;
+        --text-3: #78849f;
+        --brand: #7c9bff;
+        --brand-2: #a78bfa;
+        --brand-3: #22d3ee;
+        --live: #34d399;
+        --glow: rgba(124, 155, 255, 0.2);
+        --shadow: 0 24px 54px -28px rgba(0, 0, 0, 0.85);
+        --shadow-lg: 0 32px 70px -32px rgba(0, 0, 0, 0.9);
+        --wind: rgba(143, 169, 255, 0.3);
+        --aurora-1: rgba(124, 92, 255, 0.3);
+        --aurora-2: rgba(6, 182, 212, 0.22);
+        --aurora-3: rgba(59, 91, 214, 0.28);
         color-scheme: dark;
       }
 
       * { box-sizing: border-box; }
-      html { -webkit-text-size-adjust: 100%; }
+      html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
       body {
         margin: 0;
         min-height: 100dvh;
-        background:
-          radial-gradient(120% 90% at 85% 0%, var(--bg-2) 0%, transparent 60%),
-          radial-gradient(90% 70% at 5% 100%, var(--bg-2) 0%, transparent 55%),
-          var(--bg);
+        background: var(--bg);
         color: var(--text);
         font: 15px/1.7 "PingFang SC", "HarmonyOS Sans SC", "Hiragino Sans GB", "Source Han Sans SC",
           "Microsoft YaHei", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
         overflow-x: hidden;
       }
+      body[data-lang="en"] {
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
 
-      /* ── 风场 ──
-         几条常年不改向的流线，慢慢往右飘。位移很小、周期很长：
-         入口页要的是「有呼吸」，不是「在动」—— 动得看得出来就抢注意力了。 */
-      .wind {
+      /* ── 极光：三团大色斑缓慢漂移 ── */
+      .aurora {
         position: fixed;
-        inset: 0;
+        inset: -20% -10%;
         z-index: 0;
         pointer-events: none;
-        opacity: 0.85;
+        filter: blur(70px);
       }
+      .aurora i {
+        position: absolute;
+        display: block;
+        border-radius: 50%;
+        animation: float 40s ease-in-out infinite;
+      }
+      .aurora i:nth-child(1) { width: 46vw; height: 46vw; top: -6%; left: 52%; background: var(--aurora-1); }
+      .aurora i:nth-child(2) { width: 38vw; height: 38vw; top: 34%; left: -6%; background: var(--aurora-2); animation-duration: 52s; animation-delay: -14s; }
+      .aurora i:nth-child(3) { width: 42vw; height: 42vw; top: 62%; left: 58%; background: var(--aurora-3); animation-duration: 46s; animation-delay: -26s; }
+      @keyframes float {
+        0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+        33%      { transform: translate3d(4%, -5%, 0) scale(1.07); }
+        66%      { transform: translate3d(-5%, 4%, 0) scale(0.95); }
+      }
+
+      /* ── 风场：几条常年不改向的流线 ── */
+      .wind { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
       .wind path {
         fill: none;
         stroke: var(--wind);
         stroke-linecap: round;
-        stroke-dasharray: 220 1400;
+        stroke-dasharray: 210 1500;
         animation: drift 26s linear infinite;
       }
       .wind path:nth-child(2) { animation-duration: 34s; animation-delay: -6s; }
       .wind path:nth-child(3) { animation-duration: 29s; animation-delay: -14s; }
       .wind path:nth-child(4) { animation-duration: 38s; animation-delay: -3s; }
       .wind path:nth-child(5) { animation-duration: 31s; animation-delay: -19s; }
-      .wind path:nth-child(6) { animation-duration: 42s; animation-delay: -11s; }
-      @keyframes drift {
-        to { stroke-dashoffset: -1620; }
-      }
+      .wind path:nth-child(6) { animation-duration: 43s; animation-delay: -11s; }
+      @keyframes drift { to { stroke-dashoffset: -1710; } }
 
       .page {
         position: relative;
         z-index: 1;
-        width: min(980px, 100%);
+        width: min(1120px, 100%);
         margin: 0 auto;
-        padding: clamp(48px, 9vh, 92px) clamp(18px, 4vw, 28px) 56px;
+        padding: clamp(26px, 5vh, 46px) clamp(18px, 4vw, 32px) 60px;
       }
 
-      /* ── 页眉 ── */
-      header.top {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: clamp(44px, 8vh, 78px);
-      }
-      .me {
-        display: flex;
-        align-items: center;
-        gap: 11px;
-        font-weight: 650;
-        letter-spacing: 0.02em;
-      }
+      /* ═══ 页眉 ═══ */
+      header.top { display: flex; align-items: center; gap: 10px; margin-bottom: clamp(38px, 7vh, 70px); }
+      .me { display: flex; align-items: center; gap: 11px; font-weight: 650; letter-spacing: 0.02em; font-size: 15.5px; }
       .avatar {
-        width: 34px;
-        height: 34px;
-        border-radius: 11px;
-        display: grid;
-        place-content: center;
-        background: linear-gradient(140deg, var(--brand-1), var(--brand-2));
-        color: #fff;
-        font-size: 15px;
-        font-weight: 700;
-        letter-spacing: 0.04em;
-        flex: none;
+        width: 36px; height: 36px; border-radius: 12px; flex: none;
+        display: grid; place-content: center;
+        background: linear-gradient(140deg, var(--brand), var(--brand-2));
+        color: #fff; font-size: 16px; font-weight: 700;
+        box-shadow: 0 6px 18px -6px var(--brand);
       }
       .spacer { flex: 1; }
       .ghost {
-        display: inline-grid;
-        place-content: center;
-        width: 34px;
-        height: 34px;
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        background: var(--card);
-        color: var(--text-2);
-        cursor: pointer;
+        display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+        height: 36px; min-width: 36px; padding: 0 10px;
+        border: 1px solid var(--line); border-radius: 11px;
+        background: var(--card); backdrop-filter: blur(12px);
+        color: var(--text-2); font: inherit; font-size: 13px; font-weight: 600;
+        cursor: pointer; text-decoration: none;
         transition: border-color 0.16s, color 0.16s, transform 0.16s;
-        text-decoration: none;
       }
-      .ghost:hover { border-color: var(--line-strong); color: var(--text); transform: translateY(-1px); }
-      .ghost:focus-visible { outline: 2px solid var(--brand-1); outline-offset: 2px; }
+      .ghost:hover { border-color: var(--line-2); color: var(--text); transform: translateY(-1px); }
+      .ghost:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 
-      /* ── 主标题 ── */
+      /* ═══ 主标题 ═══ */
       h1 {
-        margin: 0 0 12px;
-        font-size: clamp(32px, 6vw, 52px);
-        font-weight: 700;
-        line-height: 1.2;
-        letter-spacing: -0.02em;
+        margin: 0 0 14px;
+        font-size: clamp(34px, 6.4vw, 60px);
+        font-weight: 750;
+        line-height: 1.16;
+        letter-spacing: -0.025em;
       }
       h1 .g {
-        background: linear-gradient(96deg, var(--brand-1), var(--brand-2));
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
+        background: linear-gradient(96deg, var(--brand), var(--brand-2) 55%, var(--brand-3));
+        -webkit-background-clip: text; background-clip: text; color: transparent;
       }
-      .lede {
-        margin: 0 0 34px;
-        max-width: 46ch;
-        color: var(--text-2);
-        font-size: clamp(15px, 2vw, 17px);
+      .lede { margin: 0 0 22px; max-width: 52ch; color: var(--text-2); font-size: clamp(15px, 1.9vw, 17px); }
+
+      .stats { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-bottom: 30px; }
+      .stat { display: flex; align-items: baseline; gap: 6px; color: var(--text-3); font-size: 13px; }
+      .stat b {
+        font-size: 21px; font-weight: 700; color: var(--text);
+        font-variant-numeric: tabular-nums; letter-spacing: -0.01em;
       }
 
-      /* ── 搜索 ── */
+      /* ═══ 工具条：搜索 + 分类 ═══ */
+      .tools { display: grid; gap: 12px; margin-bottom: 22px; }
       .find {
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        margin-bottom: 20px;
-        padding: 0 14px;
-        height: 44px;
-        border: 1px solid var(--line);
-        border-radius: 12px;
-        background: var(--card);
-        backdrop-filter: blur(10px);
-        transition: border-color 0.16s;
+        display: flex; align-items: center; gap: 9px;
+        height: 46px; padding: 0 15px;
+        border: 1px solid var(--line); border-radius: 13px;
+        background: var(--card); backdrop-filter: blur(12px);
+        transition: border-color 0.16s, box-shadow 0.16s;
       }
-      .find:focus-within { border-color: var(--brand-1); }
+      .find:focus-within { border-color: var(--brand); box-shadow: 0 0 0 3px var(--glow); }
       .find svg { flex: none; color: var(--text-3); }
-      .find input {
-        flex: 1;
-        min-width: 0;
-        border: 0;
-        background: none;
-        color: inherit;
-        font: inherit;
-        outline: none;
-      }
+      .find input { flex: 1; min-width: 0; border: 0; background: none; color: inherit; font: inherit; outline: none; }
       .find input::placeholder { color: var(--text-3); }
       .find kbd {
-        flex: none;
-        padding: 2px 7px;
-        border: 1px solid var(--line);
-        border-radius: 6px;
-        color: var(--text-3);
-        font: 600 11px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace;
+        flex: none; padding: 2px 7px; border: 1px solid var(--line); border-radius: 6px;
+        color: var(--text-3); font: 600 11px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace;
       }
 
-      /* ── 卡片 ── */
+      .cats { display: flex; flex-wrap: wrap; gap: 8px; }
+      .cat {
+        display: inline-flex; align-items: center; gap: 7px;
+        height: 34px; padding: 0 13px;
+        border: 1px solid var(--line); border-radius: 999px;
+        background: var(--card); color: var(--text-2);
+        font: inherit; font-size: 13.5px; font-weight: 550;
+        cursor: pointer; white-space: nowrap;
+        transition: border-color 0.16s, color 0.16s, background 0.16s;
+      }
+      .cat:hover { border-color: var(--line-2); color: var(--text); }
+      .cat:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+      .cat[aria-pressed="true"] {
+        border-color: transparent; color: #fff;
+        background: linear-gradient(120deg, var(--brand), var(--brand-2));
+        box-shadow: 0 6px 18px -8px var(--brand);
+      }
+      .cat em {
+        font-style: normal; font-size: 11.5px; font-weight: 700;
+        padding: 1px 6px; border-radius: 999px;
+        background: rgba(125, 140, 180, 0.16); color: inherit;
+        font-variant-numeric: tabular-nums;
+      }
+      .cat[aria-pressed="true"] em { background: rgba(255, 255, 255, 0.22); }
+
+      /* ═══ 卡片网格 ═══ */
       .grid {
         display: grid;
         gap: 14px;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(272px, 1fr));
+        grid-auto-flow: dense;
       }
-      .site {
+      .card {
         position: relative;
-        display: flex;
-        align-items: flex-start;
-        gap: 14px;
-        padding: 18px 18px 17px;
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        background: var(--card);
-        backdrop-filter: blur(10px);
-        color: inherit;
-        text-decoration: none;
+        display: flex; flex-direction: column; gap: 12px;
+        padding: 18px;
+        border: 1px solid var(--line); border-radius: 18px;
+        background: var(--card); backdrop-filter: blur(14px);
+        color: inherit; text-decoration: none;
         overflow: hidden;
-        transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
-        animation: rise 0.44s cubic-bezier(0.22, 0.8, 0.3, 1) backwards;
+        transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+        animation: rise 0.5s cubic-bezier(0.22, 0.8, 0.3, 1) backwards;
       }
-      @keyframes rise {
-        from { opacity: 0; transform: translateY(9px); }
-      }
-      /* 光晕跟着指针走 —— 跟 /ftms/ 看板上的卡片是同一个手法。
-         位置由 JS 写进 --mx / --my 两个变量，CSS 只负责画。 */
-      .site::before {
+      @keyframes rise { from { opacity: 0; transform: translateY(10px); } }
+      /* 光晕跟着指针走 —— 跟 /ftms/ 看板上的卡片同一个手法。
+         位置由 JS 写进 --mx / --my，CSS 只负责画。 */
+      .card::before {
         content: "";
-        position: absolute;
-        inset: -1px;
-        border-radius: inherit;
-        background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 0%), var(--glow), transparent 70%);
-        opacity: 0;
-        transition: opacity 0.22s;
-        pointer-events: none;
+        position: absolute; inset: -1px; border-radius: inherit;
+        background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 0%), var(--glow), transparent 72%);
+        opacity: 0; transition: opacity 0.24s; pointer-events: none;
       }
-      .site:hover { border-color: var(--line-strong); transform: translateY(-2px); box-shadow: var(--shadow); }
-      .site:hover::before { opacity: 1; }
-      .site:focus-visible { outline: 2px solid var(--brand-1); outline-offset: 3px; }
-      .site[hidden] { display: none; }
+      .card:hover { border-color: var(--line-2); transform: translateY(-3px); box-shadow: var(--shadow); }
+      .card:hover::before { opacity: 1; }
+      .card:focus-within { border-color: var(--line-2); }
+      .card[hidden] { display: none; }
 
+      /* 有在线地址的占两格 —— 能点开试的东西，值得大一点 */
+      @media (min-width: 760px) {
+        .card[data-featured] { grid-column: span 2; }
+      }
+      .card[data-featured] { padding: 22px; }
+      .card[data-featured]:hover { box-shadow: var(--shadow-lg); }
+
+      .head { display: flex; align-items: flex-start; gap: 13px; }
       .mark {
-        width: 42px;
-        height: 42px;
-        border-radius: 13px;
-        flex: none;
-        display: grid;
-        place-content: center;
-        background: var(--card-solid);
-        border: 1px solid var(--line);
-        overflow: hidden;
+        width: 44px; height: 44px; border-radius: 13px; flex: none;
+        display: grid; place-content: center; overflow: hidden;
+        background: var(--card-solid); border: 1px solid var(--line);
       }
-      .mark img { width: 42px; height: 42px; display: block; }
-      .mark span { font-size: 19px; }
+      .mark img { width: 44px; height: 44px; display: block; }
+      .mark.tinted { border: 0; color: #fff; }
+      .mark svg { display: block; }
+      .card[data-featured] .mark { width: 50px; height: 50px; border-radius: 15px; }
+      .card[data-featured] .mark img { width: 50px; height: 50px; }
 
-      .body { min-width: 0; flex: 1; }
-      .name {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 16px;
-        font-weight: 650;
-        letter-spacing: 0.01em;
+      .title { min-width: 0; flex: 1; }
+      .title h2 {
+        margin: 0; font-size: 16.5px; font-weight: 680; letter-spacing: -0.005em;
+        display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
       }
-      .badge {
-        padding: 1px 7px;
-        border-radius: 999px;
-        border: 1px solid var(--line-strong);
-        color: var(--text-3);
-        font-size: 11px;
-        font-weight: 500;
-        letter-spacing: 0.02em;
+      .card[data-featured] .title h2 { font-size: 18.5px; }
+      .live {
+        display: inline-flex; align-items: center; gap: 4px;
+        padding: 1px 8px; border-radius: 999px;
+        border: 1px solid color-mix(in srgb, var(--live) 42%, transparent);
+        color: var(--live); font-size: 11px; font-weight: 650; letter-spacing: 0.02em;
       }
-      .badge[data-tone="live"] {
-        border-color: rgba(22, 163, 74, 0.4);
-        color: #16a34a;
-      }
-      @media (prefers-color-scheme: dark) {
-        :root:not([data-theme="light"]) .badge[data-tone="live"] { color: #4ade80; }
-      }
-      :root[data-theme="dark"] .badge[data-tone="live"] { color: #4ade80; }
+      .live::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+      .kind { color: var(--text-3); font-size: 12.5px; font-weight: 500; margin-top: 2px; }
 
-      .desc {
-        margin: 5px 0 10px;
-        color: var(--text-2);
-        font-size: 13.5px;
-        line-height: 1.62;
-      }
+      .desc { margin: 0; color: var(--text-2); font-size: 13.5px; line-height: 1.65; }
+      .card[data-featured] .desc { font-size: 14px; }
+
       .tags { display: flex; flex-wrap: wrap; gap: 6px; }
       .tag {
-        padding: 2px 8px;
-        border-radius: 7px;
-        background: color-mix(in srgb, var(--brand-1) 9%, transparent);
-        color: var(--text-2);
-        font-size: 11.5px;
-        letter-spacing: 0.02em;
+        padding: 2px 9px; border-radius: 7px;
+        background: color-mix(in srgb, var(--brand) 9%, transparent);
+        color: var(--text-2); font-size: 11.5px; letter-spacing: 0.01em;
       }
-      .go {
-        align-self: center;
-        flex: none;
-        color: var(--text-3);
-        transition: transform 0.18s, color 0.18s;
-      }
-      .site:hover .go { transform: translateX(3px); color: var(--brand-1); }
 
-      .none {
-        padding: 34px 0;
-        text-align: center;
-        color: var(--text-3);
-        font-size: 14px;
+      .acts { display: flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 4px; }
+      .btn {
+        display: inline-flex; align-items: center; gap: 6px;
+        height: 34px; padding: 0 14px; border-radius: 10px;
+        font-size: 13px; font-weight: 620; text-decoration: none;
+        border: 1px solid var(--line); color: var(--text-2); background: transparent;
+        transition: border-color 0.16s, color 0.16s, transform 0.16s, background 0.16s;
       }
+      .btn:hover { border-color: var(--line-2); color: var(--text); transform: translateY(-1px); }
+      .btn:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+      .btn.primary {
+        border-color: transparent; color: #fff;
+        background: linear-gradient(120deg, var(--brand), var(--brand-2));
+        box-shadow: 0 8px 20px -10px var(--brand);
+      }
+      .btn.primary:hover { color: #fff; filter: brightness(1.06); }
+
+      .none { padding: 44px 0; text-align: center; color: var(--text-3); font-size: 14px; }
       .none[hidden] { display: none; }
 
-      /* ── 页脚 ── */
+      /* ═══ 页脚 ═══ */
       footer {
-        margin-top: 48px;
-        padding-top: 20px;
+        margin-top: 52px; padding-top: 20px;
         border-top: 1px solid var(--line);
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 6px 12px;
-        color: var(--text-3);
-        font-size: 12.5px;
+        display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px;
+        color: var(--text-3); font-size: 12.5px;
       }
-      footer .owner {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        white-space: nowrap;
-      }
+      footer .owner { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
       footer .mail {
-        display: inline-flex;
-        align-items: center;
-        padding: 0 2px;
-        border: 0;
-        border-radius: 5px;
-        background: none;
-        color: inherit;
-        font: inherit;
-        cursor: pointer;
-        transition: opacity 0.16s;
+        display: inline-flex; align-items: center; padding: 0 2px;
+        border: 0; border-radius: 5px; background: none; color: inherit; font: inherit;
+        cursor: pointer; transition: opacity 0.16s;
       }
       footer .mail:hover { opacity: 0.7; }
-      footer .mail:focus-visible { outline: 2px solid var(--brand-1); outline-offset: 2px; }
+      footer .mail:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
       footer canvas { vertical-align: -0.22em; }
       .dot { width: 3px; height: 3px; border-radius: 50%; background: currentColor; opacity: 0.5; }
 
-      #copied {
-        position: fixed;
-        left: 50%;
-        bottom: 26px;
-        transform: translate(-50%, 12px);
-        padding: 9px 16px;
-        border-radius: 10px;
-        background: var(--card-solid);
-        border: 1px solid var(--line-strong);
-        box-shadow: var(--shadow);
-        color: var(--text);
-        font-size: 13px;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.2s, transform 0.2s;
+      #toast {
+        position: fixed; left: 50%; bottom: 26px; transform: translate(-50%, 12px);
+        padding: 10px 17px; border-radius: 11px;
+        background: var(--card-solid); border: 1px solid var(--line-2);
+        box-shadow: var(--shadow); color: var(--text); font-size: 13px;
+        opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s;
+        z-index: 9;
       }
-      #copied[data-on="1"] { opacity: 1; transform: translate(-50%, 0); }
+      #toast[data-on="1"] { opacity: 1; transform: translate(-50%, 0); }
 
-      /* 有人明确要求少动效，就一动不动 —— 风场是装饰，不该跟这条要求较劲 */
+      /* 有人明确要求少动效，就一动不动 */
       @media (prefers-reduced-motion: reduce) {
-        .wind path { animation: none; stroke-dasharray: none; }
-        .site { animation: none; }
-        .site, .site .go, .ghost { transition: none; }
-        .site:hover { transform: none; }
+        html { scroll-behavior: auto; }
+        .aurora i, .wind path { animation: none; }
+        .wind path { stroke-dasharray: none; }
+        .card { animation: none; }
+        .card, .btn, .ghost, .cat { transition: none; }
+        .card:hover, .btn:hover, .ghost:hover { transform: none; }
       }
     </style>
   </head>
 
-  <body>
+  <body data-lang="zh">
+    <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
     <svg class="wind" viewBox="0 0 1440 900" preserveAspectRatio="none" aria-hidden="true">
       <path d="M-60 130 C 320 76, 700 178, 1500 96" stroke-width="1.5" />
       <path d="M-60 268 C 380 200, 760 300, 1500 220" stroke-width="1" />
@@ -468,17 +471,15 @@
 
     <div class="page">
       <header class="top">
-        <span class="me">
-          <span class="avatar">d</span>
-          decli
-        </span>
+        <span class="me"><span class="avatar">d</span>decli</span>
         <span class="spacer"></span>
-        <a class="ghost" href="https://github.com/decli" rel="me noopener" aria-label="GitHub" title="GitHub">
-          <svg width="17" height="17" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <button class="ghost" id="lang" aria-label="Switch language">EN</button>
+        <a class="ghost" href="https://github.com/decli" target="_blank" rel="me noopener noreferrer" aria-label="GitHub" title="GitHub">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
             <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" />
           </svg>
         </a>
-        <button class="ghost" id="theme" aria-label="切换明暗" title="切换明暗">
+        <button class="ghost" id="theme" aria-label="Toggle theme" title="切换明暗">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
             <circle cx="12" cy="12" r="4" />
             <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
@@ -486,122 +487,261 @@
         </button>
       </header>
 
-      <h1>做了几个<span class="g">能用的东西</span></h1>
-      <p class="lede">都是纯前端，免注册，打开就能试。数据留在你自己的浏览器里，不上传。</p>
+      <h1 id="h1"></h1>
+      <p class="lede" id="lede"></p>
+      <div class="stats" id="stats"></div>
 
-      <label class="find">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-          <circle cx="11" cy="11" r="7" />
-          <path d="m20 20-3.5-3.5" />
-        </svg>
-        <input id="q" type="search" placeholder="搜项目名、用途、关键词…" aria-label="搜索项目" autocomplete="off" />
-        <kbd>/</kbd>
-      </label>
+      <div class="tools">
+        <label class="find">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" />
+          </svg>
+          <input id="q" type="search" autocomplete="off" />
+          <kbd>/</kbd>
+        </label>
+        <div class="cats" id="cats" role="group"></div>
+      </div>
 
       <div class="grid" id="grid"></div>
-      <p class="none" id="none" hidden>没有匹配的项目。</p>
+      <p class="none" id="none" hidden></p>
 
       <footer>
         <!-- 「©」和邮箱之间不留 dot：它们是同一句话的两半（© 谁），
              拆开会读成两条并列信息。分隔点只用在「版权」与「托管方」之间。 -->
         <span class="owner">
           ©
-          <button class="mail" id="mail" aria-label="复制邮箱" title="点击复制邮箱">
+          <button class="mail" id="mail" aria-label="Copy email">
             <canvas id="mailc" aria-hidden="true"></canvas>
           </button>
-          版权所有 2026
+          <span id="rights"></span>
         </span>
         <span class="dot" aria-hidden="true"></span>
         <span>Powered by GitHub Pages</span>
       </footer>
     </div>
 
-    <div id="copied" role="status" aria-live="polite">邮箱已复制到剪贴板</div>
+    <div id="toast" role="status" aria-live="polite"></div>
 
     <script src="sites.js"></script>
     <script>
-      /* 项目清单在 sites.js 里 —— 加一个项目只改那一个文件。
-         用普通 <script src> 同步加载，不是 fetch：没有异步、没有时序问题，
-         唯一的失败模式是文件 404，下面兜住了。 */
-      const SITES = Array.isArray(window.SITES) ? window.SITES : [];
-
-      const ICON = {
-        arrow:
-          '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>',
+      /* ═══ 界面文案 ═══
+         项目本身的中英文在 sites.js 里，这里只放界面自己的词。 */
+      const I18N = {
+        zh: {
+          title: ["做了几个", "能用的东西"],
+          lede: "在线工具、浏览器扩展、油猴脚本和几个安卓小应用。都是纯前端或本地运行，免注册，打开就能试。",
+          all: "全部",
+          search: "搜项目名、用途、关键词…",
+          none: "没有匹配的项目。",
+          projects: "个项目",
+          online: "个可在线体验",
+          open: "打开",
+          source: "源码",
+          liveTag: "在线",
+          rights: "版权所有 2026",
+          copied: "邮箱已复制到剪贴板",
+          langBtn: "EN",
+          themeTitle: "切换明暗",
+        },
+        en: {
+          title: ["A few things", "that actually work"],
+          lede: "Web tools, browser extensions, userscripts and a couple of Android apps. All client-side or local, no sign-up, just open and try.",
+          all: "All",
+          search: "Search name, purpose, keyword…",
+          none: "Nothing matches.",
+          projects: "projects",
+          online: "live online",
+          open: "Open",
+          source: "Source",
+          liveTag: "Live",
+          rights: "All rights reserved 2026",
+          copied: "Email copied to clipboard",
+          langBtn: "中",
+          themeTitle: "Toggle theme",
+        },
       };
 
-      const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+      /* 图标：给没有自己 favicon 的项目用。
+         全是线条图形，配 tint 上色 —— 比 emoji 靠谱：
+         emoji 在 Windows / Mac / Android 上长得完全不一样，一排摆开必然花。 */
+      const ICONS = {
+        globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18"/>',
+        target: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
+        chat: '<path d="M21 12a8 8 0 0 1-8 8H7l-4 3v-6.5A8 8 0 0 1 13 4a8 8 0 0 1 8 8Z"/><path d="M9 11h.01M13 11h.01M17 11h.01"/>',
+        tab: '<rect x="3" y="5" width="18" height="15" rx="2.5"/><path d="M3 9.5h7l1.6-2.4H21"/>',
+        scroll: '<path d="M12 4v16"/><path d="m7 9 5-5 5 5"/><path d="m7 15 5 5 5-5"/>',
+        download: '<path d="M12 3v12"/><path d="m7.5 11 4.5 4.5 4.5-4.5"/><path d="M4 20h16"/>',
+        package: '<path d="m12 3 8 4.2v9.6L12 21l-8-4.2V7.2Z"/><path d="M4.3 7.3 12 11.4l7.7-4.1M12 11.4V21"/>',
+        chess: '<path d="M9 4h6v2.6l2 2.4H7l2-2.4Z"/><path d="M8.4 9h7.2l-.9 6H9.3Z"/><path d="M6.5 20h11l-.8-2.6H7.3Z"/>',
+      };
 
-      const grid = document.getElementById("grid");
-      if (!SITES.length) {
-        // sites.js 没加载上（改坏了、或部署漏了这个文件）。白板最难查，
-        // 所以直接把原因写在页面上
-        grid.innerHTML =
-          '<p class="none" style="grid-column:1/-1">项目清单没加载出来 —— 检查 sites.js 是否存在且语法正确。</p>';
+      const S = { lang: "zh", cat: "all", q: "" };
+      const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+      /* 字段可以是字符串（中英文同名），也可以是 {zh, en} */
+      const L = (v) => (v && typeof v === "object" && !Array.isArray(v) ? v[S.lang] ?? v.zh : v);
+      const t = (k) => I18N[S.lang][k];
+
+      const PROJECTS = Array.isArray(window.PROJECTS) ? window.PROJECTS : [];
+      const CATEGORIES = Array.isArray(window.CATEGORIES) ? window.CATEGORIES : [];
+      /* 能点开试的排前面 —— 首屏就该是「可以马上玩」的那几个 */
+      const LIST = [...PROJECTS].sort((a, b) => (b.href ? 1 : 0) - (a.href ? 1 : 0));
+
+      const el = {
+        h1: document.getElementById("h1"), lede: document.getElementById("lede"),
+        stats: document.getElementById("stats"), cats: document.getElementById("cats"),
+        grid: document.getElementById("grid"), none: document.getElementById("none"),
+        q: document.getElementById("q"), lang: document.getElementById("lang"),
+        theme: document.getElementById("theme"), rights: document.getElementById("rights"),
+        toast: document.getElementById("toast"),
+      };
+
+      function catName(key) {
+        const c = CATEGORIES.find((x) => x.key === key);
+        return c ? c[S.lang] : key;
       }
-      grid.innerHTML = SITES.length ? SITES.map((s, i) => {
-        const mark = s.icon.startsWith("/")
-          ? `<img src="${esc(s.icon)}" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🔗'}))">`
-          : `<span>${esc(s.icon)}</span>`;
-        const tag = s.live ? "a" : "div";
-        const attrs = s.live ? `href="${esc(s.href)}" data-slug="${esc(s.slug)}"` : 'aria-disabled="true"';
-        return `<${tag} class="site" ${attrs} style="animation-delay:${i * 55}ms"
-            data-find="${esc((s.name + " " + s.slug + " " + s.desc + " " + s.tags.join(" ")).toLowerCase())}">
-            <span class="mark">${mark}</span>
-            <span class="body">
-              <span class="name">${esc(s.name)}${s.live ? "" : '<span class="badge">筹备中</span>'}</span>
-              <span class="desc">${esc(s.desc)}</span>
-              <span class="tags">${s.tags.map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</span>
-            </span>
-            <span class="go">${ICON.arrow}</span>
-          </${tag}>`;
-      }).join("") : grid.innerHTML;
+
+      function renderChrome() {
+        const [a, b] = t("title");
+        /* 中文两段直接相连（做了几个 + 能用的东西）；英文之间要有个空格，
+           不然会渲染成 "A few thingsthat actually work" —— 一眼就是拼接出来的 */
+        const gap = S.lang === "en" ? " " : "";
+        el.h1.innerHTML = `${esc(a)}${gap}<span class="g">${esc(b)}</span>`;
+        el.lede.textContent = t("lede");
+        el.q.placeholder = t("search");
+        el.q.setAttribute("aria-label", t("search"));
+        el.none.textContent = t("none");
+        el.lang.textContent = t("langBtn");
+        el.theme.title = t("themeTitle");
+        el.rights.textContent = t("rights");
+        document.getElementById("mail").setAttribute("aria-label", S.lang === "zh" ? "复制邮箱" : "Copy email");
+
+        const live = LIST.filter((p) => p.href).length;
+        el.stats.innerHTML =
+          `<span class="stat"><b>${LIST.length}</b>${esc(t("projects"))}</span>` +
+          `<span class="stat"><b>${live}</b>${esc(t("online"))}</span>`;
+
+        el.cats.innerHTML =
+          `<button class="cat" data-cat="all" aria-pressed="${S.cat === "all"}">${esc(t("all"))}<em>${LIST.length}</em></button>` +
+          CATEGORIES.map((c) => {
+            const n = LIST.filter((p) => p.cat === c.key).length;
+            if (!n) return "";
+            return `<button class="cat" data-cat="${esc(c.key)}" aria-pressed="${S.cat === c.key}">${esc(c[S.lang])}<em>${n}</em></button>`;
+          }).join("");
+      }
+
+      function cardHTML(p, i) {
+        const mark = String(p.icon || "").startsWith("/")
+          ? `<span class="mark"><img src="${esc(p.icon)}" alt="" loading="lazy"
+               onerror="this.parentElement.classList.add('tinted');this.parentElement.style.background='linear-gradient(140deg,#64748b,#475569)';this.outerHTML='&#128279;'"></span>`
+          : `<span class="mark tinted" style="background:linear-gradient(140deg,${esc((p.tint || ["#64748b", "#475569"])[0])},${esc((p.tint || ["#64748b", "#475569"])[1])})">
+               <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9"
+                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[p.icon] || ICONS.package}</svg>
+             </span>`;
+
+        const acts =
+          (p.href
+            ? `<a class="btn primary" href="${esc(p.href)}" target="_blank" rel="noopener noreferrer" data-slug="${esc(p.slug)}" data-kind="demo">
+                 ${esc(t("open"))}
+                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+               </a>`
+            : "") +
+          `<a class="btn" href="https://github.com/decli/${esc(p.repo)}" target="_blank" rel="noopener noreferrer" data-slug="${esc(p.slug)}" data-kind="repo">
+             <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+             ${esc(t("source"))}
+           </a>`;
+
+        const tags = (L(p.tags) || []).map((x) => `<span class="tag">${esc(x)}</span>`).join("");
+        const hay = [L(p.name), p.slug, p.repo, L(p.desc), (L(p.tags) || []).join(" "), catName(p.cat)].join(" ").toLowerCase();
+
+        return `<article class="card"${p.href ? " data-featured" : ""} data-cat="${esc(p.cat)}"
+                  data-find="${esc(hay)}" style="animation-delay:${Math.min(i, 12) * 45}ms">
+          <div class="head">
+            ${mark}
+            <div class="title">
+              <h2>${esc(L(p.name))}${p.href ? `<span class="live">${esc(t("liveTag"))}</span>` : ""}</h2>
+              <div class="kind">${esc(catName(p.cat))}</div>
+            </div>
+          </div>
+          <p class="desc">${esc(L(p.desc))}</p>
+          <div class="tags">${tags}</div>
+          <div class="acts">${acts}</div>
+        </article>`;
+      }
+
+      function render() {
+        renderChrome();
+        if (!LIST.length) {
+          el.grid.innerHTML = `<p class="none" style="grid-column:1/-1">项目清单没加载出来 —— 检查 sites.js 是否存在且语法正确。</p>`;
+          return;
+        }
+        el.grid.innerHTML = LIST.map(cardHTML).join("");
+        filter();
+      }
+
+      function filter() {
+        const k = S.q.trim().toLowerCase();
+        let n = 0;
+        for (const c of el.grid.querySelectorAll(".card")) {
+          const ok = (S.cat === "all" || c.dataset.cat === S.cat) && (!k || c.dataset.find.includes(k));
+          c.hidden = !ok;
+          if (ok) n++;
+        }
+        el.none.hidden = n > 0;
+      }
+
+      /* ── 事件 ── */
+      el.cats.addEventListener("click", (e) => {
+        const b = e.target.closest(".cat");
+        if (!b) return;
+        S.cat = b.dataset.cat;
+        for (const x of el.cats.querySelectorAll(".cat")) x.setAttribute("aria-pressed", String(x.dataset.cat === S.cat));
+        filter();
+        if (window.gtag) gtag("event", "filter_category", { site: "portal", category: S.cat });
+      });
+
+      el.q.addEventListener("input", () => { S.q = el.q.value; filter(); });
+      addEventListener("keydown", (e) => {
+        if (e.key === "/" && document.activeElement !== el.q) { e.preventDefault(); el.q.focus(); }
+        else if (e.key === "Escape" && document.activeElement === el.q) {
+          el.q.value = ""; S.q = ""; filter(); el.q.blur();
+        }
+      });
 
       /* 光晕跟随。一个委托监听覆盖所有卡片，加卡片不用再挂事件 */
-      grid.addEventListener("pointermove", (e) => {
-        const card = e.target.closest(".site");
-        if (!card) return;
-        const r = card.getBoundingClientRect();
-        card.style.setProperty("--mx", `${e.clientX - r.left}px`);
-        card.style.setProperty("--my", `${e.clientY - r.top}px`);
+      el.grid.addEventListener("pointermove", (e) => {
+        const c = e.target.closest(".card");
+        if (!c) return;
+        const r = c.getBoundingClientRect();
+        c.style.setProperty("--mx", `${e.clientX - r.left}px`);
+        c.style.setProperty("--my", `${e.clientY - r.top}px`);
       });
 
-      /* 点击去哪，记一笔。只报 slug —— 报表里要回答的是「哪个项目有人点」 */
-      grid.addEventListener("click", (e) => {
-        const a = e.target.closest("a.site");
-        if (a && window.gtag) gtag("event", "open_site", { site: "portal", target: a.dataset.slug });
+      /* 点击去哪，记一笔。只报 slug 和「点的是体验还是源码」*/
+      el.grid.addEventListener("click", (e) => {
+        const a = e.target.closest("a[data-slug]");
+        if (a && window.gtag) gtag("event", "open_project", { site: "portal", target: a.dataset.slug, kind: a.dataset.kind });
       });
 
-      /* ── 搜索 ──
-         三个项目时它是多余的，八个时它是必需的。现在就放上，
-         省得以后加到第八个才想起来要改布局。 */
-      const q = document.getElementById("q");
-      const none = document.getElementById("none");
-      const cards = [...grid.querySelectorAll(".site")];
-      q.addEventListener("input", () => {
-        const k = q.value.trim().toLowerCase();
-        let n = 0;
-        for (const c of cards) {
-          const hit = !k || c.dataset.find.includes(k);
-          c.hidden = !hit;
-          if (hit) n++;
-        }
-        none.hidden = n > 0;
-      });
-      // `/` 聚焦搜索，Esc 清空 —— 跟 /ftms/ 里的快捷键习惯一致
-      addEventListener("keydown", (e) => {
-        if (e.key === "/" && document.activeElement !== q) {
-          e.preventDefault();
-          q.focus();
-        } else if (e.key === "Escape" && document.activeElement === q) {
-          q.value = "";
-          q.dispatchEvent(new Event("input"));
-          q.blur();
-        }
+      /* ── 语言 ──
+         默认跟浏览器走：navigator.language 不是中文就开英文。
+         手动切过就记住，之后不再猜。 */
+      const LANG_KEY = "decli.lang";
+      function setLang(l, remember) {
+        S.lang = l;
+        document.body.dataset.lang = l;
+        document.documentElement.lang = l === "zh" ? "zh-CN" : "en";
+        if (remember) { try { localStorage.setItem(LANG_KEY, l); } catch (e) {} }
+        render();
+        paintMail();
+      }
+      el.lang.addEventListener("click", () => {
+        const next = S.lang === "zh" ? "en" : "zh";
+        setLang(next, true);
+        if (window.gtag) gtag("event", "switch_language", { site: "portal", to: next });
       });
 
       /* ── 明暗 ──
-         三档轮换太重了，入口页只需要「跟系统」和「反过来」两种。
+         入口页只要「跟系统」和「反过来」两种，三档轮换太重了。
          选择记在 localStorage，跟子站各自的记忆互不干扰。 */
       const THEME_KEY = "decli.theme";
       const root = document.documentElement;
@@ -609,22 +749,24 @@
         const saved = localStorage.getItem(THEME_KEY);
         if (saved === "dark" || saved === "light") root.dataset.theme = saved;
       } catch (e) {}
-      document.getElementById("theme").addEventListener("click", () => {
+      el.theme.addEventListener("click", () => {
         const sysDark = matchMedia("(prefers-color-scheme: dark)").matches;
-        const now = root.dataset.theme || (sysDark ? "dark" : "light");
-        const next = now === "dark" ? "light" : "dark";
+        const next = (root.dataset.theme || (sysDark ? "dark" : "light")) === "dark" ? "light" : "dark";
         root.dataset.theme = next;
         try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+        paintMail();
         if (window.gtag) gtag("event", "switch_theme", { site: "portal", to: next });
       });
 
       /* ── 版权邮箱 ──
          画在 canvas 上：DOM 里没有文本节点，源码里也没有可直接正则捞走的
-         字面量。贴在公开网页上的邮箱，半天之内就会进入群发名录。
-         跟 /ftms/ 里的 Copyright.tsx 是同一套做法。 */
-      const L = [100, 101, 99, 108, 105];
-      const H = [113, 113, 46, 99, 111, 109];
-      const mail = () => String.fromCharCode.apply(null, L) + "@" + String.fromCharCode.apply(null, H);
+         字面量，更没写进 aria-label / title —— 那些都是纯文本属性，
+         写进去等于前面全白做。贴在公开网页上的邮箱，半天就会进群发名录。
+         补偿：整块是个按钮，点击 / 回车即复制，读屏用户拿到的是可粘贴的
+         真地址，而爬虫不会去点按钮。 */
+      const LOCAL = [100, 101, 99, 108, 105];
+      const HOST = [113, 113, 46, 99, 111, 109];
+      const mail = () => String.fromCharCode.apply(null, LOCAL) + "@" + String.fromCharCode.apply(null, HOST);
 
       function paintMail() {
         const cv = document.getElementById("mailc");
@@ -638,7 +780,7 @@
         const w = Math.ceil(probe.measureText(text).width) + 2;
         const h = Math.ceil(size * 1.4);
         const dpr = Math.min(devicePixelRatio || 1, 3);
-        // 改 width/height 会清空画布，所以字体要在这之后再设一次
+        /* ⚠️ 给 canvas 赋 width/height 会**清空**它，所以字体必须在这之后再设一次 */
         cv.width = Math.round(w * dpr);
         cv.height = Math.round(h * dpr);
         cv.style.width = w + "px";
@@ -650,13 +792,7 @@
         ctx.fillStyle = cs.color;
         ctx.fillText(text, 1, h / 2);
       }
-      paintMail();
-      if (document.fonts) document.fonts.ready.then(paintMail).catch(() => {});
-      new MutationObserver(paintMail).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
-      matchMedia("(prefers-color-scheme: dark)").addEventListener("change", paintMail);
-      addEventListener("resize", paintMail);
 
-      const toast = document.getElementById("copied");
       document.getElementById("mail").addEventListener("click", async () => {
         try {
           await navigator.clipboard.writeText(mail());
@@ -669,9 +805,23 @@
           document.execCommand("copy");
           ta.remove();
         }
-        toast.dataset.on = "1";
-        setTimeout(() => (toast.dataset.on = "0"), 1800);
+        el.toast.textContent = t("copied");
+        el.toast.dataset.on = "1";
+        setTimeout(() => (el.toast.dataset.on = "0"), 1800);
       });
+
+      /* ── 启动 ── */
+      let lang0 = "zh";
+      try {
+        const saved = localStorage.getItem(LANG_KEY);
+        lang0 = saved === "zh" || saved === "en" ? saved : /^zh\b/i.test(navigator.language || "") ? "zh" : "en";
+      } catch (e) {}
+      setLang(lang0, false);
+
+      if (document.fonts) document.fonts.ready.then(paintMail).catch(() => {});
+      new MutationObserver(paintMail).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+      matchMedia("(prefers-color-scheme: dark)").addEventListener("change", paintMail);
+      addEventListener("resize", paintMail);
     </script>
   </body>
 </html>
