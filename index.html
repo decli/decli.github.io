@@ -124,6 +124,8 @@
         --aurora-1: rgba(124, 92, 255, 0.24);
         --aurora-2: rgba(6, 182, 212, 0.2);
         --aurora-3: rgba(59, 91, 214, 0.22);
+        --spot-1: rgba(124, 92, 255, 0.13);
+        --spot-2: rgba(6, 182, 212, 0.09);
         color-scheme: light;
       }
       @media (prefers-color-scheme: dark) {
@@ -147,6 +149,8 @@
           --aurora-1: rgba(124, 92, 255, 0.3);
           --aurora-2: rgba(6, 182, 212, 0.22);
           --aurora-3: rgba(59, 91, 214, 0.28);
+          --spot-1: rgba(150, 120, 255, 0.16);
+          --spot-2: rgba(34, 211, 238, 0.1);
           color-scheme: dark;
         }
       }
@@ -170,6 +174,8 @@
         --aurora-1: rgba(124, 92, 255, 0.3);
         --aurora-2: rgba(6, 182, 212, 0.22);
         --aurora-3: rgba(59, 91, 214, 0.28);
+        --spot-1: rgba(150, 120, 255, 0.16);
+        --spot-2: rgba(34, 211, 238, 0.1);
         color-scheme: dark;
       }
 
@@ -188,7 +194,10 @@
         font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       }
 
-      /* ── 极光：三团大色斑缓慢漂移 ── */
+      /* ── 极光：三团大色斑，缓慢漂浮 + 跟着鼠标做视差 ──
+         两个动作要拆到两层上：外层 span 只做视差位移，内层 i 只做漂浮关键帧。
+         挤在同一个元素上的话，`animation` 里的 transform 会把 JS 写的那个
+         整帧覆盖掉 —— 视差看起来就完全没生效，而且不报任何错。 */
       .aurora {
         position: fixed;
         inset: -20% -10%;
@@ -196,20 +205,73 @@
         pointer-events: none;
         filter: blur(70px);
       }
+      .aurora span {
+        position: absolute;
+        inset: 0;
+        display: block;
+        will-change: transform;
+        /* 比指针慢半拍才有「跟」的感觉；一步到位反而像整个背景被钉在光标上 */
+        transition: transform 0.7s cubic-bezier(0.22, 0.8, 0.3, 1);
+      }
       .aurora i {
         position: absolute;
         display: block;
         border-radius: 50%;
         animation: float 40s ease-in-out infinite;
       }
-      .aurora i:nth-child(1) { width: 46vw; height: 46vw; top: -6%; left: 52%; background: var(--aurora-1); }
-      .aurora i:nth-child(2) { width: 38vw; height: 38vw; top: 34%; left: -6%; background: var(--aurora-2); animation-duration: 52s; animation-delay: -14s; }
-      .aurora i:nth-child(3) { width: 42vw; height: 42vw; top: 62%; left: 58%; background: var(--aurora-3); animation-duration: 46s; animation-delay: -26s; }
+      .aurora span:nth-child(1) i { width: 46vw; height: 46vw; top: -6%; left: 52%; background: var(--aurora-1); }
+      .aurora span:nth-child(2) i { width: 38vw; height: 38vw; top: 34%; left: -6%; background: var(--aurora-2); animation-duration: 52s; animation-delay: -14s; }
+      .aurora span:nth-child(3) i { width: 42vw; height: 42vw; top: 62%; left: 58%; background: var(--aurora-3); animation-duration: 46s; animation-delay: -26s; }
       @keyframes float {
         0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
         33%      { transform: translate3d(4%, -5%, 0) scale(1.07); }
         66%      { transform: translate3d(-5%, 4%, 0) scale(0.95); }
       }
+
+      /* ── 流光：一团跟着指针走的高光 ──
+         不加过渡，让它精确贴着手；「慢半拍」那件事交给上面的极光去做，
+         两层一快一慢，才有厚度。 */
+      .spot {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.6s;
+        background:
+          radial-gradient(420px circle at var(--px, 50vw) var(--py, 32vh), var(--spot-1), transparent 66%),
+          radial-gradient(760px circle at var(--px, 50vw) var(--py, 32vh), var(--spot-2), transparent 70%);
+      }
+      body[data-pointer="1"] .spot { opacity: 1; }
+
+      /* ── 泡泡：画在 canvas 上，压在内容底下 ── */
+      .bubbles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+      /* 戳破计数。第一次戳破才出现，闲下来就淡出 —— 平时不该占着屏幕 */
+      .score {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        z-index: 5;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 13px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--card);
+        backdrop-filter: blur(12px);
+        box-shadow: var(--shadow);
+        color: var(--text-2);
+        font-size: 12.5px;
+        font-variant-numeric: tabular-nums;
+        opacity: 0;
+        transform: translateY(8px);
+        pointer-events: none;
+        transition: opacity 0.3s, transform 0.3s;
+      }
+      .score[data-on="1"] { opacity: 1; transform: translateY(0); }
+      .score b { color: var(--text); font-size: 14px; font-weight: 700; }
 
       /* ── 风场：几条常年不改向的流线 ── */
       .wind { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
@@ -450,6 +512,8 @@
       @media (prefers-reduced-motion: reduce) {
         html { scroll-behavior: auto; }
         .aurora i, .wind path { animation: none; }
+        .aurora span { transition: none; transform: none !important; }
+        .spot { display: none; }
         .wind path { stroke-dasharray: none; }
         .card { animation: none; }
         .card, .btn, .ghost, .cat { transition: none; }
@@ -459,7 +523,9 @@
   </head>
 
   <body data-lang="zh">
-    <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="aurora" aria-hidden="true"><span><i></i></span><span><i></i></span><span><i></i></span></div>
+    <div class="spot" aria-hidden="true"></div>
+    <canvas class="bubbles" id="bub" aria-hidden="true"></canvas>
     <svg class="wind" viewBox="0 0 1440 900" preserveAspectRatio="none" aria-hidden="true">
       <path d="M-60 130 C 320 76, 700 178, 1500 96" stroke-width="1.5" />
       <path d="M-60 268 C 380 200, 760 300, 1500 220" stroke-width="1" />
@@ -521,6 +587,7 @@
     </div>
 
     <div id="toast" role="status" aria-live="polite"></div>
+    <div class="score" id="score" aria-hidden="true"></div>
 
     <script src="sites.js"></script>
     <script>
@@ -528,8 +595,13 @@
          项目本身的中英文在 sites.js 里，这里只放界面自己的词。 */
       const I18N = {
         zh: {
-          title: ["做了几个", "能用的东西"],
-          lede: "在线工具、浏览器扩展、油猴脚本和几个安卓小应用。都是纯前端或本地运行，免注册，打开就能试。",
+          /* ── 这句话为什么这么写 ──
+             「做了几个能用的东西」说的是**结果**，谁都能说，也就谁都记不住。
+             十二个项目横跨外贸系统、公众号排版、IP 监控、安卓象棋 —— 表面上毫无关系，
+             真正把它们串起来的是**动机**：某天嫌某件事麻烦，于是自己动手。
+             说动机，比罗列品类有画面，也解释了这堆东西为什么长在一起。 */
+          title: ["嫌它麻烦，", "就自己写一个"],
+          lede: "十二个项目。有的是自己嫌麻烦顺手写的，有的是给家里人做的 —— 外贸系统、公众号排版、IP 归属地监控、取件码助手。纯前端或本地运行，免注册，打开就能用。",
           all: "全部",
           search: "搜项目名、用途、关键词…",
           none: "没有匹配的项目。",
@@ -540,12 +612,14 @@
           liveTag: "在线",
           rights: "版权所有 2026",
           copied: "邮箱已复制到剪贴板",
+          popped: "戳破 {n} 个",
+          popHint: "背景的泡泡可以戳",
           langBtn: "EN",
           themeTitle: "切换明暗",
         },
         en: {
-          title: ["A few things", "that actually work"],
-          lede: "Web tools, browser extensions, userscripts and a couple of Android apps. All client-side or local, no sign-up, just open and try.",
+          title: ["Annoyed enough", "to just build it"],
+          lede: "Twelve projects. Some scratched an itch of my own, some were built for family — a trade-ops suite, a WeChat formatter, an IP monitor, a parcel-code reader. All client-side or local, no sign-up, just open and use.",
           all: "All",
           search: "Search name, purpose, keyword…",
           none: "Nothing matches.",
@@ -556,6 +630,8 @@
           liveTag: "Live",
           rights: "All rights reserved 2026",
           copied: "Email copied to clipboard",
+          popped: "{n} popped",
+          popHint: "The bubbles are poppable",
           langBtn: "中",
           themeTitle: "Toggle theme",
         },
@@ -733,6 +809,8 @@
         if (remember) { try { localStorage.setItem(LANG_KEY, l); } catch (e) {} }
         render();
         paintMail();
+        // 计数片正显示着的话，跟着换语言（引擎是个 IIFE，从 window 上取）
+        if (window.__paintScore) window.__paintScore();
       }
       el.lang.addEventListener("click", () => {
         const next = S.lang === "zh" ? "en" : "zh";
@@ -809,6 +887,183 @@
         el.toast.dataset.on = "1";
         setTimeout(() => (el.toast.dataset.on = "0"), 1800);
       });
+
+      /* ═══════════════════════════════════════════════════════════════
+         背景：流光跟随 + 可戳破的泡泡
+
+         ── 为什么泡泡不是一个「小游戏区」──
+         专门辟一块地方放游戏，等于告诉访客「这儿有个跟你无关的东西」，
+         多数人绕着走。所以它就是**背景本身**：泡泡一直在飘，路过顺手戳一下
+         有反馈，不戳也不碍事 —— 它不占版面、不抢一次点击、不需要说明书。
+
+         ── 点击怎么不跟正事打架 ──
+         canvas 是 pointer-events:none 压在最底下，点击在 document 上接。
+         落在卡片、链接、按钮、输入框上的一律放行，只有点在空白处才当戳泡泡。
+         这样「点空白关掉输入焦点」这种下意识动作也不会被抢走。
+
+         ── 开销 ──
+         最多 16 个泡泡 + 60 个碎片，都是实心圆。标签页切走就停 rAF，
+         `prefers-reduced-motion` 下整套不启动。
+         ═══════════════════════════════════════════════════════════════ */
+      (function () {
+        const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const cv = document.getElementById("bub");
+        const ctx = cv.getContext("2d");
+        const scoreEl = document.getElementById("score");
+
+        /* ── 流光跟随 ──
+           pointermove 只记坐标，真正写样式放到 rAF 里 —— 指针事件一秒能来
+           一百多次，每次都写一遍 style 会让整页跟着抖。 */
+        let px = innerWidth / 2, py = innerHeight * 0.32, dirty = false, moved = false;
+        const spans = document.querySelectorAll(".aurora span");
+        const FACTOR = [[0.035, 0.03], [-0.028, -0.022], [0.045, -0.035]];
+
+        addEventListener("pointermove", (e) => {
+          px = e.clientX; py = e.clientY; dirty = true;
+          if (!moved) { moved = true; document.body.dataset.pointer = "1"; }
+        }, { passive: true });
+
+        function paintPointer() {
+          if (!dirty) return;
+          dirty = false;
+          document.body.style.setProperty("--px", px + "px");
+          document.body.style.setProperty("--py", py + "px");
+          const dx = px - innerWidth / 2, dy = py - innerHeight / 2;
+          spans.forEach((sp, i) => {
+            const f = FACTOR[i] || FACTOR[0];
+            sp.style.transform = `translate3d(${(dx * f[0]).toFixed(1)}px, ${(dy * f[1]).toFixed(1)}px, 0)`;
+          });
+        }
+
+        if (REDUCED) return;
+
+        /* ── 泡泡 ── */
+        let W = 0, H = 0, dpr = 1;
+        const bubbles = [], parts = [];
+        const MAX = 16;
+        let pops = 0, hideTimer = 0, raf = 0, prev = 0;
+
+        function resize() {
+          dpr = Math.min(devicePixelRatio || 1, 2);
+          W = innerWidth; H = innerHeight;
+          cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+          cv.style.width = W + "px"; cv.style.height = H + "px";
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        resize();
+        addEventListener("resize", resize);
+
+        /* 色相取品牌那一段（蓝 → 紫 → 青），不让泡泡跑出整页的配色 */
+        const HUES = [222, 232, 258, 268, 190, 174];
+        const rnd = (a, b) => a + Math.random() * (b - a);
+
+        function spawn(atBottom) {
+          return {
+            x: rnd(0, W),
+            y: atBottom ? H + rnd(20, 160) : rnd(0, H),
+            r: rnd(9, 30),
+            vy: rnd(0.16, 0.5),
+            sway: rnd(0.2, 0.7),
+            ph: rnd(0, Math.PI * 2),
+            hue: HUES[(Math.random() * HUES.length) | 0],
+            a: rnd(0.14, 0.34),
+          };
+        }
+        for (let i = 0; i < MAX; i++) bubbles.push(spawn(false));
+
+        function burst(b) {
+          const n = 9 + ((Math.random() * 4) | 0);
+          for (let i = 0; i < n && parts.length < 60; i++) {
+            const ang = (Math.PI * 2 * i) / n + rnd(-0.25, 0.25);
+            const sp = rnd(0.9, 2.9);
+            parts.push({ x: b.x, y: b.y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp - 0.35,
+                         r: rnd(1.4, 3.4), hue: b.hue, life: 1 });
+          }
+        }
+
+        /* 「戳破 {n} 个」和「{n} popped」数字的位置不一样，所以按 {n} 劈开模板
+           再把数字插回中间 —— 写死成「数字 + 文字」的话，中文会排成
+           「1 戳破 个」。这个函数也挂到 window 上，切语言时好重画一次。 */
+        function paintScore() {
+          const tpl = (I18N[S.lang] && I18N[S.lang].popped) || "{n}";
+          const [pre, post] = tpl.split("{n}");
+          scoreEl.innerHTML = `${esc(pre)}<b>${pops}</b>${esc(post)}`;
+        }
+        window.__paintScore = paintScore;
+
+        function popAt(cx, cy) {
+          let hit = false;
+          for (let i = bubbles.length - 1; i >= 0; i--) {
+            const b = bubbles[i];
+            if (Math.hypot(b.x - cx, b.y - cy) <= b.r + 24) {
+              burst(b);
+              bubbles.splice(i, 1, spawn(true));
+              hit = true;
+            }
+          }
+          if (!hit) return;
+          pops++;
+          paintScore();
+          scoreEl.dataset.on = "1";
+          clearTimeout(hideTimer);
+          hideTimer = setTimeout(() => (scoreEl.dataset.on = "0"), 2800);
+          /* 只报「戳了」和累计数，不报坐标 —— 埋点是为了知道有没有人玩，
+             不是为了还原鼠标轨迹 */
+          if (pops === 1 && window.gtag) gtag("event", "play_bubbles", { site: "portal" });
+        }
+
+        addEventListener("click", (e) => {
+          // 落在能点的东西上一律放行：连「点空白处收起输入焦点」都不该被抢走
+          if (e.target.closest("a, button, input, select, textarea, label, .card")) return;
+          popAt(e.clientX, e.clientY);
+        });
+
+        function frame(now) {
+          raf = requestAnimationFrame(frame);
+          const dt = Math.min((now - prev) / 16.67 || 1, 3);
+          prev = now;
+          paintPointer();
+
+          ctx.clearRect(0, 0, W, H);
+
+          for (const b of bubbles) {
+            b.y -= b.vy * dt;
+            b.ph += 0.012 * dt;
+            b.x += Math.sin(b.ph) * b.sway * 0.4 * dt;
+            if (b.y < -b.r - 20) Object.assign(b, spawn(true));
+
+            const near = Math.hypot(b.x - px, b.y - py) <= b.r + 24;
+            const g = ctx.createRadialGradient(b.x - b.r * 0.35, b.y - b.r * 0.4, b.r * 0.1, b.x, b.y, b.r);
+            g.addColorStop(0, `hsla(${b.hue}, 92%, 76%, ${b.a * (near ? 1.7 : 1)})`);
+            g.addColorStop(1, `hsla(${b.hue}, 88%, 60%, 0)`);
+            ctx.fillStyle = g;
+            ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, 7); ctx.fill();
+
+            // 指针靠近就描一圈 —— 这是唯一的「可以戳」提示，不用文字说明
+            if (near) {
+              ctx.strokeStyle = `hsla(${b.hue}, 92%, 72%, 0.5)`;
+              ctx.lineWidth = 1.4;
+              ctx.beginPath(); ctx.arc(b.x, b.y, b.r + 4, 0, 7); ctx.stroke();
+            }
+          }
+
+          for (let i = parts.length - 1; i >= 0; i--) {
+            const p = parts[i];
+            p.x += p.vx * dt; p.y += p.vy * dt;
+            p.vy += 0.045 * dt; p.vx *= 0.985; p.life -= 0.022 * dt;
+            if (p.life <= 0) { parts.splice(i, 1); continue; }
+            ctx.fillStyle = `hsla(${p.hue}, 94%, 72%, ${p.life * 0.75})`;
+            ctx.beginPath(); ctx.arc(p.x, p.y, p.r * p.life, 0, 7); ctx.fill();
+          }
+        }
+        raf = requestAnimationFrame(frame);
+
+        // 标签页切走就停：没人看的时候没必要一直画
+        document.addEventListener("visibilitychange", () => {
+          if (document.hidden) { cancelAnimationFrame(raf); raf = 0; }
+          else if (!raf) { prev = performance.now(); raf = requestAnimationFrame(frame); }
+        });
+      })();
 
       /* ── 启动 ── */
       let lang0 = "zh";
