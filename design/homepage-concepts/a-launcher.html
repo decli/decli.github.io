@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>方案 A · 启动台 — 首页交互草案</title>
+    <style>
+      /* ═══════════════════════════════════════════════════════════════
+         方案 A 「启动台」 —— 页面即命令面板
+         ─────────────────────────────────────────────────────────────
+         范式：Raycast / Spotlight / ⌘K。搜索不再是工具条里的一个配件，
+         而是页面的主体。回访用户三次击键直达目标；首访用户在空查询下
+         看到的就是全部 12 个项目 —— 浏览模式与搜索模式是同一个界面。
+
+         签名交互：「意图芯片」—— 按用途搜，不按名字搜。
+         「公众号排版」「代理生效没」是访客脑子里的词；
+         WxMark、IP Geolocation 才是项目的名字。芯片教会前者。
+         ═══════════════════════════════════════════════════════════════ */
+      :root {
+        --bg: #f5f7fc;
+        --card: rgba(255, 255, 255, 0.72);
+        --card-solid: #fff;
+        --line: rgba(18, 32, 68, 0.09);
+        --line-2: rgba(18, 32, 68, 0.16);
+        --text: #101828;
+        --text-2: #4a566d;
+        --text-3: #7b879e;
+        --brand: #3b5bd6;
+        --brand-2: #7c5cff;
+        --live: #0f9d58;
+        --glow: rgba(59, 91, 214, 0.13);
+        --hl: rgba(59, 91, 214, 0.09);
+        --shadow: 0 1px 2px rgba(16, 24, 40, 0.05), 0 12px 32px -12px rgba(16, 24, 40, 0.18),
+          0 32px 80px -32px rgba(16, 24, 40, 0.28);
+        --aurora-1: rgba(124, 92, 255, 0.07);
+        --aurora-2: rgba(6, 182, 212, 0.055);
+        color-scheme: light;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --bg: #060a18;
+          --card: rgba(20, 28, 50, 0.72);
+          --card-solid: #141c32;
+          --line: rgba(150, 178, 240, 0.13);
+          --line-2: rgba(150, 178, 240, 0.26);
+          --text: #eaf0ff;
+          --text-2: #a6b3d2;
+          --text-3: #78849f;
+          --brand: #7c9bff;
+          --brand-2: #a78bfa;
+          --live: #34d399;
+          --glow: rgba(124, 155, 255, 0.2);
+          --hl: rgba(124, 155, 255, 0.12);
+          --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 16px 40px -16px rgba(0, 0, 0, 0.7),
+            0 40px 90px -36px rgba(0, 0, 0, 0.8);
+          --aurora-1: rgba(124, 92, 255, 0.09);
+          --aurora-2: rgba(6, 182, 212, 0.06);
+          color-scheme: dark;
+        }
+      }
+      :root[data-theme="dark"] {
+        --bg: #060a18;
+        --card: rgba(20, 28, 50, 0.72);
+        --card-solid: #141c32;
+        --line: rgba(150, 178, 240, 0.13);
+        --line-2: rgba(150, 178, 240, 0.26);
+        --text: #eaf0ff;
+        --text-2: #a6b3d2;
+        --text-3: #78849f;
+        --brand: #7c9bff;
+        --brand-2: #a78bfa;
+        --live: #34d399;
+        --glow: rgba(124, 155, 255, 0.2);
+        --hl: rgba(124, 155, 255, 0.12);
+        --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 16px 40px -16px rgba(0, 0, 0, 0.7),
+          0 40px 90px -36px rgba(0, 0, 0, 0.8);
+        --aurora-1: rgba(124, 92, 255, 0.09);
+        --aurora-2: rgba(6, 182, 212, 0.06);
+        color-scheme: dark;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        background: var(--bg);
+        color: var(--text);
+        font: 15px/1.7 "PingFang SC", "HarmonyOS Sans SC", "Hiragino Sans GB", "Microsoft YaHei",
+          system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        overflow-x: hidden;
+      }
+      .aurora {
+        position: fixed; inset: -20% -10%; z-index: 0; pointer-events: none; filter: blur(90px);
+      }
+      .aurora i { position: absolute; display: block; border-radius: 50%; }
+      .aurora i:nth-child(1) { width: 44vw; height: 44vw; top: -8%; left: 54%; background: var(--aurora-1); }
+      .aurora i:nth-child(2) { width: 38vw; height: 38vw; top: 52%; left: -8%; background: var(--aurora-2); }
+
+      .wrap {
+        position: relative; z-index: 1;
+        width: min(920px, 100%);
+        margin: 0 auto;
+        padding: clamp(18px, 3.5vh, 30px) clamp(14px, 3.5vw, 24px) 48px;
+      }
+
+      /* ── 顶栏：压到最低限度，主角是下面的面板 ── */
+      .top { display: flex; align-items: center; gap: 9px; margin-bottom: clamp(30px, 7vh, 64px); }
+      .me { display: flex; align-items: center; gap: 10px; font-weight: 650; font-size: 15px; letter-spacing: 0.02em; }
+      .avatar {
+        width: 32px; height: 32px; border-radius: 10px;
+        display: grid; place-content: center;
+        background: linear-gradient(140deg, var(--brand), var(--brand-2));
+        color: #fff; font-size: 15px; font-weight: 700;
+      }
+      .spacer { flex: 1; }
+      .ghost {
+        display: inline-flex; align-items: center; justify-content: center;
+        height: 32px; min-width: 32px; padding: 0 9px;
+        border: 0; border-radius: 9px; background: transparent;
+        color: var(--text-3); font: inherit; font-size: 13px; font-weight: 600;
+        cursor: pointer; text-decoration: none;
+        transition: color 0.15s, background-color 0.15s;
+      }
+      .ghost:hover { color: var(--text); background: var(--hl); }
+      .ghost:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+      /* ── 引言：一行身份 + 一行数字，不抢面板的戏 ── */
+      .intro { text-align: center; margin-bottom: 26px; }
+      .intro h1 { margin: 0 0 8px; font-size: clamp(22px, 3.6vw, 30px); font-weight: 730; letter-spacing: -0.02em; line-height: 1.3; }
+      .intro h1 .g {
+        background: linear-gradient(96deg, var(--brand), var(--brand-2));
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+      }
+      .intro p { margin: 0; color: var(--text-3); font-size: 13.5px; }
+
+      /* ═══ 启动台面板 ═══ */
+      .palette {
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        background: var(--card);
+        backdrop-filter: blur(18px);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        animation: rise 0.4s cubic-bezier(0.22, 0.8, 0.3, 1) backwards;
+      }
+      @keyframes rise { from { opacity: 0; transform: translateY(10px); } }
+
+      .findrow { display: flex; align-items: center; gap: 11px; padding: 7px 18px; border-bottom: 1px solid var(--line); }
+      .findrow svg { flex: none; color: var(--text-3); }
+      .findrow input {
+        flex: 1; min-width: 0; height: 50px;
+        border: 0; background: none; color: inherit; outline: none;
+        font: inherit; font-size: 17px;
+      }
+      .findrow input::placeholder { color: var(--text-3); }
+      .findrow kbd {
+        flex: none; padding: 2px 8px; border: 1px solid var(--line); border-radius: 6px;
+        color: var(--text-3); font: 600 11px/1.7 ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+
+      /* 意图芯片：按「你想干什么」搜，不按项目叫什么搜 */
+      .chips {
+        display: flex; align-items: center; gap: 7px;
+        padding: 11px 18px; border-bottom: 1px solid var(--line);
+        overflow-x: auto; scrollbar-width: none;
+      }
+      .chips::-webkit-scrollbar { display: none; }
+      .chips .lab { flex: none; color: var(--text-3); font-size: 12px; }
+      .chip {
+        flex: none; height: 28px; padding: 0 11px;
+        border: 1px solid var(--line); border-radius: 999px;
+        background: transparent; color: var(--text-2);
+        font: inherit; font-size: 12.5px; font-weight: 550; cursor: pointer;
+        transition: color 0.15s, border-color 0.15s, background-color 0.15s, scale 0.12s;
+      }
+      .chip:hover { color: var(--text); border-color: var(--line-2); background: var(--hl); }
+      .chip:active { scale: 0.96; }
+      .chip:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+      /* 分类页签 */
+      .tabs { display: flex; gap: 3px; padding: 10px 12px 0; }
+      .tab {
+        height: 30px; padding: 0 12px; border: 0; border-radius: 9px;
+        background: transparent; color: var(--text-3);
+        font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+        transition: color 0.15s, background-color 0.15s;
+      }
+      .tab:hover { color: var(--text); }
+      .tab[aria-selected="true"] { color: var(--brand); background: var(--hl); }
+      .tab:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+      .tab em { font-style: normal; opacity: 0.6; font-size: 11.5px; margin-left: 3px; font-variant-numeric: tabular-nums; }
+
+      /* ── 双栏：结果列表 + 预览 ── */
+      .panes { display: grid; grid-template-columns: 318px 1fr; min-height: 420px; }
+      .list { padding: 8px; max-height: 460px; overflow-y: auto; scrollbar-width: thin; }
+      .group { margin: 10px 10px 5px; color: var(--text-3); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; }
+      .group:first-child { margin-top: 4px; }
+      .row {
+        display: flex; align-items: center; gap: 10px; width: 100%;
+        padding: 8px 10px; border: 0; border-radius: 12px;
+        background: transparent; color: inherit; font: inherit; text-align: left;
+        cursor: pointer;
+        transition: background-color 0.12s;
+      }
+      .row[aria-selected="true"] { background: var(--hl); }
+      .row:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
+      .row .nm { flex: 1; min-width: 0; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .row .dot { flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--live); }
+      .row .ret { flex: none; color: var(--text-3); font: 600 11px/1 ui-monospace, Menlo, monospace; opacity: 0; transition: opacity 0.12s; }
+      .row[aria-selected="true"] .ret { opacity: 0.9; }
+      .row .sub { display: none; }
+
+      .mark {
+        width: 28px; height: 28px; border-radius: 8px; flex: none;
+        display: grid; place-content: center; overflow: hidden;
+        color: #fff;
+      }
+      .mark img { width: 28px; height: 28px; display: block; }
+      .mark svg { display: block; }
+
+      /* 预览面板 */
+      .prev {
+        border-left: 1px solid var(--line);
+        padding: 26px 26px 20px;
+        display: flex; flex-direction: column; gap: 14px;
+        animation: fade 0.16s ease-out;
+      }
+      @keyframes fade { from { opacity: 0; } }
+      .prev .mark { width: 56px; height: 56px; border-radius: 15px; }
+      .prev .mark img { width: 56px; height: 56px; }
+      .prev h2 { margin: 0; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+      .badge {
+        display: inline-flex; align-items: center; gap: 4px;
+        padding: 1px 8px; border-radius: 999px;
+        border: 1px solid color-mix(in srgb, var(--live) 42%, transparent);
+        color: var(--live); font-size: 11px; font-weight: 650;
+      }
+      .badge::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+      .prev .desc { margin: 0; color: var(--text-2); font-size: 14px; line-height: 1.75; max-width: 46ch; }
+      .prev .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+      .tag {
+        padding: 2px 9px; border-radius: 7px;
+        background: color-mix(in srgb, var(--brand) 9%, transparent);
+        color: var(--text-2); font-size: 11.5px;
+      }
+      .prev .meta { color: var(--text-3); font-size: 12.5px; }
+      .prev .acts { display: flex; gap: 9px; margin-top: auto; padding-top: 10px; }
+      .btn {
+        display: inline-flex; align-items: center; gap: 6px;
+        height: 36px; padding: 0 16px; border-radius: 11px;
+        border: 1px solid var(--line); color: var(--text-2); background: transparent;
+        font-size: 13.5px; font-weight: 620; text-decoration: none;
+        transition: color 0.15s, border-color 0.15s, scale 0.12s;
+      }
+      .btn:hover { color: var(--text); border-color: var(--line-2); }
+      .btn:active { scale: 0.96; }
+      .btn:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+      .btn.primary {
+        border-color: transparent; color: #fff;
+        background: linear-gradient(120deg, var(--brand), var(--brand-2));
+      }
+      .btn.primary:hover { filter: brightness(1.06); }
+
+      .empty { grid-column: 1 / -1; display: grid; place-content: center; gap: 12px; text-align: center; padding: 40px 20px; color: var(--text-3); font-size: 14px; }
+      .empty .chip { margin: 0 3px; }
+
+      /* 面板脚注：键位表 */
+      .foot {
+        display: flex; align-items: center; gap: 14px;
+        padding: 9px 18px; border-top: 1px solid var(--line);
+        color: var(--text-3); font-size: 12px;
+      }
+      .foot kbd {
+        padding: 1px 6px; border: 1px solid var(--line); border-radius: 5px;
+        font: 600 10.5px/1.6 ui-monospace, Menlo, monospace; margin-right: 3px;
+      }
+      .foot .n { margin-left: auto; font-variant-numeric: tabular-nums; }
+
+      .colo { margin-top: 26px; text-align: center; color: var(--text-3); font-size: 12.5px; }
+
+      /* 草案标识 */
+      .sketchtag {
+        position: fixed; right: 14px; bottom: 14px; z-index: 5;
+        padding: 4px 11px; border-radius: 999px;
+        border: 1px solid var(--line-2); background: var(--card); backdrop-filter: blur(10px);
+        color: var(--text-3); font-size: 11px; font-weight: 650; letter-spacing: 0.06em;
+      }
+
+      /* ── 移动端：单栏，行即入口 ── */
+      @media (max-width: 760px) {
+        .panes { grid-template-columns: 1fr; min-height: 0; }
+        .prev { display: none; }
+        .list { max-height: none; overflow: visible; }
+        .row { align-items: flex-start; padding: 10px; }
+        .row .mark { margin-top: 2px; }
+        .row .body { flex: 1; min-width: 0; }
+        .row .nm { white-space: normal; }
+        .row .sub {
+          display: block; margin-top: 2px; color: var(--text-3); font-size: 12.5px; line-height: 1.55;
+          display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .row .ret { display: none; }
+        .findrow input { font-size: 16px; }
+        .foot { display: none; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .palette { animation: none; }
+        .prev { animation: none; }
+        .chip, .btn, .row, .tab, .ghost { transition: none; }
+        .chip:active, .btn:active { scale: 1; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="aurora" aria-hidden="true"><i></i><i></i></div>
+
+    <div class="wrap">
+      <header class="top">
+        <span class="me"><span class="avatar">d</span>decli</span>
+        <span class="spacer"></span>
+        <a class="ghost" href="https://github.com/decli" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <button class="ghost" id="theme" aria-label="切换明暗">◐</button>
+      </header>
+
+      <div class="intro">
+        <h1>嫌它麻烦，<span class="g">就自己写一个</span></h1>
+        <p>12 个项目 · 3 个在线可用 · 免注册，打开就用</p>
+      </div>
+
+      <div class="palette" role="search">
+        <label class="findrow">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" />
+          </svg>
+          <input id="q" type="search" autocomplete="off" aria-label="搜索项目" placeholder="想做什么？搜用途，也搜名字…" />
+          <kbd>/</kbd>
+        </label>
+
+        <div class="chips" id="chips">
+          <span class="lab">试试</span>
+          <!-- JS 生成：意图芯片 -->
+        </div>
+
+        <div class="tabs" id="tabs" role="tablist" aria-label="分类"></div>
+
+        <div class="panes">
+          <div class="list" id="list" role="listbox" aria-label="项目"></div>
+          <div class="prev" id="prev" aria-live="polite"></div>
+        </div>
+
+        <div class="foot">
+          <span><kbd>↑</kbd><kbd>↓</kbd>选择</span>
+          <span><kbd>↵</kbd>打开</span>
+          <span><kbd>Esc</kbd>清空</span>
+          <span class="n" id="count"></span>
+        </div>
+      </div>
+
+      <p class="colo">© decli · 版权所有 2026 · Powered by GitHub Pages</p>
+    </div>
+
+    <span class="sketchtag">草案 A · 启动台</span>
+
+    <script>
+      /* 数据与 sites.js 同源，这里内联只为原型自包含 */
+      const CATS = { web: "在线应用", ext: "浏览器扩展", script: "用户脚本", app: "移动应用" };
+      const P = [
+        { slug: "ftms", cat: "web", name: "信风 Tradewind", desc: "外贸业务全流程管理系统。询盘、报价、PI、采购生产、出运跟单、收汇、退税，一个 PI 号串到底。", tags: ["外贸管理", "跟单", "出口退税", "33 个模块"], icon: "/ftms/favicon.svg", glyph: "wind", tint: ["#3b5bd6", "#06b6d4"], href: "/ftms/", repo: "ftms", hay: "外贸 管理 订单 跟单 报价 pi 退税 收汇 erp trade" },
+        { slug: "ems", cat: "web", name: "EMS 外贸营销系统", desc: "AI Agent 驱动的外贸全链路增长系统 —— 从「找到买家」到「收到货款」跑在同一套数据上。", tags: ["获客", "AI Agent", "外贸营销"], icon: "/ems/favicon.svg", glyph: "spark", tint: ["#7c5cff", "#d946ef"], href: "/ems/", repo: "ems", hay: "外贸 营销 获客 买家 开发信 ai agent 增长" },
+        { slug: "wxformat3", cat: "web", name: "WxMark", desc: "微信公众号 Markdown 排版工具。左边写、右边预览，一键复制成带内联样式的 HTML 直接粘进后台。", tags: ["公众号", "Markdown", "排版", "6 套主题"], icon: "/wxformat3/favicon.svg", glyph: "format", tint: ["#07c160", "#059669"], href: "/wxformat3/", repo: "wxformat3", hay: "公众号 排版 markdown 微信 格式 文章 主题" },
+        { slug: "ip-geo", cat: "ext", name: "IP 归属地监控", desc: "工具栏徽标直接显示出口国家代码，IPv4 / IPv6 与归属地一眼可见 —— 代理有没有真的生效，不用再开个测试网站去看。", tags: ["Chrome 扩展", "IP", "代理排查"], glyph: "globe", tint: ["#0ea5e9", "#2563eb"], repo: "IP_Geolocation_Extension_Chrome", hay: "ip 代理 归属地 vpn 梯子 生效 国家 chrome" },
+        { slug: "jobornot", cat: "ext", name: "职得投 JobOrNot", desc: "浏览 BOSS 直聘 / 猎聘时，把简历和岗位 JD 摆在一起比，诚实回答「值不值得投、怎么投得更好」。", tags: ["求职", "AI 匹配", "扩展"], glyph: "target", tint: ["#f59e0b", "#ef4444"], repo: "JobOrNot", hay: "求职 简历 岗位 jd 投递 boss 猎聘 找工作 匹配" },
+        { slug: "wx-export", cat: "ext", name: "公众号数据导出", desc: "在已登录的公众号后台本地导出近期发表的文章与阅读、点赞、分享数据，拿来做内容复盘和选题分析。", tags: ["公众号", "数据导出", "扩展 + 脚本"], glyph: "chat", tint: ["#10b981", "#059669"], repo: "weixin_public_export", hay: "公众号 数据 导出 阅读 点赞 复盘 选题 统计" },
+        { slug: "tabinfocopy", cat: "ext", name: "TabInfoCopy", desc: "一键复制当前标签页的标题和网址，省掉「点地址栏、全选、复制、再回去抄标题」这四步。", tags: ["Chrome 扩展", "效率"], glyph: "tab", tint: ["#8b5cf6", "#6366f1"], repo: "TabInfoCopy", hay: "复制 标签页 标题 网址 url 链接 效率" },
+        { slug: "ip-display", cat: "ext", name: "IP Display", desc: "显示当前 IP 与国内外归属地。上面那个 IP 归属地监控的前身，留着做个记录。", tags: ["Chrome 扩展", "IP", "早期版本"], glyph: "globe", tint: ["#64748b", "#475569"], repo: "IPDisplayExtension", hay: "ip 归属地 显示 早期" },
+        { slug: "pagescroll", cat: "script", name: "PageScroll", desc: "任意网页上一个可拖动的悬浮胶囊，一点回顶或到底。用 Shadow DOM 隔离样式，SPA 重渲染后它会自己回来。", tags: ["油猴脚本", "效率", "Shadow DOM"], glyph: "scroll", tint: ["#06b6d4", "#0891b2"], repo: "pagescroll", hay: "滚动 回顶 到底 油猴 悬浮 长页面" },
+        { slug: "bing-wallpaper", cat: "script", name: "Bing 壁纸批量下载", desc: "在壁纸列表页勾选多张，一次把 4K / UHD 原图批量下到指定目录，不用一张张点进去另存为。", tags: ["油猴脚本", "壁纸", "批量下载"], glyph: "download", tint: ["#ec4899", "#db2777"], repo: "BingWDByte4KBatchDownloader", hay: "壁纸 下载 bing 4k 批量 图片" },
+        { slug: "codehelper", cat: "app", name: "取件码助手", desc: "给家里老人做的 Android 应用。自动从短信里挑出还没取的取件码，用取件小票的样子大字号摆出来，到驿站直接给人看。", tags: ["Android", "适老化", "短信解析"], glyph: "package", tint: ["#f97316", "#ea580c"], repo: "CodeHelper", hay: "取件码 快递 短信 爸妈 老人 驿站 android 大字" },
+        { slug: "chinesechess", cat: "app", name: "老爸下象棋", desc: "Android 平板上的中国象棋，按 14 寸横屏放大过布局，三档 AI，落子有音效和语音播报。", tags: ["Android", "象棋", "大屏"], glyph: "chess", tint: ["#a16207", "#854d0e"], repo: "chinesechess03", hay: "象棋 棋 老爸 平板 android 游戏 爸妈" },
+      ];
+      /* 意图芯片：访客脑子里的词 → 查询串 */
+      const INTENTS = [
+        ["排版公众号", "公众号 排版"],
+        ["代理生效没", "代理"],
+        ["管外贸订单", "外贸"],
+        ["找工作", "求职"],
+        ["给爸妈用", "爸妈"],
+        ["下载壁纸", "壁纸"],
+      ];
+      const HINTS = [
+        "想做什么？搜用途，也搜名字…",
+        "试试「公众号」——排版和数据导出都会出来",
+        "试试「代理」——看看 IP 归属地监控",
+        "试试「爸妈」——有两个给家里人做的",
+      ];
+
+      const $ = (id) => document.getElementById(id);
+      const el = { q: $("q"), chips: $("chips"), tabs: $("tabs"), list: $("list"), prev: $("prev"), count: $("count") };
+      const GLYPHS = {
+        wind: '<path d="M9.6 4.6A2 2 0 1 1 11 8H3"/><path d="M12.6 19.4A2 2 0 1 0 14 16H3"/><path d="M17.7 7.7A2.5 2.5 0 1 1 19.5 12H3"/>',
+        spark: '<path d="M3 17l6-6 4 4 7-8"/><path d="M14 7h6v6"/>',
+        format: '<path d="M4 7V4h16v3"/><path d="M12 4v16"/><path d="M9 20h6"/>',
+        globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18"/>',
+        target: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
+        chat: '<path d="M21 12a8 8 0 0 1-8 8H7l-4 3v-6.5A8 8 0 0 1 13 4a8 8 0 0 1 8 8Z"/><path d="M9 11h.01M13 11h.01M17 11h.01"/>',
+        tab: '<rect x="3" y="5" width="18" height="15" rx="2.5"/><path d="M3 9.5h7l1.6-2.4H21"/>',
+        scroll: '<path d="M12 4v16"/><path d="m7 9 5-5 5 5"/><path d="m7 15 5 5 5-5"/>',
+        download: '<path d="M12 3v12"/><path d="m7.5 11 4.5 4.5 4.5-4.5"/><path d="M4 20h16"/>',
+        package: '<path d="m12 3 8 4.2v9.6L12 21l-8-4.2V7.2Z"/><path d="M4.3 7.3 12 11.4l7.7-4.1M12 11.4V21"/>',
+        chess: '<path d="M9 4h6v2.6l2 2.4H7l2-2.4Z"/><path d="M8.4 9h7.2l-.9 6H9.3Z"/><path d="M6.5 20h11l-.8-2.6H7.3Z"/>',
+      };
+      const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+      const mark = (p, size) =>
+        `<span class="mark" style="background:linear-gradient(140deg,${p.tint[0]},${p.tint[1]})">` +
+        (p.icon
+          ? `<img src="${p.icon}" alt="" onerror="this.remove()" style="position:absolute"><svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${GLYPHS[p.glyph]}</svg>`
+          : `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${GLYPHS[p.glyph]}</svg>`) +
+        `</span>`;
+
+      const S = { q: "", cat: "all", sel: 0 };
+      const url = (p) => p.href || `https://github.com/decli/${p.repo}`;
+      const matches = () =>
+        P.filter(
+          (p) =>
+            (S.cat === "all" || p.cat === S.cat) &&
+            (!S.q || (p.name + " " + p.slug + " " + p.desc + " " + p.tags.join(" ") + " " + p.hay).toLowerCase().includes(S.q.toLowerCase().trim()))
+        );
+
+      function renderChips() {
+        el.chips.innerHTML =
+          '<span class="lab">试试</span>' +
+          INTENTS.map(([label, q]) => `<button class="chip" data-q="${esc(q)}">${esc(label)}</button>`).join("");
+      }
+      function renderTabs() {
+        const groups = [["all", "全部"], ...Object.entries(CATS)];
+        el.tabs.innerHTML = groups
+          .map(([k, n]) => {
+            const c = k === "all" ? P.length : P.filter((p) => p.cat === k).length;
+            return `<button class="tab" role="tab" data-cat="${k}" aria-selected="${S.cat === k}">${n}<em>${c}</em></button>`;
+          })
+          .join("");
+      }
+      function renderList() {
+        const m = matches();
+        S.sel = Math.min(S.sel, Math.max(0, m.length - 1));
+        let html = "", lastCat = "";
+        m.forEach((p, i) => {
+          if (S.cat === "all" && p.cat !== lastCat) {
+            lastCat = p.cat;
+            html += `<div class="group">${CATS[p.cat]}</div>`;
+          }
+          html += `<button class="row" role="option" id="opt-${p.slug}" data-i="${i}" aria-selected="${i === S.sel}">
+            ${mark(p, 16)}
+            <span class="body"><span class="nm">${esc(p.name)}</span><span class="sub">${esc(p.desc)}</span></span>
+            ${p.href ? '<span class="dot" title="在线"></span>' : ""}
+            <span class="ret">↵</span>
+          </button>`;
+        });
+        el.list.innerHTML = html || "";
+        el.count.textContent = `${m.length}/${P.length}`;
+        renderPrev(m);
+        const stale = $("empty");
+        if (stale) stale.remove();
+        if (!m.length) {
+          document.querySelector(".panes").insertAdjacentHTML(
+            "beforeend",
+            `<div class="empty" id="empty"><span>没有匹配的项目</span><span>换个词，或者试试
+              <button class="chip" data-q="公众号">公众号</button>
+              <button class="chip" data-q="ip">IP</button>
+              <button class="chip" data-q="">清空</button></span></div>`
+          );
+        }
+      }
+      function renderPrev(m) {
+        const p = m[S.sel];
+        if (!p) { el.prev.innerHTML = ""; return; }
+        el.prev.innerHTML = `
+          ${mark(p, 30)}
+          <h2>${esc(p.name)}${p.href ? '<span class="badge">在线</span>' : ""}</h2>
+          <p class="desc">${esc(p.desc)}</p>
+          <div class="tags">${p.tags.map((x) => `<span class="tag">${esc(x)}</span>`).join("")}</div>
+          <div class="meta">${CATS[p.cat]} · github.com/decli/${esc(p.repo)}</div>
+          <div class="acts">
+            ${p.href ? `<a class="btn primary" href="${p.href}" target="_blank" rel="noopener noreferrer">打开 ↗</a>` : ""}
+            <a class="btn" href="https://github.com/decli/${esc(p.repo)}" target="_blank" rel="noopener noreferrer">源码</a>
+          </div>`;
+      }
+      function select(i, scroll) {
+        const m = matches();
+        if (!m.length) return;
+        S.sel = ((i % m.length) + m.length) % m.length;
+        el.list.querySelectorAll(".row").forEach((r) => r.setAttribute("aria-selected", String(+r.dataset.i === S.sel)));
+        renderPrev(m);
+        if (scroll) {
+          const r = el.list.querySelector(`.row[data-i="${S.sel}"]`);
+          if (r) r.scrollIntoView({ block: "nearest" });
+        }
+      }
+
+      /* ── 事件 ── */
+      el.q.addEventListener("input", () => { S.q = el.q.value; S.sel = 0; renderList(); });
+      document.addEventListener("click", (e) => {
+        const chip = e.target.closest(".chip");
+        if (chip) { el.q.value = chip.dataset.q; S.q = chip.dataset.q; S.sel = 0; renderList(); el.q.focus(); return; }
+        const tab = e.target.closest(".tab");
+        if (tab) { S.cat = tab.dataset.cat; S.sel = 0; renderTabs(); renderList(); return; }
+        const row = e.target.closest(".row");
+        if (row) {
+          const isMobile = matchMedia("(max-width: 760px)").matches;
+          select(+row.dataset.i);
+          if (isMobile) { const m = matches(); window.open(url(m[S.sel]), "_blank", "noopener"); }
+        }
+      });
+      el.list.addEventListener("pointermove", (e) => {
+        const row = e.target.closest(".row");
+        if (row && +row.dataset.i !== S.sel) select(+row.dataset.i);
+      });
+      addEventListener("keydown", (e) => {
+        if (e.key === "/" && document.activeElement !== el.q) { e.preventDefault(); el.q.focus(); return; }
+        if (e.key === "ArrowDown") { e.preventDefault(); select(S.sel + 1, true); }
+        else if (e.key === "ArrowUp") { e.preventDefault(); select(S.sel - 1, true); }
+        else if (e.key === "Enter" && document.activeElement === el.q) {
+          const m = matches();
+          if (m[S.sel]) window.open(url(m[S.sel]), "_blank", "noopener");
+        } else if (e.key === "Escape") {
+          if (el.q.value) { el.q.value = ""; S.q = ""; S.sel = 0; renderList(); }
+          else el.q.blur();
+        }
+      });
+
+      /* 空闲时轮换占位提示，教「按用途搜」这件事 */
+      if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        let hi = 0;
+        setInterval(() => {
+          if (document.activeElement === el.q || el.q.value) return;
+          hi = (hi + 1) % HINTS.length;
+          el.q.placeholder = HINTS[hi];
+        }, 3600);
+      }
+
+      /* 明暗切换（草案：不落存储） */
+      $("theme").addEventListener("click", () => {
+        const root = document.documentElement;
+        const sysDark = matchMedia("(prefers-color-scheme: dark)").matches;
+        root.dataset.theme = (root.dataset.theme || (sysDark ? "dark" : "light")) === "dark" ? "light" : "dark";
+      });
+
+      renderChips(); renderTabs(); renderList();
+      /* 桌面端自动聚焦——启动台的第一性：落地即可打字 */
+      if (matchMedia("(pointer: fine) and (min-width: 761px)").matches) el.q.focus();
+    </script>
+  </body>
+</html>
