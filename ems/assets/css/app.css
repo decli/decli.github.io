@@ -65,8 +65,7 @@ h1,h2,h3,h4 { margin: 0; font-weight: 650; letter-spacing: -0.01em; }
 /* ---------- 启动占位 ---------- */
 .boot { height:100vh; display:flex; flex-direction:column; gap:14px;
         align-items:center; justify-content:center; color:var(--text-3); }
-.boot-logo { width:52px; height:52px; border-radius:14px; background:var(--brand);
-             color:#fff; display:grid; place-items:center; font-weight:800; letter-spacing:.5px; }
+.boot-logo { width:52px; height:52px; display:block; }
 
 /* ==========================================================================
    布局
@@ -88,10 +87,10 @@ h1,h2,h3,h4 { margin: 0; font-weight: 650; letter-spacing: -0.01em; }
   border-bottom: 1px solid rgba(255,255,255,.07);
 }
 .brand-mark {
-  width: 28px; height: 28px; border-radius: 8px; flex: none;
-  background: linear-gradient(135deg, #3b82f6, #6366f1);
-  display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 13px;
+  width: 28px; height: 28px; flex: none;
+  display: grid; place-items: center;   /* 底色与圆角由内部 SVG 自带 */
 }
+.brand-mark svg { display: block; }
 .brand-name { color: #fff; font-weight: 700; font-size: 14.5px; letter-spacing: .2px; }
 .brand-tag {
   font-size: 10px; color: #93c5fd; background: rgba(59,130,246,.16);

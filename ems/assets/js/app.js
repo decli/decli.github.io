@@ -102,7 +102,16 @@ function shell() {
     <div class="app">
       <aside class="sidebar">
         <div class="sidebar-brand">
-          <div class="brand-mark">E</div>
+          <div class="brand-mark">
+            <svg viewBox="0 0 64 64" width="28" height="28" aria-hidden="true">
+              <defs><linearGradient id="navMark" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#3b82f6"/><stop offset="1" stop-color="#4f46e5"/></linearGradient></defs>
+              <rect width="64" height="64" rx="14" fill="url(#navMark)"/>
+              <path d="M13 42a20.5 20.5 0 0 0 38 0" fill="none" stroke="#fff" stroke-opacity=".62" stroke-width="5" stroke-linecap="round"/>
+              <path d="M17 44 L30 31 L38 39 L50 21" fill="none" stroke="#fff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M37 18 h15 v15" fill="none" stroke="#fff" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
           <div>
             <div class="brand-name">EMS</div>
           </div>
