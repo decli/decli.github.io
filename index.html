@@ -102,6 +102,15 @@
          动效克制：极光 40 秒一圈、风场 26 秒一轮，位移都很小。
          入口页要的是「有呼吸」，不是「在动」—— 动得看得出来就抢注意力了。
          `prefers-reduced-motion` 下全部停掉。
+
+         ── 底色的透明度别再往上调 ──
+         几个 --aurora / --spot / --wind 都压在 0.045~0.17，模糊 96px。
+         入口页的底色是给内容让路的，一眼能看出「在渐变」就已经太重了。
+
+         ── 这一页只做一件事：把人分发到各个项目去 ──
+         曾经加过戳泡泡、加过连连看，都拿掉了 —— 入口页多一个玩意儿，
+         主线就模糊一分。要往上加东西之前先问一句：
+         它帮访客更快找到想要的项目了吗？
          ═══════════════════════════════════════════════════════════════ */
 
       :root {
@@ -120,13 +129,12 @@
         --glow: rgba(59, 91, 214, 0.13);
         --shadow: 0 20px 44px -26px rgba(16, 24, 40, 0.42);
         --shadow-lg: 0 28px 60px -30px rgba(16, 24, 40, 0.5);
-        --wind: rgba(59, 91, 214, 0.2);
-        --aurora-1: rgba(124, 92, 255, 0.24);
-        --aurora-2: rgba(6, 182, 212, 0.2);
-        --aurora-3: rgba(59, 91, 214, 0.22);
-        --spot-1: rgba(124, 92, 255, 0.13);
-        --spot-2: rgba(6, 182, 212, 0.09);
-        --scrim: rgba(16, 24, 48, 0.46);
+        --wind: rgba(59, 91, 214, 0.13);
+        --aurora-1: rgba(124, 92, 255, 0.12);
+        --aurora-2: rgba(6, 182, 212, 0.1);
+        --aurora-3: rgba(59, 91, 214, 0.11);
+        --spot-1: rgba(124, 92, 255, 0.07);
+        --spot-2: rgba(6, 182, 212, 0.045);
         color-scheme: light;
       }
       @media (prefers-color-scheme: dark) {
@@ -146,13 +154,12 @@
           --glow: rgba(124, 155, 255, 0.2);
           --shadow: 0 24px 54px -28px rgba(0, 0, 0, 0.85);
           --shadow-lg: 0 32px 70px -32px rgba(0, 0, 0, 0.9);
-          --wind: rgba(143, 169, 255, 0.3);
-          --aurora-1: rgba(124, 92, 255, 0.3);
-          --aurora-2: rgba(6, 182, 212, 0.22);
-          --aurora-3: rgba(59, 91, 214, 0.28);
-          --spot-1: rgba(150, 120, 255, 0.16);
-          --spot-2: rgba(34, 211, 238, 0.1);
-          --scrim: rgba(2, 5, 14, 0.66);
+          --wind: rgba(143, 169, 255, 0.17);
+          --aurora-1: rgba(124, 92, 255, 0.15);
+          --aurora-2: rgba(6, 182, 212, 0.11);
+          --aurora-3: rgba(59, 91, 214, 0.14);
+          --spot-1: rgba(150, 120, 255, 0.085);
+          --spot-2: rgba(34, 211, 238, 0.055);
           color-scheme: dark;
         }
       }
@@ -172,13 +179,12 @@
         --glow: rgba(124, 155, 255, 0.2);
         --shadow: 0 24px 54px -28px rgba(0, 0, 0, 0.85);
         --shadow-lg: 0 32px 70px -32px rgba(0, 0, 0, 0.9);
-        --wind: rgba(143, 169, 255, 0.3);
-        --aurora-1: rgba(124, 92, 255, 0.3);
-        --aurora-2: rgba(6, 182, 212, 0.22);
-        --aurora-3: rgba(59, 91, 214, 0.28);
-        --spot-1: rgba(150, 120, 255, 0.16);
-        --spot-2: rgba(34, 211, 238, 0.1);
-        --scrim: rgba(2, 5, 14, 0.66);
+        --wind: rgba(143, 169, 255, 0.17);
+        --aurora-1: rgba(124, 92, 255, 0.15);
+        --aurora-2: rgba(6, 182, 212, 0.11);
+        --aurora-3: rgba(59, 91, 214, 0.14);
+        --spot-1: rgba(150, 120, 255, 0.085);
+        --spot-2: rgba(34, 211, 238, 0.055);
         color-scheme: dark;
       }
 
@@ -206,7 +212,7 @@
         inset: -20% -10%;
         z-index: 0;
         pointer-events: none;
-        filter: blur(70px);
+        filter: blur(96px);
       }
       .aurora span {
         position: absolute;
@@ -246,9 +252,6 @@
           radial-gradient(760px circle at var(--px, 50vw) var(--py, 32vh), var(--spot-2), transparent 70%);
       }
       body[data-pointer="1"] .spot { opacity: 1; }
-
-      /* ── 泡泡：画在 canvas 上，压在内容底下 ── */
-      .bubbles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 
 
       /* ── 风场：几条常年不改向的流线 ── */
@@ -454,7 +457,6 @@
         box-shadow: 0 8px 20px -10px var(--brand);
       }
       .btn.primary:hover { color: #fff; filter: brightness(1.06); }
-      .btn:disabled { opacity: 0.42; cursor: default; pointer-events: none; }
 
       .none { padding: 44px 0; text-align: center; color: var(--text-3); font-size: 14px; }
       .none[hidden] { display: none; }
@@ -487,117 +489,7 @@
       }
       #toast[data-on="1"] { opacity: 1; transform: translate(-50%, 0); }
 
-      /* ═══ 连连看 ═══
-         棋盘上的 12 种图案就是这 12 个项目自己的图标 —— 玩一局，等于把它们
-         从头到尾认了两遍。游戏在替入口页干活，而不是跟它抢注意力。
-         尺寸（--tile / --gap / --ico / --cols）由 JS 按可用空间算好写进来：
-         格子必须是正方形，还得同时塞进宽和高，交给 CSS 猜不如直接算。 */
-      .game {
-        position: fixed; inset: 0; z-index: 40;
-        display: grid; place-items: center;
-        padding: 10px;
-        background: var(--scrim);
-        backdrop-filter: blur(10px);
-        animation: gfade 0.2s ease-out;
-      }
-      .game[hidden] { display: none; }
-      @keyframes gfade { from { opacity: 0; } }
-
-      .sheet {
-        position: relative;
-        width: min(900px, 100%); max-height: 100%;
-        display: flex; flex-direction: column; gap: 11px;
-        padding: 15px clamp(12px, 2.6vw, 20px) 14px;
-        border: 1px solid var(--line-2); border-radius: 22px;
-        background: var(--card-solid); box-shadow: var(--shadow-lg);
-        overflow: hidden;
-      }
-      .ghd { display: flex; align-items: flex-start; gap: 10px; }
-      .ghd h2 { margin: 0; font-size: 17px; font-weight: 700; letter-spacing: -0.012em; }
-      .ghd p { margin: 2px 0 0; max-width: 62ch; color: var(--text-3); font-size: 12.5px; line-height: 1.55; }
-
-      .gnum { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 18px; }
-      .gnum > span { display: flex; align-items: baseline; gap: 5px; color: var(--text-3); font-size: 12px; }
-      .gnum b { color: var(--text); font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
-      .combo {
-        margin-left: auto; padding: 3px 11px; border-radius: 999px;
-        background: linear-gradient(120deg, var(--brand), var(--brand-2));
-        color: #fff; font-size: 12px; font-weight: 700; white-space: nowrap;
-        opacity: 0; transform: scale(0.8); transition: opacity 0.18s, transform 0.18s;
-      }
-      .combo[data-on="1"] { opacity: 1; transform: scale(1); animation: cpop 0.3s; }
-      @keyframes cpop { 50% { transform: scale(1.15); } }
-
-      .gtime { height: 5px; border-radius: 999px; overflow: hidden; background: color-mix(in srgb, var(--text-3) 24%, transparent); }
-      .gtime i {
-        display: block; height: 100%; border-radius: inherit; transform-origin: left;
-        background: linear-gradient(90deg, var(--brand-3), var(--brand-2));
-      }
-      /* 剩四分之一就变红。颜色是唯一的「快没了」提示，不用再弹字 */
-      .gtime[data-low="1"] i { background: linear-gradient(90deg, #f59e0b, #ef4444); }
-
-      /* 上下留出的这点空当是给连线走的：绕棋盘外面那一段会画在这里，
-         贴着 0 边距的话线会被压成一条紧贴格子的细缝，看不出「绕过去了」 */
-      .board { position: relative; flex: 1; min-height: 0; display: grid; place-items: center; padding: 13px 0; }
-      .board > canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-      .tiles { display: grid; grid-template-columns: repeat(var(--cols, 8), var(--tile, 52px)); gap: var(--gap, 7px); }
-
-      .tile {
-        width: var(--tile, 52px); height: var(--tile, 52px);
-        display: grid; place-content: center; padding: 0;
-        border: 1px solid var(--tc-line); border-radius: calc(var(--tile, 52px) * 0.24);
-        background: var(--tc-bg); color: var(--tc-hot);
-        cursor: pointer; -webkit-tap-highlight-color: transparent;
-        transition: transform 0.13s, box-shadow 0.13s, border-color 0.13s;
-      }
-      .tile img, .tile svg { width: var(--ico, 30px); height: var(--ico, 30px); display: block; }
-      .tile b { font-size: calc(var(--ico, 30px) * 0.78); font-weight: 800; line-height: 1; }
-      .tile:hover { transform: translateY(-2px); box-shadow: 0 9px 18px -11px var(--tc-hot); }
-      .tile:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
-      .tile[data-sel="1"] {
-        border-color: var(--tc-hot); transform: translateY(-2px);
-        box-shadow: 0 0 0 2px var(--tc-hot), 0 12px 22px -12px var(--tc-hot);
-      }
-      /* 提示的边框是静态的，动画只是锦上添花 —— 关掉动效后提示仍然看得见 */
-      .tile[data-hint="1"] { border-color: var(--tc-hot); box-shadow: 0 0 0 2px var(--tc-hot); animation: ghint 0.7s ease-in-out 2; }
-      @keyframes ghint { 50% { transform: translateY(-4px) scale(1.07); } }
-      .tile[data-bad="1"] { animation: gbad 0.32s; }
-      @keyframes gbad { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-      .tile[data-go="1"] { animation: ggone 0.26s ease-in forwards; pointer-events: none; }
-      @keyframes ggone { to { opacity: 0; transform: scale(0.35) rotate(10deg); } }
-      /* 消掉的格子留着位置不塌 —— 塌了整盘会跳，也就没法连线了 */
-      .tile[data-gone="1"] { visibility: hidden; pointer-events: none; }
-
-      .gft { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-      .gft .hit {
-        margin-left: auto; max-width: 46%; color: var(--text-2); font-size: 12.5px;
-        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        opacity: 0; transition: opacity 0.22s;
-      }
-      .gft .hit[data-on="1"] { opacity: 1; }
-
-      .over {
-        position: absolute; inset: 0; z-index: 2;
-        display: grid; place-items: center; text-align: center; padding: 20px;
-        background: color-mix(in srgb, var(--card-solid) 90%, transparent);
-        backdrop-filter: blur(5px); animation: gfade 0.22s ease-out;
-      }
-      .over[hidden] { display: none; }
-      .over b { display: block; font-size: clamp(22px, 5vw, 28px); font-weight: 750; letter-spacing: -0.02em; }
-      .over p { margin: 7px 0 18px; color: var(--text-2); font-size: 14px; }
-      .over .row { display: flex; gap: 9px; justify-content: center; flex-wrap: wrap; }
-      .over .rec {
-        display: inline-block; margin-bottom: 10px; padding: 2px 10px; border-radius: 999px;
-        background: linear-gradient(120deg, var(--brand), var(--brand-2));
-        color: #fff; font-size: 12px; font-weight: 700;
-      }
-
-      /* 页眉窄了先丢按钮上的字，图标还在 —— 丢按钮本身等于把入口藏起来 */
-      @media (max-width: 430px) {
-        #playT { display: none; }
-      }
-
-      /* 有人明确要求少动效，就一动不动 */
+      /* 有人明确要求少动效，就一动不动 */      /* 有人明确要求少动效，就一动不动 */
       @media (prefers-reduced-motion: reduce) {
         html { scroll-behavior: auto; }
         .aurora i, .wind path { animation: none; }
@@ -607,9 +499,6 @@
         .card { animation: none; }
         .card, .btn, .ghost, .cat { transition: none; }
         .card:hover, .btn:hover, .ghost:hover { transform: none; }
-        /* 游戏是点进来才有的，不是环境动效 —— 照常能玩，只是不再动 */
-        .game, .over, .tile, .combo { animation: none; transition: none; }
-        .tile:hover { transform: none; }
       }
     </style>
   </head>
@@ -617,7 +506,6 @@
   <body data-lang="zh">
     <div class="aurora" aria-hidden="true"><span><i></i></span><span><i></i></span><span><i></i></span></div>
     <div class="spot" aria-hidden="true"></div>
-    <canvas class="bubbles" id="bub" aria-hidden="true"></canvas>
     <svg class="wind" viewBox="0 0 1440 900" preserveAspectRatio="none" aria-hidden="true">
       <path d="M-60 130 C 320 76, 700 178, 1500 96" stroke-width="1.5" />
       <path d="M-60 268 C 380 200, 760 300, 1500 220" stroke-width="1" />
@@ -631,13 +519,6 @@
       <header class="top">
         <span class="me"><span class="avatar">d</span>decli</span>
         <span class="spacer"></span>
-        <button class="ghost" id="play">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
-            <rect x="3" y="3" width="7.6" height="7.6" rx="2.2" /><rect x="13.4" y="3" width="7.6" height="7.6" rx="2.2" />
-            <rect x="3" y="13.4" width="7.6" height="7.6" rx="2.2" /><rect x="13.4" y="13.4" width="7.6" height="7.6" rx="2.2" />
-          </svg>
-          <span id="playT"></span>
-        </button>
         <button class="ghost" id="lang" aria-label="Switch language">EN</button>
         <a class="ghost" href="https://github.com/decli" target="_blank" rel="me noopener noreferrer" aria-label="GitHub" title="GitHub">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
@@ -687,56 +568,7 @@
 
     <div id="toast" role="status" aria-live="polite"></div>
 
-    <div class="game" id="game" hidden role="dialog" aria-modal="true" aria-labelledby="gT">
-      <div class="sheet">
-        <div class="ghd">
-          <div>
-            <h2 id="gT"></h2>
-            <p id="gSub"></p>
-          </div>
-          <span class="spacer"></span>
-          <button class="ghost" id="gClose" aria-label="Close">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
-              <path d="M6 6l12 12M18 6 6 18" />
-            </svg>
-          </button>
-        </div>
-
-        <div class="gnum">
-          <span><i id="gScoreL"></i><b id="gScore">0</b></span>
-          <span><i id="gLeftL"></i><b id="gLeft">0</b></span>
-          <span><i id="gBestL"></i><b id="gBest">0</b></span>
-          <span class="combo" id="gCombo" data-on="0"></span>
-        </div>
-        <div class="gtime" id="gTime" aria-hidden="true"><i id="gFill"></i></div>
-
-        <div class="board" id="gBoard">
-          <canvas id="gLink" aria-hidden="true"></canvas>
-          <div class="tiles" id="gTiles" role="group"></div>
-        </div>
-
-        <div class="gft">
-          <button class="btn" id="gHint"></button>
-          <button class="btn" id="gShuf"></button>
-          <button class="btn" id="gNew"></button>
-          <span class="hit" id="gHit" role="status" aria-live="polite"></span>
-        </div>
-
-        <div class="over" id="gOver" hidden>
-          <div>
-            <span class="rec" id="gRec" hidden></span>
-            <b id="gOverT"></b>
-            <p id="gOverS"></p>
-            <div class="row">
-              <button class="btn primary" id="gAgain"></button>
-              <button class="btn" id="gQuit"></button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <script src="sites.js"></script>
+    <script src="sites.js"></script>    <script src="sites.js"></script>
     <script>
       /* ═══ 界面文案 ═══
          项目本身的中英文在 sites.js 里，这里只放界面自己的词。 */
@@ -761,18 +593,6 @@
           copied: "邮箱已复制到剪贴板",
           langBtn: "EN",
           themeTitle: "切换明暗",
-          game: {
-            btn: "连连看",
-            title: "项目连连看",
-            sub: "把两个相同的图标连起来 —— 连线拐弯不能超过两次。每消一对加时间，手快连成串分数翻倍。",
-            score: "分数", left: "剩余", best: "最佳",
-            combo: "连击 ×{n}",
-            hint: "提示 −80", shuf: "重排 −60（还剩 {n} 次）", again: "再来一局",
-            newGame: "重开", quit: "去看项目", close: "关闭",
-            cleared: "全部消完！", timeUp: "时间到",
-            got: "{n} 分", rec: "新纪录", was: "最佳 {n} 分",
-            deadlock: "没有能连的了，替你重排了一次",
-          },
         },
         en: {
           title: ["Annoyed enough", "to just build it"],
@@ -789,18 +609,6 @@
           copied: "Email copied to clipboard",
           langBtn: "中",
           themeTitle: "Toggle theme",
-          game: {
-            btn: "Match",
-            title: "Project Match",
-            sub: "Link two identical icons — the path may turn at most twice. Every match buys time, and quick chains multiply the score.",
-            score: "Score", left: "Left", best: "Best",
-            combo: "Combo ×{n}",
-            hint: "Hint −80", shuf: "Shuffle −60 ({n} left)", again: "Play again",
-            newGame: "Restart", quit: "Browse projects", close: "Close",
-            cleared: "Board cleared!", timeUp: "Time's up",
-            got: "{n} pts", rec: "New best", was: "Best {n}",
-            deadlock: "No moves left — reshuffled for you",
-          },
         },
       };
 
@@ -835,7 +643,7 @@
         grid: document.getElementById("grid"), none: document.getElementById("none"),
         q: document.getElementById("q"), lang: document.getElementById("lang"),
         theme: document.getElementById("theme"), rights: document.getElementById("rights"),
-        toast: document.getElementById("toast"), playT: document.getElementById("playT"),
+        toast: document.getElementById("toast"),
       };
 
       function catName(key) {
@@ -856,8 +664,6 @@
         el.lang.textContent = t("langBtn");
         el.theme.title = t("themeTitle");
         el.rights.textContent = t("rights");
-        el.playT.textContent = t("game").btn;
-        document.getElementById("play").title = t("game").title;
         document.getElementById("mail").setAttribute("aria-label", S.lang === "zh" ? "复制邮箱" : "Copy email");
 
         const live = LIST.filter((p) => p.href).length;
@@ -946,8 +752,6 @@
 
       el.q.addEventListener("input", () => { S.q = el.q.value; filter(); });
       addEventListener("keydown", (e) => {
-        // 游戏面板开着的时候整页的快捷键都归它，别把焦点抢到搜索框去
-        if (document.body.dataset.game === "1") return;
         if (e.key === "/" && document.activeElement !== el.q) { e.preventDefault(); el.q.focus(); }
         else if (e.key === "Escape" && document.activeElement === el.q) {
           el.q.value = ""; S.q = ""; filter(); el.q.blur();
@@ -980,8 +784,6 @@
         if (remember) { try { localStorage.setItem(LANG_KEY, l); } catch (e) {} }
         render();
         paintMail();
-        // 游戏面板开着的话跟着换语言（引擎是个 IIFE，从 window 上取）
-        if (window.__gameLang) window.__gameLang();
       }
       el.lang.addEventListener("click", () => {
         const next = S.lang === "zh" ? "en" : "zh";
@@ -1060,42 +862,22 @@
       });
 
       /* ═══════════════════════════════════════════════════════════════
-         背景：流光跟随 + 可戳破的泡泡
+         背景：一团跟着指针走的高光
 
-         ── 泡泡不计分 ──
-         它就是背景本身：一直在飘，路过顺手戳一下有个爆开的反馈，不戳也不
-         碍事。真要玩的在页眉那个「连连看」里 —— 一个页面上摆两套记分，
-         谁都不知道自己在玩哪个。
-
-         ── 点击怎么不跟正事打架 ──
-         canvas 是 pointer-events:none 压在最底下，点击在 document 上接。
-         落在卡片、链接、按钮、输入框上的一律放行，只有点在空白处才当戳泡泡。
-         这样「点空白关掉输入焦点」这种下意识动作也不会被抢走。
-
-         ── 开销 ──
-         最多 16 个泡泡 + 60 个碎片，都是实心圆。标签页切走就停 rAF，
-         `prefers-reduced-motion` 下整套不启动。
+         pointermove 一秒能来一百多次，每次都直接写 style 会让整页跟着抖。
+         所以只记坐标，真正写样式攒到下一帧 —— 而且是**按需**请求这一帧：
+         指针不动就一帧都不排，页面闲着的时候这段代码等于不存在。
          ═══════════════════════════════════════════════════════════════ */
       (function () {
-        const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
-        const cv = document.getElementById("bub");
-        const ctx = cv.getContext("2d");
+        if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-        /* ── 流光跟随 ──
-           pointermove 只记坐标，真正写样式放到 rAF 里 —— 指针事件一秒能来
-           一百多次，每次都写一遍 style 会让整页跟着抖。 */
-        let px = innerWidth / 2, py = innerHeight * 0.32, dirty = false, moved = false;
+        let px = 0, py = 0, queued = false, moved = false;
         const spans = document.querySelectorAll(".aurora span");
+        // 三层各走各的，方向和快慢都不同，叠起来才有厚度
         const FACTOR = [[0.035, 0.03], [-0.028, -0.022], [0.045, -0.035]];
 
-        addEventListener("pointermove", (e) => {
-          px = e.clientX; py = e.clientY; dirty = true;
-          if (!moved) { moved = true; document.body.dataset.pointer = "1"; }
-        }, { passive: true });
-
-        function paintPointer() {
-          if (!dirty) return;
-          dirty = false;
+        function paint() {
+          queued = false;
           document.body.style.setProperty("--px", px + "px");
           document.body.style.setProperty("--py", py + "px");
           const dx = px - innerWidth / 2, dy = py - innerHeight / 2;
@@ -1105,712 +887,14 @@
           });
         }
 
-        if (REDUCED) return;
-
-        /* ── 泡泡 ── */
-        let W = 0, H = 0, dpr = 1;
-        const bubbles = [], parts = [];
-        const MAX = 16;
-        let pops = 0, raf = 0, prev = 0;
-
-        function resize() {
-          dpr = Math.min(devicePixelRatio || 1, 2);
-          W = innerWidth; H = innerHeight;
-          cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
-          cv.style.width = W + "px"; cv.style.height = H + "px";
-          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        }
-        resize();
-        addEventListener("resize", resize);
-
-        /* 色相取品牌那一段（蓝 → 紫 → 青），不让泡泡跑出整页的配色 */
-        const HUES = [222, 232, 258, 268, 190, 174];
-        const rnd = (a, b) => a + Math.random() * (b - a);
-
-        function spawn(atBottom) {
-          return {
-            x: rnd(0, W),
-            y: atBottom ? H + rnd(20, 160) : rnd(0, H),
-            r: rnd(9, 30),
-            vy: rnd(0.16, 0.5),
-            sway: rnd(0.2, 0.7),
-            ph: rnd(0, Math.PI * 2),
-            hue: HUES[(Math.random() * HUES.length) | 0],
-            a: rnd(0.14, 0.34),
-          };
-        }
-        for (let i = 0; i < MAX; i++) bubbles.push(spawn(false));
-
-        function burst(b) {
-          const n = 9 + ((Math.random() * 4) | 0);
-          for (let i = 0; i < n && parts.length < 60; i++) {
-            const ang = (Math.PI * 2 * i) / n + rnd(-0.25, 0.25);
-            const sp = rnd(0.9, 2.9);
-            parts.push({ x: b.x, y: b.y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp - 0.35,
-                         r: rnd(1.4, 3.4), hue: b.hue, life: 1 });
-          }
-        }
-
-        function popAt(cx, cy) {
-          let hit = false;
-          for (let i = bubbles.length - 1; i >= 0; i--) {
-            const b = bubbles[i];
-            if (Math.hypot(b.x - cx, b.y - cy) <= b.r + 24) {
-              burst(b);
-              bubbles.splice(i, 1, spawn(true));
-              hit = true;
-            }
-          }
-          if (!hit) return;
-          pops++;
-          // 只报「有人戳过」这一件事，不报次数也不报坐标
-          if (pops === 1 && window.gtag) gtag("event", "play_bubbles", { site: "portal" });
-        }
-
-        addEventListener("click", (e) => {
-          // 游戏面板开着的时候整页都归它，背景不接管任何点击
-          if (document.body.dataset.game === "1") return;
-          // 落在能点的东西上一律放行：连「点空白处收起输入焦点」都不该被抢走
-          if (e.target.closest("a, button, input, select, textarea, label, .card")) return;
-          popAt(e.clientX, e.clientY);
-        });
-
-        function frame(now) {
-          raf = requestAnimationFrame(frame);
-          const dt = Math.min((now - prev) / 16.67 || 1, 3);
-          prev = now;
-          paintPointer();
-
-          ctx.clearRect(0, 0, W, H);
-
-          for (const b of bubbles) {
-            b.y -= b.vy * dt;
-            b.ph += 0.012 * dt;
-            b.x += Math.sin(b.ph) * b.sway * 0.4 * dt;
-            if (b.y < -b.r - 20) Object.assign(b, spawn(true));
-
-            const near = Math.hypot(b.x - px, b.y - py) <= b.r + 24;
-            const g = ctx.createRadialGradient(b.x - b.r * 0.35, b.y - b.r * 0.4, b.r * 0.1, b.x, b.y, b.r);
-            g.addColorStop(0, `hsla(${b.hue}, 92%, 76%, ${b.a * (near ? 1.7 : 1)})`);
-            g.addColorStop(1, `hsla(${b.hue}, 88%, 60%, 0)`);
-            ctx.fillStyle = g;
-            ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, 7); ctx.fill();
-
-            // 指针靠近就描一圈 —— 这是唯一的「可以戳」提示，不用文字说明
-            if (near) {
-              ctx.strokeStyle = `hsla(${b.hue}, 92%, 72%, 0.5)`;
-              ctx.lineWidth = 1.4;
-              ctx.beginPath(); ctx.arc(b.x, b.y, b.r + 4, 0, 7); ctx.stroke();
-            }
-          }
-
-          for (let i = parts.length - 1; i >= 0; i--) {
-            const p = parts[i];
-            p.x += p.vx * dt; p.y += p.vy * dt;
-            p.vy += 0.045 * dt; p.vx *= 0.985; p.life -= 0.022 * dt;
-            if (p.life <= 0) { parts.splice(i, 1); continue; }
-            ctx.fillStyle = `hsla(${p.hue}, 94%, 72%, ${p.life * 0.75})`;
-            ctx.beginPath(); ctx.arc(p.x, p.y, p.r * p.life, 0, 7); ctx.fill();
-          }
-        }
-        raf = requestAnimationFrame(frame);
-
-        // 标签页切走 / 游戏面板挡在前面就停：没人看的时候没必要一直画
-        function halt() { cancelAnimationFrame(raf); raf = 0; }
-        function go() { if (!raf) { prev = performance.now(); raf = requestAnimationFrame(frame); } }
-        window.__bg = (on) => (on ? go() : halt());
-        document.addEventListener("visibilitychange", () => {
-          if (document.hidden || document.body.dataset.game === "1") halt();
-          else go();
-        });
+        addEventListener("pointermove", (e) => {
+          px = e.clientX; py = e.clientY;
+          if (!moved) { moved = true; document.body.dataset.pointer = "1"; }
+          if (!queued) { queued = true; requestAnimationFrame(paint); }
+        }, { passive: true });
       })();
 
-      /* ═══════════════════════════════════════════════════════════════
-         连连看
-
-         ── 为什么是连连看，不是扫雷 ──
-         棋盘上的 12 种图案就是这 12 个项目自己的图标。玩一局要把它们来回
-         认上好几遍，消掉一对还会报出项目名 —— 游戏在替入口页干活。
-         扫雷同样好玩，但它的格子跟项目没有半点关系，那就只是换了张皮的
-         扫雷，玩完对这些项目还是一无所知。
-
-         ── 规则 ──
-         经典规则：两个相同的图案，中间能用不超过两次拐弯的折线连上就消掉。
-         棋盘外面一圈算空地（所以边上的格子可以绕外面连），这也是经典规则。
-         判定用 0-1 BFS 在 (格子, 方向) 上跑，转弯记 1 步、直行记 0 步，
-         代价超过 2 就剪掉 —— 比一层层套 if 判断「直线 / 一拐 / 两拐」好懂，
-         而且顺带把路径吐出来了，画连线不用再算一遍。
-
-         ── 不会卡死 ──
-         每消一对就查一次还有没有能连的，没有就自动重排（不扣分不占次数）。
-         重排本身也可能无解，所以洗到有解为止；万一连洗 40 次都无解，兜底
-         直接把一对相同的换到相邻两格 —— 相邻的同图案永远连得上。
-         兜底用的是**交换**不是覆盖：覆盖会让某个图案剩下奇数个，整盘再也
-         消不完。
-
-         ── 输赢 ──
-         时间条会漏，消一对回 4.5 秒。真在玩的人不会死，发呆的人会。
-         漏完就结算 —— 游戏得有输的可能才有意思，而重开只要一次点击。
-         ═══════════════════════════════════════════════════════════════ */
-      (function () {
-        const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
-        const BEST_KEY = "decli.match.best";
-        const TMAX = 80;          // 起始秒数
-        const GAIN = 4.5;         // 每消一对回多少秒
-        const COMBO_MS = 4000;    // 连击窗口
-        const COMBO_MAX = 10;
-        const HINT_COST = 80, SHUF_COST = 60, SHUFFLES = 3;
-
-        /* 12 个均匀分布的色相。这里**不**沿用卡片的 tint：卡片上有两个项目
-           都用地球图标，靠天蓝 / 石板灰区分在卡片上够用，摆成一盘 48 格要
-           一眼分清就不够了。图案 + 颜色两重区分，扫盘才不费眼。 */
-        const HUE = ["#3b5bd6", "#7c5cff", "#d946ef", "#ec4899", "#f43f5e", "#f97316",
-                     "#f59e0b", "#84cc16", "#10b981", "#14b8a6", "#06b6d4", "#0ea5e9"];
-        const D = [[1, 0], [0, 1], [-1, 0], [0, -1]];   // 0↔2、1↔3 互为反向（nd ^ 2）
-
-        const KINDS = LIST;
-        const playBtn = document.getElementById("play");
-        if (!KINDS.length) { playBtn.hidden = true; return; }
-
-        const gameEl = document.getElementById("game");
-        const boardEl = document.getElementById("gBoard");
-        const tilesEl = document.getElementById("gTiles");
-        const lk = document.getElementById("gLink");
-        const overEl = document.getElementById("gOver");
-        const comboEl = document.getElementById("gCombo");
-        const hitEl = document.getElementById("gHit");
-        const fillEl = document.getElementById("gFill");
-        const timeEl = document.getElementById("gTime");
-        const $ = (id) => document.getElementById(id);
-        const G = () => I18N[S.lang].game;
-        const fmt = (s, n) => String(s).replace("{n}", n);
-
-        let C = 8, R = 6, gw = 10, gh = 8;
-        let cells = [], bestBuf = null, fromBuf = null;
-        let TILE = 52, GAP = 7, OX = 0, OY = 0, cw = 0, ch = 0, lctx = null;
-        let sel = -1, cur = 0;
-        let score = 0, combo = 0, comboAt = -1e9, left = 0, shuffles = SHUFFLES;
-        let time = TMAX, running = false, raf = 0, prev = 0;
-        let flash = null, lastEnd = { cleared: false, rec: false };
-        let hitTimer = 0, comboTimer = 0;
-
-        const readBest = () => { try { return +localStorage.getItem(BEST_KEY) || 0; } catch (e) { return 0; } };
-        const writeBest = (v) => { try { localStorage.setItem(BEST_KEY, String(v)); } catch (e) {} };
-        const shuffleArr = (a) => {
-          for (let i = a.length - 1; i > 0; i--) {
-            const j = (Math.random() * (i + 1)) | 0;
-            const tmp = a[i]; a[i] = a[j]; a[j] = tmp;
-          }
-          return a;
-        };
-
-        /* ── 棋盘 ── */
-        function tileHTML(k, i) {
-          const p = KINDS[k], h = HUE[k % HUE.length];
-          const face = String(p.icon || "").startsWith("/")
-            ? `<img src="${esc(p.icon)}" alt="" data-h="${esc(h)}" data-c="${esc(String(L(p.name)).trim().charAt(0).toUpperCase())}">`
-            : `<svg viewBox="0 0 24 24" fill="none" stroke="${esc(h)}" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" aria-hidden="true">${ICONS[p.icon] || ICONS.package}</svg>`;
-          return `<button class="tile" type="button" tabindex="-1" data-i="${i}" aria-label="${esc(L(p.name))}"
-            style="--tc-bg:color-mix(in srgb, ${h} 13%, var(--card-solid));--tc-line:color-mix(in srgb, ${h} 32%, transparent);--tc-hot:${h}"
-            >${face}</button>`;
-        }
-
-        /* 重画整盘。洗牌之后也走这里 —— 一格一格改 DOM 更啰嗦也更容易错。
-           已经消掉的格子重画后立刻补回隐藏状态，不然会「复活」。 */
-        function repaint() {
-          tilesEl.style.setProperty("--cols", C);
-          const gone = cells.map((c) => c.gone);
-          tilesEl.innerHTML = cells.map((c, i) => tileHTML(c.k, i)).join("");
-          const nodes = tilesEl.children;
-          for (let i = 0; i < cells.length; i++) {
-            cells[i].el = nodes[i];
-            if (gone[i]) nodes[i].dataset.gone = "1";
-          }
-          /* 子站的 favicon 万一取不到（比如那个站还没发出去），退成项目名的
-             首字母 —— 退成同一个通用图标的话，三个在线项目会长得一模一样。 */
-          for (const img of tilesEl.querySelectorAll("img")) {
-            img.addEventListener("error", () => {
-              const b = document.createElement("b");
-              b.textContent = img.dataset.c || "?";
-              b.style.color = img.dataset.h;
-              img.replaceWith(b);
-            }, { once: true });
-          }
-          sel = -1;
-          setCur(cells.findIndex((c) => !c.gone), true);
-          sizeBoard();
-        }
-
-        function build() {
-          /* 竖屏 6×8、横屏 8×6，都是 48 格 24 对 —— 正好每个项目两对。
-             一局之内不再改（转屏只重算格子大小），免得把玩到一半的盘掀了。 */
-          const portrait = innerHeight > innerWidth;
-          C = portrait ? 6 : 8; R = portrait ? 8 : 6;
-          gw = C + 2; gh = R + 2;
-          bestBuf = new Uint8Array(gw * gh * 4);
-          fromBuf = new Int32Array(gw * gh * 4);
-          const deck = [];
-          for (let i = 0; i < (C * R) / 2; i++) { const k = i % KINDS.length; deck.push(k, k); }
-          shuffleArr(deck);
-          cells = deck.map((k) => ({ k, gone: false, el: null }));
-          left = (C * R) / 2;
-          repaint();
-          ensurePlayable();
-        }
-
-        let sizing = false;
-        /* ⚠️ 棋盘能有多高，**不能**拿棋盘容器自己去量。
-           容器多高取决于格子多大，格子多大又取决于容器多高 —— 量一次改一次，
-           来回振荡，最后停在一个两边都不满足的值上（矮屏幕上就是格子溢出面板）。
-           改成从外往里倒推：屏幕高度，减去面板外边距、面板内边距、几条间隙，
-           再减去除棋盘之外那四块的实际高度。这些量全都跟格子大小无关，算一次就定。 */
-        function sizeBoard() {
-          const bw = boardEl.clientWidth;
-          if (!bw || sizing) return;
-          sizing = true;
-          const sheet = boardEl.parentElement;
-          const px = (n, k) => parseFloat(getComputedStyle(n)[k]) || 0;
-          let used = px(sheet, "paddingTop") + px(sheet, "paddingBottom") +
-                     px(boardEl, "paddingTop") + px(boardEl, "paddingBottom") +
-                     px(sheet, "rowGap") * 4 +                      // 五个弹性子项 → 四条间隙
-                     px(gameEl, "paddingTop") + px(gameEl, "paddingBottom");
-          // .over 是绝对定位的，不算弹性子项，所以这里只点名那四块
-          for (const sel of [".ghd", ".gnum", ".gtime", ".gft"]) {
-            const n = sheet.querySelector(sel);
-            if (n) used += n.getBoundingClientRect().height;
-          }
-          const bh = Math.max(70, innerHeight - used);
-          GAP = C > 6 ? 7 : 8;
-          TILE = Math.max(26, Math.min(72,
-            Math.floor(Math.min((bw - (C - 1) * GAP) / C, (bh - (R - 1) * GAP) / R))));
-          tilesEl.style.setProperty("--tile", TILE + "px");
-          tilesEl.style.setProperty("--gap", GAP + "px");
-          tilesEl.style.setProperty("--ico", Math.round(TILE * 0.56) + "px");
-          sizeCanvas();
-          sizing = false;
-        }
-
-        function sizeCanvas() {
-          const b = boardEl.getBoundingClientRect(), tl = tilesEl.getBoundingClientRect();
-          const dpr = Math.min(devicePixelRatio || 1, 2);
-          cw = Math.round(b.width); ch = Math.round(b.height);
-          if (!cw || !ch) return;
-          /* ⚠️ 给 canvas 赋 width/height 会清空画布**并且重置变换**，
-             所以 setTransform 必须放在赋值之后。 */
-          lk.width = Math.round(cw * dpr); lk.height = Math.round(ch * dpr);
-          lctx = lk.getContext("2d");
-          lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-          OX = tl.left - b.left; OY = tl.top - b.top;
-        }
-
-        /* 棋盘外那一圈的坐标会落到画布外面，夹回边上 ——
-           线贴着边缘拐弯，跟经典连连看看起来是一回事。 */
-        const PX = (gx) => Math.max(4, Math.min(cw - 4, OX + (gx - 1) * (TILE + GAP) + TILE / 2));
-        const PY = (gy) => Math.max(4, Math.min(ch - 4, OY + (gy - 1) * (TILE + GAP) + TILE / 2));
-
-        /* ── 连通判定：0-1 BFS，直行 0 步、转弯 1 步，超过 2 步剪掉 ── */
-        const free = (x, y) => {
-          if (x < 0 || y < 0 || x >= gw || y >= gh) return false;
-          if (x === 0 || y === 0 || x === gw - 1 || y === gh - 1) return true;  // 外圈算空地
-          return cells[(y - 1) * C + (x - 1)].gone;
-        };
-
-        function findPath(a, b) {
-          const ax = (a % C) + 1, ay = ((a / C) | 0) + 1;
-          const bx = (b % C) + 1, by = ((b / C) | 0) + 1;
-          const best = bestBuf, from = fromBuf;
-          best.fill(9); from.fill(-2);
-          const ok = (x, y) => (x === bx && y === by) || free(x, y);
-          const dq = [];
-          for (let d = 0; d < 4; d++) {
-            const nx = ax + D[d][0], ny = ay + D[d][1];
-            if (!ok(nx, ny)) continue;
-            const k = ((ny * gw + nx) << 2) | d;
-            best[k] = 0; from[k] = -1; dq.push(k);
-          }
-          let head = 0;
-          while (head < dq.length) {
-            const k = dq[head++], cell = k >> 2, d = k & 3, tn = best[k];
-            const x = cell % gw, y = (cell / gw) | 0;
-            if (x === bx && y === by) {
-              const pts = [];
-              for (let cu = k; cu >= 0; cu = from[cu]) pts.push([(cu >> 2) % gw, ((cu >> 2) / gw) | 0]);
-              pts.push([ax, ay]);
-              pts.reverse();
-              // 只留拐点，共线的中间点丢掉
-              const out = [pts[0]];
-              for (let i = 1; i < pts.length - 1; i++) {
-                const u = out[out.length - 1], v = pts[i], w = pts[i + 1];
-                if ((u[0] === v[0] && v[0] === w[0]) || (u[1] === v[1] && v[1] === w[1])) continue;
-                out.push(v);
-              }
-              out.push(pts[pts.length - 1]);
-              return out;
-            }
-            for (let nd = 0; nd < 4; nd++) {
-              if ((nd ^ 2) === d) continue;              // 不许原路折回
-              const nt = tn + (nd === d ? 0 : 1);
-              if (nt > 2) continue;
-              const nx = x + D[nd][0], ny = y + D[nd][1];
-              if (!ok(nx, ny)) continue;
-              const nk = ((ny * gw + nx) << 2) | nd;
-              if (best[nk] <= nt) continue;
-              best[nk] = nt; from[nk] = k;
-              if (nt === tn) dq.splice(head, 0, nk); else dq.push(nk);
-            }
-          }
-          return null;
-        }
-
-        function anyMove() {
-          const by = new Map();
-          for (let i = 0; i < cells.length; i++) {
-            if (cells[i].gone) continue;
-            const arr = by.get(cells[i].k);
-            if (arr) arr.push(i); else by.set(cells[i].k, [i]);
-          }
-          for (const arr of by.values())
-            for (let i = 0; i < arr.length; i++)
-              for (let j = i + 1; j < arr.length; j++)
-                if (findPath(arr[i], arr[j])) return [arr[i], arr[j]];
-          return null;
-        }
-
-        const liveCells = () => {
-          const a = [];
-          for (let i = 0; i < cells.length; i++) if (!cells[i].gone) a.push(i);
-          return a;
-        };
-
-        function ensurePlayable(announce) {
-          if (anyMove()) return false;
-          const live = liveCells();
-          for (let t = 0; t < 40; t++) {
-            const ks = shuffleArr(live.map((i) => cells[i].k));
-            live.forEach((i, n) => (cells[i].k = ks[n]));
-            if (anyMove()) { repaint(); if (announce) say(G().deadlock); return true; }
-          }
-          /* 兜底：把一对相同的**换**到相邻两格。相邻的同图案永远连得上。
-             注意是交换不是覆盖 —— 覆盖会让某个图案剩下奇数个，整盘消不完。 */
-          outer: for (const i of live) {
-            for (const j of live) {
-              if (j <= i) continue;
-              const adj = (j - i === C) || (j - i === 1 && ((i / C) | 0) === ((j / C) | 0));
-              if (!adj) continue;
-              const m = live.find((x) => x !== i && x !== j && cells[x].k === cells[i].k);
-              if (m === undefined) continue;
-              const tmp = cells[j].k; cells[j].k = cells[m].k; cells[m].k = tmp;
-              break outer;
-            }
-          }
-          repaint();
-          if (announce) say(G().deadlock);
-          return true;
-        }
-
-        /* ── 玩法 ── */
-        function shake(node) {
-          if (!node || REDUCED) return;
-          node.dataset.bad = "1";
-          setTimeout(() => node.removeAttribute("data-bad"), 340);
-        }
-        function clearSel() {
-          if (sel >= 0 && cells[sel].el) cells[sel].el.removeAttribute("data-sel");
-          sel = -1;
-        }
-        function setCur(i, silent) {
-          if (i < 0) return;
-          if (cells[cur] && cells[cur].el) cells[cur].el.tabIndex = -1;
-          cur = i;
-          if (cells[cur] && cells[cur].el) {
-            cells[cur].el.tabIndex = 0;
-            if (!silent) cells[cur].el.focus();
-          }
-        }
-
-        function pick(i) {
-          const c = cells[i];
-          if (!running || !c || c.gone) return;
-          setCur(i, true);
-          if (sel === i) { clearSel(); return; }
-          if (sel >= 0 && cells[sel].k === c.k) {
-            const path = findPath(sel, i);
-            if (path) { remove(sel, i, path); return; }
-            // 同图案但连不上：这是真的走错了，连击断掉
-            shake(cells[sel].el); shake(c.el); breakCombo();
-          }
-          // 点了别的图案只是「改主意」，不罚
-          clearSel();
-          sel = i;
-          c.el.dataset.sel = "1";
-        }
-
-        function remove(a, b, path) {
-          const k = cells[a].k;
-          flash = { pts: path, t: 1.15, color: getComputedStyle(root).getPropertyValue("--brand-2").trim() || "#7c5cff" };
-          for (const i of [a, b]) {
-            const c = cells[i];
-            c.gone = true;
-            c.el.removeAttribute("data-sel");
-            if (REDUCED) c.el.dataset.gone = "1";
-            else {
-              const node = c.el;
-              node.dataset.go = "1";
-              setTimeout(() => { node.dataset.gone = "1"; node.removeAttribute("data-go"); }, 250);
-            }
-          }
-          sel = -1;
-          left--;
-          // 键盘落脚点刚好被消掉的话，挪到还活着的格子上，不然 Tab 进不来棋盘
-          if (cells[cur] && cells[cur].gone) setCur(cells.findIndex((c) => !c.gone), true);
-          const now = performance.now();
-          combo = now - comboAt < COMBO_MS ? Math.min(combo + 1, COMBO_MAX) : 1;
-          comboAt = now;
-          score += 100 + (combo - 1) * 50;
-          time = Math.min(TMAX, time + GAIN);
-          say("✓ " + L(KINDS[k].name));
-          paintCombo();
-          paintNums();
-          if (left <= 0) { finish(true); return; }
-          ensurePlayable(true);
-        }
-
-        function breakCombo() { combo = 0; comboAt = -1e9; paintCombo(); }
-
-        function hint() {
-          if (!running) return;
-          const m = anyMove();
-          if (!m) return;
-          score = Math.max(0, score - HINT_COST);
-          breakCombo();
-          paintNums();
-          for (const i of m) {
-            const node = cells[i].el;
-            node.dataset.hint = "1";
-            setTimeout(() => node.removeAttribute("data-hint"), 1500);
-          }
-        }
-
-        function reshuffle() {
-          if (!running || shuffles <= 0) return;
-          shuffles--;
-          score = Math.max(0, score - SHUF_COST);
-          breakCombo();
-          const live = liveCells();
-          const ks = shuffleArr(live.map((i) => cells[i].k));
-          live.forEach((i, n) => (cells[i].k = ks[n]));
-          repaint();
-          ensurePlayable();
-          paintNums();
-          $("gShuf").textContent = fmt(G().shuf, shuffles);
-          $("gShuf").disabled = shuffles <= 0;
-        }
-
-        /* ── 画面 ── */
-        function say(msg) {
-          hitEl.textContent = msg;
-          hitEl.dataset.on = "1";
-          clearTimeout(hitTimer);
-          hitTimer = setTimeout(() => (hitEl.dataset.on = "0"), 1900);
-        }
-        function paintNums() {
-          $("gScore").textContent = score;
-          $("gLeft").textContent = left;
-          $("gBest").textContent = readBest();
-        }
-        function paintCombo() {
-          if (combo < 2) { comboEl.dataset.on = "0"; return; }
-          comboEl.textContent = fmt(G().combo, combo);
-          comboEl.dataset.on = "0";
-          // 强制回流才能让 cpop 重放 —— 不然连续几次连击只有第一次会跳
-          void comboEl.offsetWidth;
-          comboEl.dataset.on = "1";
-          clearTimeout(comboTimer);
-          comboTimer = setTimeout(() => (comboEl.dataset.on = "0"), COMBO_MS);
-        }
-        function paintTime() {
-          fillEl.style.transform = `scaleX(${Math.max(0, time / TMAX)})`;
-          timeEl.dataset.low = time / TMAX < 0.25 ? "1" : "0";
-        }
-        function paintLink(dt) {
-          if (!lctx) return;
-          lctx.clearRect(0, 0, cw, ch);
-          if (!flash) return;
-          flash.t -= dt * 2.2;
-          if (flash.t <= 0) { flash = null; return; }
-          const a = Math.min(1, flash.t);
-          lctx.strokeStyle = flash.color;
-          lctx.lineCap = "round"; lctx.lineJoin = "round";
-          for (const [w, alpha] of [[10, a * 0.2], [3, a]]) {
-            lctx.lineWidth = w; lctx.globalAlpha = alpha;
-            lctx.beginPath();
-            flash.pts.forEach(([gx, gy], i) => (i ? lctx.lineTo(PX(gx), PY(gy)) : lctx.moveTo(PX(gx), PY(gy))));
-            lctx.stroke();
-          }
-          lctx.globalAlpha = 1;
-        }
-
-        function tick(now) {
-          raf = requestAnimationFrame(tick);
-          const dt = Math.min((now - prev) / 1000, 0.25);
-          prev = now;
-          if (running) {
-            time -= dt;
-            if (time <= 0) { time = 0; paintTime(); finish(false); }
-            else paintTime();
-          }
-          paintLink(dt);
-        }
-
-        function finish(cleared) {
-          running = false;
-          clearSel();
-          if (cleared) score += Math.round(time) * 20;   // 清盘了，剩下的时间折成分
-          const was = readBest();
-          const rec = score > was;
-          if (rec) writeBest(score);
-          lastEnd = { cleared, rec, was };
-          // 结算盖上来之后，棋盘不该再留 Tab 落脚点 —— 底下那盘已经不能动了
-          if (cells[cur] && cells[cur].el) cells[cur].el.tabIndex = -1;
-          paintNums();
-          paintOver();
-          overEl.hidden = false;
-          $("gAgain").focus();
-          if (window.gtag) gtag("event", "play_match", { site: "portal", action: cleared ? "clear" : "timeout", score });
-        }
-        function paintOver() {
-          const g = G();
-          $("gOverT").textContent = lastEnd.cleared ? g.cleared : g.timeUp;
-          $("gOverS").textContent = fmt(g.got, score) + (lastEnd.rec ? "" : " · " + fmt(g.was, Math.max(lastEnd.was || 0, score)));
-          $("gRec").textContent = g.rec;
-          $("gRec").hidden = !lastEnd.rec;
-        }
-
-        function paintText() {
-          const g = G();
-          $("gT").textContent = g.title;
-          $("gSub").textContent = g.sub;
-          tilesEl.setAttribute("aria-label", g.title);
-          $("gClose").setAttribute("aria-label", g.close);
-          $("gScoreL").textContent = g.score;
-          $("gLeftL").textContent = g.left;
-          $("gBestL").textContent = g.best;
-          $("gHint").textContent = g.hint;
-          $("gShuf").textContent = fmt(g.shuf, shuffles);
-          $("gNew").textContent = g.newGame;
-          $("gAgain").textContent = g.again;
-          $("gQuit").textContent = g.quit;
-          for (const c of cells) if (c.el) c.el.setAttribute("aria-label", L(KINDS[c.k].name));
-          paintNums();
-          if (combo >= 2) comboEl.textContent = fmt(g.combo, combo);
-          if (!overEl.hidden) paintOver();
-        }
-        window.__gameLang = () => { if (!gameEl.hidden) paintText(); };
-
-        /* ── 开局 / 收摊 ── */
-        function newGame() {
-          score = 0; combo = 0; comboAt = -1e9; shuffles = SHUFFLES;
-          time = TMAX; flash = null;
-          overEl.hidden = true;
-          /* 连着清掉文字，不能只把 data-on 关掉：看不见的旧文案还留在 DOM 里，
-             读屏软件照样念得出来，切完语言更会念出上一局的中文。 */
-          comboEl.dataset.on = "0"; comboEl.textContent = "";
-          hitEl.dataset.on = "0"; hitEl.textContent = "";
-          $("gShuf").disabled = false;
-          build();
-          /* 文案要在量棋盘之前落定：说明那一行中英文长度不同，会换行、会把上面
-             撑高，棋盘剩多少高度得等它排完才算得准。先量后写的话，560 高的屏上
-             格子会按「标题还没填」的空间算大一号，然后被挤出可视区。 */
-          paintText();
-          sizeBoard();
-          paintNums(); paintTime();
-          running = true;
-          prev = performance.now();
-          if (!raf) raf = requestAnimationFrame(tick);
-        }
-
-        function open() {
-          gameEl.hidden = false;
-          document.body.dataset.game = "1";
-          document.body.style.overflow = "hidden";
-          if (window.__bg) window.__bg(false);   // 面板挡着，背景没必要接着画
-          newGame();
-          $("gClose").focus();
-          if (window.gtag) gtag("event", "play_match", { site: "portal", action: "open" });
-        }
-        function close() {
-          running = false;
-          cancelAnimationFrame(raf); raf = 0;
-          gameEl.hidden = true;
-          document.body.dataset.game = "0";
-          document.body.style.overflow = "";
-          if (window.__bg && !document.hidden) window.__bg(true);
-          playBtn.focus();
-        }
-
-        playBtn.addEventListener("click", open);
-        $("gClose").addEventListener("click", close);
-        $("gQuit").addEventListener("click", close);
-        $("gAgain").addEventListener("click", newGame);
-        $("gNew").addEventListener("click", newGame);
-        $("gHint").addEventListener("click", hint);
-        $("gShuf").addEventListener("click", reshuffle);
-
-        tilesEl.addEventListener("click", (e) => {
-          const b = e.target.closest(".tile");
-          if (b) pick(+b.dataset.i);
-        });
-
-        /* 键盘也能玩：方向键在活着的格子之间走，回车 / 空格选中。
-           48 个格子全设成可 Tab 的话，一路 Tab 到页脚要按 50 下 ——
-           所以只留当前那个是 tabIndex 0，其余 -1（roving tabindex）。 */
-        tilesEl.addEventListener("keydown", (e) => {
-          const mv = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
-          if (!mv) return;
-          e.preventDefault();
-          let x = cur % C, y = (cur / C) | 0;
-          for (let s = 0; s < Math.max(C, R); s++) {
-            x = (x + mv[0] + C) % C; y = (y + mv[1] + R) % R;
-            const i = y * C + x;
-            if (!cells[i].gone) { setCur(i); return; }
-          }
-        });
-
-        addEventListener("keydown", (e) => {
-          if (gameEl.hidden || e.key !== "Escape") return;
-          e.preventDefault();
-          close();
-        });
-
-        /* 说了是 aria-modal，Tab 就不该跑到后面那些被暗底挡住、点也点不到的
-           按钮上去 —— 用鼠标的人看到的是「只剩这个面板」，用键盘的人也应该。 */
-        gameEl.addEventListener("keydown", (e) => {
-          if (e.key !== "Tab") return;
-          const f = [...gameEl.querySelectorAll("button:not([disabled])")]
-            .filter((n) => n.tabIndex >= 0 && n.offsetParent !== null);
-          if (!f.length) return;
-          const first = f[0], last = f[f.length - 1];
-          if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-          else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-        });
-        // 点面板外面的暗底也算关掉 —— 弹层的老规矩
-        gameEl.addEventListener("click", (e) => { if (e.target === gameEl) close(); });
-
-        addEventListener("resize", () => { if (!gameEl.hidden) sizeBoard(); });
-        /* 盯着棋盘容器的实际尺寸走。文案长度随语言变、字体加载完会重排、
-           手机转屏地址栏收起也会变 —— 与其在每个改动点后面补一次 sizeBoard()
-           （漏一个就是一次溢出），不如让尺寸变化自己来通知。 */
-        if (window.ResizeObserver) new ResizeObserver(() => { if (!gameEl.hidden) sizeBoard(); }).observe(boardEl);
-        document.addEventListener("visibilitychange", () => {
-          if (gameEl.hidden) return;
-          // 切走的时候别偷偷扣时间：回来时把计时基准挪到当下
-          if (document.hidden) { cancelAnimationFrame(raf); raf = 0; }
-          else if (!raf) { prev = performance.now(); raf = requestAnimationFrame(tick); }
-        });
-      })();
-
-      /* ── 启动 ── */
+      /* ── 启动 ── */      /* ── 启动 ── */
       let lang0 = "zh";
       try {
         const saved = localStorage.getItem(LANG_KEY);
