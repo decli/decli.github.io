@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#060a18" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#f5f7fc" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0c0e13" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#faf9f7" media="(prefers-color-scheme: light)" />
 
     <title>decli · 作品集</title>
     <meta
@@ -91,382 +91,296 @@
          decli · 作品集
 
          ── 加一个项目要改哪里 ──
-         只改 sites.js。分类、筛选、搜索、埋点、中英文全都跟着数据走，
-         这个文件一个字都不用动。
+         只改 sites.js。分类、筛选、埋点、中英文全都跟着数据走，
+         这个文件一个字都不用动 —— 连介绍句里的「5 个浏览器扩展」
+         都是数出来的。
 
-         ── 视觉：为什么是「极光 + 风场 + 光晕」──
-         这三样都是 /ftms/ 里已经在用的语言。入口页跟子站长得像，点进去
-         才不会有「换了一个网站」的断裂感。而且全是纯 CSS：
-         没有依赖，没有图片，没有字体请求，首屏就是这一个文件。
+         ── 形态：为什么是「一页目录」而不是卡片墙 ──
+         12 个项目一屏就能扫完，卡片墙反而把它们摆成了同质的商品堆。
+         这一页当文档排：正文、列表、一格预览窗，没有卡片、没有按钮墙。
+         装饰预算只花在三个地方，多一处都不加：
+           ① 介绍句里的数字就是筛选器（点「5 个浏览器扩展」= 只看这类）
+           ② 右侧一格预览窗，跟着悬停/键盘焦点换内容
+           ③ 换明暗时从按钮荡开的那个圆
+         别的都交给排版。
 
-         动效克制：极光 40 秒一圈、风场 26 秒一轮，位移都很小。
-         入口页要的是「有呼吸」，不是「在动」—— 动得看得出来就抢注意力了。
-         `prefers-reduced-motion` 下全部停掉。
+         ── 为什么没有搜索框 ──
+         12 行全在 DOM 里，浏览器自带的 Ctrl/⌘+F 比任何自制搜索都好用，
+         而且能搜到描述正文。等项目过 20 个再把 `/` 请回来。
 
-         ── 底色的透明度别再往上调 ──
-         几个 --aurora / --spot / --wind 都压在 0.022~0.085，模糊 96px。
-         入口页的底色是给内容让路的，一眼能看出「在渐变」就已经太重了。
-
-         ── 这一页只做一件事：把人分发到各个项目去 ──
-         曾经加过戳泡泡、加过连连看，都拿掉了 —— 入口页多一个玩意儿，
-         主线就模糊一分。要往上加东西之前先问一句：
-         它帮访客更快找到想要的项目了吗？
+         ── 每一行都自带两个去处 ──
+         行本身去「能用的那个地方」（有在线地址就去在线，没有就去源码），
+         行尾那个 GitHub 图标单独去源码。预览窗里不放链接 ——
+         它是 aria-hidden 的，藏着可聚焦的链接等于给键盘用户挖坑。
          ═══════════════════════════════════════════════════════════════ */
 
       :root {
-        --bg: #f5f7fc;
-        --card: rgba(255, 255, 255, 0.66);
-        --card-solid: #fff;
-        --line: rgba(18, 32, 68, 0.09);
-        --line-2: rgba(18, 32, 68, 0.16);
-        --text: #101828;
-        --text-2: #4a566d;
-        --text-3: #7b879e;
-        --brand: #3b5bd6;
-        --brand-2: #7c5cff;
-        --brand-3: #06b6d4;
-        --live: #0f9d58;
-        --glow: rgba(59, 91, 214, 0.13);
-        --shadow: 0 20px 44px -26px rgba(16, 24, 40, 0.42);
-        --shadow-lg: 0 28px 60px -30px rgba(16, 24, 40, 0.5);
-        --wind: rgba(59, 91, 214, 0.065);
-        --aurora-1: rgba(124, 92, 255, 0.06);
-        --aurora-2: rgba(6, 182, 212, 0.05);
-        --aurora-3: rgba(59, 91, 214, 0.055);
-        --spot-1: rgba(124, 92, 255, 0.035);
-        --spot-2: rgba(6, 182, 212, 0.022);
+        /* 纸感偏暖一点点，墨偏冷 —— 文档的底子；蓝是全站唯一的强调色 */
+        --bg: #faf9f7;
+        --card: #ffffff;
+        --line: rgba(23, 24, 28, 0.1);
+        --line-2: rgba(23, 24, 28, 0.22);
+        --ink: #17181c;
+        --ink-2: #52586a;
+        --ink-3: #6b7280;
+        --brand: #2547c8;
+        --live: #0b7a45;
+        --hl: rgba(37, 71, 200, 0.07);
+        --shadow: 0 1px 2px rgba(23, 24, 28, 0.04), 0 16px 40px -26px rgba(23, 24, 28, 0.22);
         color-scheme: light;
       }
       @media (prefers-color-scheme: dark) {
         :root:not([data-theme="light"]) {
-          --bg: #060a18;
-          --card: rgba(20, 28, 50, 0.56);
-          --card-solid: #141c32;
-          --line: rgba(150, 178, 240, 0.13);
-          --line-2: rgba(150, 178, 240, 0.26);
-          --text: #eaf0ff;
-          --text-2: #a6b3d2;
-          --text-3: #78849f;
-          --brand: #7c9bff;
-          --brand-2: #a78bfa;
-          --brand-3: #22d3ee;
+          --bg: #0c0e13;
+          --card: #14161d;
+          --line: rgba(233, 236, 242, 0.1);
+          --line-2: rgba(233, 236, 242, 0.24);
+          --ink: #e9ecf2;
+          --ink-2: #a2aabb;
+          --ink-3: #79808f;
+          --brand: #8ea4ff;
           --live: #34d399;
-          --glow: rgba(124, 155, 255, 0.2);
-          --shadow: 0 24px 54px -28px rgba(0, 0, 0, 0.85);
-          --shadow-lg: 0 32px 70px -32px rgba(0, 0, 0, 0.9);
-          --wind: rgba(143, 169, 255, 0.085);
-          --aurora-1: rgba(124, 92, 255, 0.075);
-          --aurora-2: rgba(6, 182, 212, 0.055);
-          --aurora-3: rgba(59, 91, 214, 0.07);
-          --spot-1: rgba(150, 120, 255, 0.042);
-          --spot-2: rgba(34, 211, 238, 0.028);
+          --hl: rgba(142, 164, 255, 0.1);
+          --shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 20px 48px -28px rgba(0, 0, 0, 0.7);
           color-scheme: dark;
         }
       }
       :root[data-theme="dark"] {
-        --bg: #060a18;
-        --card: rgba(20, 28, 50, 0.56);
-        --card-solid: #141c32;
-        --line: rgba(150, 178, 240, 0.13);
-        --line-2: rgba(150, 178, 240, 0.26);
-        --text: #eaf0ff;
-        --text-2: #a6b3d2;
-        --text-3: #78849f;
-        --brand: #7c9bff;
-        --brand-2: #a78bfa;
-        --brand-3: #22d3ee;
+        --bg: #0c0e13;
+        --card: #14161d;
+        --line: rgba(233, 236, 242, 0.1);
+        --line-2: rgba(233, 236, 242, 0.24);
+        --ink: #e9ecf2;
+        --ink-2: #a2aabb;
+        --ink-3: #79808f;
+        --brand: #8ea4ff;
         --live: #34d399;
-        --glow: rgba(124, 155, 255, 0.2);
-        --shadow: 0 24px 54px -28px rgba(0, 0, 0, 0.85);
-        --shadow-lg: 0 32px 70px -32px rgba(0, 0, 0, 0.9);
-        --wind: rgba(143, 169, 255, 0.085);
-        --aurora-1: rgba(124, 92, 255, 0.075);
-        --aurora-2: rgba(6, 182, 212, 0.055);
-        --aurora-3: rgba(59, 91, 214, 0.07);
-        --spot-1: rgba(150, 120, 255, 0.042);
-        --spot-2: rgba(34, 211, 238, 0.028);
+        --hl: rgba(142, 164, 255, 0.1);
+        --shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 20px 48px -28px rgba(0, 0, 0, 0.7);
         color-scheme: dark;
       }
 
       * { box-sizing: border-box; }
-      html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+      html { -webkit-text-size-adjust: 100%; }
       body {
         margin: 0;
         min-height: 100dvh;
         background: var(--bg);
-        color: var(--text);
-        font: 15px/1.7 "PingFang SC", "HarmonyOS Sans SC", "Hiragino Sans GB", "Source Han Sans SC",
+        color: var(--ink);
+        font: 15px/1.8 "PingFang SC", "HarmonyOS Sans SC", "Hiragino Sans GB", "Source Han Sans SC",
           "Microsoft YaHei", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-        overflow-x: hidden;
       }
       body[data-lang="en"] {
         font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       }
-
-      /* ── 极光：三团大色斑，缓慢漂浮 + 跟着鼠标做视差 ──
-         两个动作要拆到两层上：外层 span 只做视差位移，内层 i 只做漂浮关键帧。
-         挤在同一个元素上的话，`animation` 里的 transform 会把 JS 写的那个
-         整帧覆盖掉 —— 视差看起来就完全没生效，而且不报任何错。 */
-      .aurora {
-        position: fixed;
-        inset: -20% -10%;
-        z-index: 0;
-        pointer-events: none;
-        filter: blur(96px);
+      ::selection { background: color-mix(in srgb, var(--brand) 20%, transparent); }
+      .sr {
+        position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+        overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
       }
-      .aurora span {
-        position: absolute;
-        inset: 0;
-        display: block;
-        will-change: transform;
-        /* 比指针慢半拍才有「跟」的感觉；一步到位反而像整个背景被钉在光标上 */
-        transition: transform 0.7s cubic-bezier(0.22, 0.8, 0.3, 1);
-      }
-      .aurora i {
-        position: absolute;
-        display: block;
-        border-radius: 50%;
-        animation: float 40s ease-in-out infinite;
-      }
-      .aurora span:nth-child(1) i { width: 46vw; height: 46vw; top: -6%; left: 52%; background: var(--aurora-1); }
-      .aurora span:nth-child(2) i { width: 38vw; height: 38vw; top: 34%; left: -6%; background: var(--aurora-2); animation-duration: 52s; animation-delay: -14s; }
-      .aurora span:nth-child(3) i { width: 42vw; height: 42vw; top: 62%; left: 58%; background: var(--aurora-3); animation-duration: 46s; animation-delay: -26s; }
-      @keyframes float {
-        0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-        33%      { transform: translate3d(4%, -5%, 0) scale(1.07); }
-        66%      { transform: translate3d(-5%, 4%, 0) scale(0.95); }
-      }
-
-      /* ── 流光：一团跟着指针走的高光 ──
-         不加过渡，让它精确贴着手；「慢半拍」那件事交给上面的极光去做，
-         两层一快一慢，才有厚度。 */
-      .spot {
-        position: fixed;
-        inset: 0;
-        z-index: 0;
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.6s;
-        background:
-          radial-gradient(420px circle at var(--px, 50vw) var(--py, 32vh), var(--spot-1), transparent 66%),
-          radial-gradient(760px circle at var(--px, 50vw) var(--py, 32vh), var(--spot-2), transparent 70%);
-      }
-      body[data-pointer="1"] .spot { opacity: 1; }
-
-
-      /* ── 风场：几条常年不改向的流线 ── */
-      .wind { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
-      .wind path {
-        fill: none;
-        stroke: var(--wind);
-        stroke-linecap: round;
-        stroke-dasharray: 210 1500;
-        animation: drift 26s linear infinite;
-      }
-      .wind path:nth-child(2) { animation-duration: 34s; animation-delay: -6s; }
-      .wind path:nth-child(3) { animation-duration: 29s; animation-delay: -14s; }
-      .wind path:nth-child(4) { animation-duration: 38s; animation-delay: -3s; }
-      .wind path:nth-child(5) { animation-duration: 31s; animation-delay: -19s; }
-      .wind path:nth-child(6) { animation-duration: 43s; animation-delay: -11s; }
-      @keyframes drift { to { stroke-dashoffset: -1710; } }
 
       .page {
-        position: relative;
-        z-index: 1;
-        width: min(1120px, 100%);
-        margin: 0 auto;
-        padding: clamp(26px, 5vh, 46px) clamp(18px, 4vw, 32px) 60px;
-      }
-
-      /* ═══ 页眉 ═══ */
-      header.top { display: flex; align-items: center; gap: 10px; margin-bottom: clamp(38px, 7vh, 70px); }
-      .me { display: flex; align-items: center; gap: 11px; font-weight: 650; letter-spacing: 0.02em; font-size: 15.5px; }
-      .avatar {
-        width: 36px; height: 36px; border-radius: 12px; flex: none;
-        display: grid; place-content: center;
-        background: linear-gradient(140deg, var(--brand), var(--brand-2));
-        color: #fff; font-size: 16px; font-weight: 700;
-        box-shadow: 0 6px 18px -6px var(--brand);
-      }
-      .spacer { flex: 1; }
-      .ghost {
-        display: inline-flex; align-items: center; justify-content: center; gap: 5px;
-        height: 36px; min-width: 36px; padding: 0 10px;
-        border: 1px solid var(--line); border-radius: 11px;
-        background: var(--card); backdrop-filter: blur(12px);
-        color: var(--text-2); font: inherit; font-size: 13px; font-weight: 600;
-        cursor: pointer; text-decoration: none;
-        transition: border-color 0.16s, color 0.16s, transform 0.16s;
-      }
-      .ghost:hover { border-color: var(--line-2); color: var(--text); transform: translateY(-1px); }
-      .ghost:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
-
-      /* ═══ 主标题 ═══ */
-      h1 {
-        margin: 0 0 14px;
-        font-size: clamp(34px, 6.4vw, 60px);
-        font-weight: 750;
-        line-height: 1.16;
-        letter-spacing: -0.025em;
-      }
-      h1 .g {
-        background: linear-gradient(96deg, var(--brand), var(--brand-2) 55%, var(--brand-3));
-        -webkit-background-clip: text; background-clip: text; color: transparent;
-      }
-      .lede { margin: 0 0 22px; max-width: 52ch; color: var(--text-2); font-size: clamp(15px, 1.9vw, 17px); }
-
-      .stats { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-bottom: 30px; }
-      .stat { display: flex; align-items: baseline; gap: 6px; color: var(--text-3); font-size: 13px; }
-      .stat b {
-        font-size: 21px; font-weight: 700; color: var(--text);
-        font-variant-numeric: tabular-nums; letter-spacing: -0.01em;
-      }
-
-      /* ═══ 工具条：搜索 + 分类 ═══ */
-      .tools { display: grid; gap: 12px; margin-bottom: 22px; }
-      .find {
-        display: flex; align-items: center; gap: 9px;
-        height: 46px; padding: 0 15px;
-        border: 1px solid var(--line); border-radius: 13px;
-        background: var(--card); backdrop-filter: blur(12px);
-        transition: border-color 0.16s, box-shadow 0.16s;
-      }
-      .find:focus-within { border-color: var(--brand); box-shadow: 0 0 0 3px var(--glow); }
-      .find svg { flex: none; color: var(--text-3); }
-      .find input { flex: 1; min-width: 0; border: 0; background: none; color: inherit; font: inherit; outline: none; }
-      .find input::placeholder { color: var(--text-3); }
-      .find kbd {
-        flex: none; padding: 2px 7px; border: 1px solid var(--line); border-radius: 6px;
-        color: var(--text-3); font: 600 11px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace;
-      }
-
-      .cats { display: flex; flex-wrap: wrap; gap: 8px; }
-      .cat {
-        display: inline-flex; align-items: center; gap: 7px;
-        height: 34px; padding: 0 13px;
-        border: 1px solid var(--line); border-radius: 999px;
-        background: var(--card); color: var(--text-2);
-        font: inherit; font-size: 13.5px; font-weight: 550;
-        cursor: pointer; white-space: nowrap;
-        transition: border-color 0.16s, color 0.16s, background 0.16s;
-      }
-      .cat:hover { border-color: var(--line-2); color: var(--text); }
-      .cat:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
-      .cat[aria-pressed="true"] {
-        border-color: transparent; color: #fff;
-        background: linear-gradient(120deg, var(--brand), var(--brand-2));
-        box-shadow: 0 6px 18px -8px var(--brand);
-      }
-      .cat em {
-        font-style: normal; font-size: 11.5px; font-weight: 700;
-        padding: 1px 6px; border-radius: 999px;
-        background: rgba(125, 140, 180, 0.16); color: inherit;
-        font-variant-numeric: tabular-nums;
-      }
-      .cat[aria-pressed="true"] em { background: rgba(255, 255, 255, 0.22); }
-
-      /* ═══ 卡片网格 ═══ */
-      .grid {
         display: grid;
-        gap: 14px;
-        grid-template-columns: repeat(auto-fill, minmax(272px, 1fr));
-        grid-auto-flow: dense;
+        grid-template-columns: minmax(0, 640px) 296px;
+        gap: 72px;
+        width: min(1048px, 100%);
+        margin: 0 auto;
+        padding: clamp(28px, 6vh, 72px) clamp(20px, 4vw, 28px) 64px;
       }
-      .card {
+      main { min-width: 0; }
+
+      /* ═══ 页眉：纯文字，一个盒子都不画 ═══ */
+      .top { display: flex; align-items: baseline; gap: 18px; margin-bottom: clamp(38px, 8vh, 68px); font-size: 14px; }
+      .top .who { font-weight: 700; letter-spacing: 0.02em; }
+      .top .spacer { flex: 1; }
+      .top a, .top button {
+        border: 0; background: none; padding: 2px 3px; margin: -2px -3px;
+        border-radius: 4px;
+        color: var(--ink-3); font: inherit; cursor: pointer; text-decoration: none;
+        transition: color 0.14s;
+      }
+      .top a:hover, .top button:hover { color: var(--ink); }
+      .top a:focus-visible, .top button:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+      /* ═══ 引子 ═══ */
+      h1 {
+        margin: 0 0 20px;
+        font-family: "Songti SC", "Noto Serif SC", "Noto Serif CJK SC", STSong, SimSun, Georgia, serif;
+        font-size: clamp(30px, 5.2vw, 46px);
+        font-weight: 700;
+        line-height: 1.34;
+        letter-spacing: 0.01em;
+        text-wrap: balance;
+      }
+      body[data-lang="en"] h1 {
+        font-family: Georgia, "Iowan Old Style", "Palatino Linotype", Palatino, serif;
+        letter-spacing: -0.01em;
+        line-height: 1.2;
+      }
+      .intro { margin: 0 0 6px; max-width: 54ch; color: var(--ink-2); font-size: 15.5px; }
+      .note { margin: 0; max-width: 54ch; color: var(--ink-2); font-size: 15.5px; }
+      /* 句子里那颗绿点：间距由这里统一给，所以文案里 {dot} 两侧不留空格 ——
+         中文不需要空格、英文需要，交给 margin 出就两边都对。
+         .nb 把「标 ● 的」箍成一个不可断行的整体，否则换行会把点甩到行尾。 */
+      .note .li { display: inline-block; margin: 0 4px; vertical-align: middle; }
+      .nb { white-space: nowrap; }
+
+      /* 介绍句里的数字就是筛选器 —— 筛选器不是一排胶囊，是一句话 */
+      .f {
+        border: 0; background: none; padding: 0 1px; margin: 0;
+        color: var(--ink); font: inherit; font-weight: 650; cursor: pointer;
+        text-decoration: underline dotted var(--line-2);
+        text-underline-offset: 4px;
+        border-radius: 3px;
+        transition: color 0.14s, background-color 0.14s, text-decoration-color 0.14s;
+      }
+      .f:hover { color: var(--brand); text-decoration-color: var(--brand); }
+      .f:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+      .f[aria-pressed="true"] {
+        color: var(--brand);
+        background: var(--hl);
+        text-decoration-color: var(--brand);
+      }
+
+      .hint { margin: 12px 0 0; color: var(--ink-3); font-size: 13px; }
+      .hint[hidden] { display: none; }
+      .hint button {
+        border: 0; background: none; padding: 0; margin: 0;
+        color: inherit; font: inherit; cursor: pointer;
+        text-decoration: underline dotted; text-underline-offset: 3px;
+      }
+      .hint button:hover { color: var(--ink); }
+      .hint button:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: 3px; }
+      .hint kbd {
+        padding: 1px 5px; border: 1px solid var(--line-2); border-radius: 4px;
+        font: 600 10.5px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace;
+      }
+
+      .nojs { margin: 22px 0 0; max-width: 54ch; color: var(--ink-2); font-size: 14px; }
+      .nojs a { color: var(--brand); }
+
+      /* ═══ 索引 ═══ */
+      .index { margin-top: clamp(28px, 6vh, 48px); border-top: 1px solid var(--line); }
+      .row {
         position: relative;
-        display: flex; flex-direction: column; gap: 12px;
-        padding: 18px;
-        border: 1px solid var(--line); border-radius: 18px;
-        background: var(--card); backdrop-filter: blur(14px);
+        display: flex; align-items: baseline; gap: 13px;
+        padding: 14px 2px;
+        border-bottom: 1px solid var(--line);
+        transition: opacity 0.18s;
+        animation: enter 0.5s cubic-bezier(0.22, 0.8, 0.3, 1) backwards;
+      }
+      @keyframes enter { from { opacity: 0; transform: translateY(8px); } }
+
+      .no {
+        flex: none; width: 2ch;
+        color: var(--ink-3);
+        font: 500 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-variant-numeric: tabular-nums;
+        transition: color 0.14s;
+      }
+      /* 名称是唯一的链接，::after 把整行铺成热区 ——
+         这样读屏拿到的链接名就是「信风 Tradewind」，
+         而不是把整段描述连着分类一起念一遍 */
+      .nm {
+        flex: none;
         color: inherit; text-decoration: none;
-        overflow: hidden;
-        transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-        animation: rise 0.5s cubic-bezier(0.22, 0.8, 0.3, 1) backwards;
+        font-size: 16px; font-weight: 620; letter-spacing: -0.005em;
+        transition: color 0.14s;
       }
-      @keyframes rise { from { opacity: 0; transform: translateY(10px); } }
-      /* 光晕跟着指针走 —— 跟 /ftms/ 看板上的卡片同一个手法。
-         位置由 JS 写进 --mx / --my，CSS 只负责画。 */
-      .card::before {
-        content: "";
-        position: absolute; inset: -1px; border-radius: inherit;
-        background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 0%), var(--glow), transparent 72%);
-        opacity: 0; transition: opacity 0.24s; pointer-events: none;
+      .nm::after { content: ""; position: absolute; inset: 0; border-radius: 6px; }
+      .li {
+        flex: none; align-self: center;
+        width: 6px; height: 6px; border-radius: 50%;
+        background: var(--live);
       }
-      .card:hover { border-color: var(--line-2); transform: translateY(-3px); box-shadow: var(--shadow); }
-      .card:hover::before { opacity: 1; }
-      .card:focus-within { border-color: var(--line-2); }
-      .card[hidden] { display: none; }
+      .ds {
+        flex: 1; min-width: 0;
+        color: var(--ink-2); font-size: 13px;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .ct { flex: none; color: var(--ink-3); font-size: 12px; }
+      /* 行尾两列固定宽：[去处箭头][GitHub]。
+         在线项目：箭头 = 去应用，GitHub = 单独的源码链接；
+         非在线项目：没有箭头，GitHub 只是个标记（点它照样走整行热区去源码）。
+         两种行的 GitHub 图标因此永远落在同一列。 */
+      .ar { flex: none; width: 14px; color: var(--ink-3); font-size: 13px; text-align: center; transition: transform 0.16s, color 0.14s; }
+      /* 真链接要浮在整行热区之上，否则会被 .nm::after 盖住点不到 */
+      .src {
+        position: relative; z-index: 1;
+        flex: none; align-self: center;
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 26px; height: 26px; margin: -6px -4px -6px 0;
+        border-radius: 7px;
+        color: var(--ink-3); opacity: 0.5;
+        transition: opacity 0.14s, color 0.14s, background-color 0.14s;
+      }
+      .src svg { display: block; }
+      .src:hover { opacity: 1; color: var(--ink); background: var(--hl); }
+      .src:focus-visible { opacity: 1; outline: 2px solid var(--brand); outline-offset: 1px; }
+      /* 装饰版：不吃指针，点击穿透到整行热区 */
+      .src[data-static] { pointer-events: none; }
+      .row:hover .src[data-static] { opacity: 0.75; }
 
-      /* 有在线地址的占两格 —— 能点开试的东西，值得大一点 */
-      @media (min-width: 760px) {
-        .card[data-featured] { grid-column: span 2; }
-      }
-      .card[data-featured] { padding: 22px; }
-      .card[data-featured]:hover { box-shadow: var(--shadow-lg); }
+      /* 悬停一行，其余行整体退后 —— 键盘走到某行时同样 */
+      .index:hover .row:not(:hover),
+      .index:focus-within .row:not(:focus-within) { opacity: 0.5; }
+      .row:hover .nm, .row:focus-within .nm { color: var(--brand); }
+      .row:hover .no, .row:focus-within .no { color: var(--brand); }
+      .row:hover .ar, .row:focus-within .ar { color: var(--brand); transform: translate(2px, -2px); }
+      /* 焦点环画在整行热区（::after）上，不是名字那几个字上 ——
+         两个都画就成了框中框 */
+      .nm:focus-visible { outline: none; }
+      .nm:focus-visible::after { outline: 2px solid var(--brand); outline-offset: -1px; }
 
-      .head { display: flex; align-items: flex-start; gap: 13px; }
+      /* 筛选：压暗，不移除 —— 版面不跳动，序号也还认得出谁在哪
+         inert 一起加上：看不见的行不该还能被 Tab 到、被读屏念到 */
+      .index[data-filtered] .row:not([data-on]) { opacity: 0.22; }
+
+      /* ═══ 预览窗：sticky 一格，跟着悬停/焦点换 ═══
+         里面一个链接都不放 —— 整块是 aria-hidden 的 */
+      aside { min-width: 0; }
+      .peek:empty { display: none; }
+      .peek {
+        position: sticky; top: clamp(28px, 12vh, 104px);
+        padding: 22px;
+        border: 1px solid var(--line); border-radius: 18px;
+        background: var(--card);
+        box-shadow: var(--shadow);
+      }
+      .peek .in { display: flex; flex-direction: column; gap: 13px; animation: fade 0.16s ease-out; }
+      @keyframes fade { from { opacity: 0; } }
       .mark {
-        width: 44px; height: 44px; border-radius: 13px; flex: none;
+        width: 46px; height: 46px; border-radius: 12px; flex: none;
         display: grid; place-content: center; overflow: hidden;
-        background: var(--card-solid); border: 1px solid var(--line);
+        background: var(--card); border: 1px solid var(--line);
       }
-      .mark img { width: 44px; height: 44px; display: block; }
+      .mark img { width: 46px; height: 46px; display: block; }
       .mark.tinted { border: 0; color: #fff; }
       .mark svg { display: block; }
-      .card[data-featured] .mark { width: 50px; height: 50px; border-radius: 15px; }
-      .card[data-featured] .mark img { width: 50px; height: 50px; }
-
-      .title { min-width: 0; flex: 1; }
-      .title h2 {
-        margin: 0; font-size: 16.5px; font-weight: 680; letter-spacing: -0.005em;
-        display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-      }
-      .card[data-featured] .title h2 { font-size: 18.5px; }
-      .live {
+      .peek h2 { margin: 0; display: flex; align-items: center; gap: 9px; flex-wrap: wrap; font-size: 17px; font-weight: 700; letter-spacing: -0.005em; }
+      .badge {
         display: inline-flex; align-items: center; gap: 4px;
-        padding: 1px 8px; border-radius: 999px;
-        border: 1px solid color-mix(in srgb, var(--live) 42%, transparent);
-        color: var(--live); font-size: 11px; font-weight: 650; letter-spacing: 0.02em;
+        padding: 0 8px; border-radius: 999px;
+        border: 1px solid color-mix(in srgb, var(--live) 45%, transparent);
+        color: var(--live); font-size: 10.5px; font-weight: 650; line-height: 1.75;
       }
-      .live::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
-      .kind { color: var(--text-3); font-size: 12.5px; font-weight: 500; margin-top: 2px; }
-
-      .desc { margin: 0; color: var(--text-2); font-size: 13.5px; line-height: 1.65; }
-      .card[data-featured] .desc { font-size: 14px; }
-
-      .tags { display: flex; flex-wrap: wrap; gap: 6px; }
-      .tag {
-        padding: 2px 9px; border-radius: 7px;
-        background: color-mix(in srgb, var(--brand) 9%, transparent);
-        color: var(--text-2); font-size: 11.5px; letter-spacing: 0.01em;
+      .badge::before { content: ""; width: 4px; height: 4px; border-radius: 50%; background: currentColor; }
+      .peek .ds { display: block; margin: 0; white-space: normal; overflow: visible; color: var(--ink-2); font-size: 13px; line-height: 1.75; }
+      .peek .tags { display: flex; flex-wrap: wrap; gap: 5px; }
+      .peek .tags span { padding: 1px 8px; border-radius: 6px; background: var(--hl); color: var(--ink-2); font-size: 11px; }
+      .peek .to {
+        margin: 0; padding-top: 11px; border-top: 1px solid var(--line);
+        color: var(--ink-3);
+        font: 500 11.5px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace;
+        word-break: break-all;
       }
-
-      .acts { display: flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 4px; }
-      .btn {
-        display: inline-flex; align-items: center; gap: 6px;
-        height: 34px; padding: 0 14px; border-radius: 10px;
-        font-size: 13px; font-weight: 620; text-decoration: none;
-        border: 1px solid var(--line); color: var(--text-2); background: transparent;
-        transition: border-color 0.16s, color 0.16s, transform 0.16s, background 0.16s;
-      }
-      .btn:hover { border-color: var(--line-2); color: var(--text); transform: translateY(-1px); }
-      .btn:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
-      .btn.primary {
-        border-color: transparent; color: #fff;
-        background: linear-gradient(120deg, var(--brand), var(--brand-2));
-        box-shadow: 0 8px 20px -10px var(--brand);
-      }
-      .btn.primary:hover { color: #fff; filter: brightness(1.06); }
-
-      .none { padding: 44px 0; text-align: center; color: var(--text-3); font-size: 14px; }
-      .none[hidden] { display: none; }
 
       /* ═══ 页脚 ═══ */
       footer {
-        margin-top: 52px; padding-top: 20px;
+        margin-top: 56px; padding-top: 20px;
         border-top: 1px solid var(--line);
         display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px;
-        color: var(--text-3); font-size: 12.5px;
+        color: var(--ink-3); font-size: 12.5px;
       }
       footer .owner { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
       footer .mail {
@@ -482,93 +396,105 @@
       #toast {
         position: fixed; left: 50%; bottom: 26px; transform: translate(-50%, 12px);
         padding: 10px 17px; border-radius: 11px;
-        background: var(--card-solid); border: 1px solid var(--line-2);
-        box-shadow: var(--shadow); color: var(--text); font-size: 13px;
+        background: var(--card); border: 1px solid var(--line-2);
+        box-shadow: var(--shadow); color: var(--ink); font-size: 13px;
         opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s;
         z-index: 9;
       }
       #toast[data-on="1"] { opacity: 1; transform: translate(-50%, 0); }
 
-      /* 有人明确要求少动效，就一动不动 */      /* 有人明确要求少动效，就一动不动 */
+      /* ── 换明暗：从按钮荡开的一个圆（View Transitions）──
+         不支持的浏览器直接切，什么都不少 */
+      ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+      ::view-transition-new(root) { z-index: 1; }
+      ::view-transition-old(root) { z-index: 9999; }
+      :root[data-theme="dark"]::view-transition-new(root) { z-index: 9999; }
+      :root[data-theme="dark"]::view-transition-old(root) { z-index: 1; }
+
+      /* ── 窄屏：预览窗收起，描述换到自己一行 ── */
+      @media (max-width: 1000px) {
+        .page { grid-template-columns: 1fr; gap: 0; }
+        aside { display: none; }
+        .index:hover .row:not(:hover) { opacity: 1; }
+        .row { flex-wrap: wrap; row-gap: 3px; padding: 13px 2px; }
+        .ds {
+          flex-basis: 100%; order: 9;
+          white-space: normal; padding-left: calc(2ch + 13px);
+          display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .ct { margin-left: auto; }
+      }
+      @media (max-width: 560px) {
+        .top { gap: 14px; }
+        .ds { padding-left: 0; }
+        .src { width: 44px; height: 44px; margin: -10px -10px -10px 0; }
+      }
+
+      /* 有人明确要求少动效，就一动不动 */
       @media (prefers-reduced-motion: reduce) {
-        html { scroll-behavior: auto; }
-        .aurora i, .wind path { animation: none; }
-        .aurora span { transition: none; transform: none !important; }
-        .spot { display: none; }
-        .wind path { stroke-dasharray: none; }
-        .card { animation: none; }
-        .card, .btn, .ghost, .cat { transition: none; }
-        .card:hover, .btn:hover, .ghost:hover { transform: none; }
+        .row, .peek .in { animation: none; }
+        .row, .nm, .no, .ar, .f, .src, .top a, .top button, .hint button { transition: none; }
+        .row:hover .ar, .row:focus-within .ar { transform: none; }
       }
     </style>
   </head>
 
   <body data-lang="zh">
-    <div class="aurora" aria-hidden="true"><span><i></i></span><span><i></i></span><span><i></i></span></div>
-    <div class="spot" aria-hidden="true"></div>
-    <svg class="wind" viewBox="0 0 1440 900" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M-60 130 C 320 76, 700 178, 1500 96" stroke-width="1.5" />
-      <path d="M-60 268 C 380 200, 760 300, 1500 220" stroke-width="1" />
-      <path d="M-60 410 C 300 340, 820 452, 1500 356" stroke-width="1.8" />
-      <path d="M-60 556 C 420 486, 780 604, 1500 500" stroke-width="1.1" />
-      <path d="M-60 690 C 340 626, 860 742, 1500 648" stroke-width="1.5" />
-      <path d="M-60 820 C 400 760, 760 862, 1500 786" stroke-width="0.9" />
-    </svg>
-
     <div class="page">
-      <header class="top">
-        <span class="me"><span class="avatar">d</span>decli</span>
-        <span class="spacer"></span>
-        <button class="ghost" id="lang" aria-label="Switch language">EN</button>
-        <a class="ghost" href="https://github.com/decli" target="_blank" rel="me noopener noreferrer" aria-label="GitHub" title="GitHub">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" />
-          </svg>
-        </a>
-        <button class="ghost" id="theme" aria-label="Toggle theme" title="切换明暗">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="4" />
-            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
-          </svg>
-        </button>
-      </header>
+      <main>
+        <header class="top">
+          <span class="who">decli</span>
+          <span class="spacer"></span>
+          <button id="lang" aria-label="Switch language">EN</button>
+          <a href="https://github.com/decli" target="_blank" rel="me noopener noreferrer">GitHub</a>
+          <button id="theme"></button>
+        </header>
 
-      <h1 id="h1"></h1>
-      <p class="lede" id="lede"></p>
-      <div class="stats" id="stats"></div>
+        <h1 id="h1"></h1>
+        <p class="intro" id="intro"></p>
+        <p class="note" id="note"></p>
+        <p class="hint" id="hint" role="status" hidden></p>
 
-      <div class="tools">
-        <label class="find">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-            <circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" />
-          </svg>
-          <input id="q" type="search" autocomplete="off" />
-          <kbd>/</kbd>
-        </label>
-        <div class="cats" id="cats" role="group"></div>
-      </div>
+        <!-- 清单是从 sites.js 渲染出来的，关了 JS 就什么都没有。
+             与其留一页空白，不如把人送到还能用的地方去。
+             这里不列具体项目 —— 一列就得跟着 sites.js 同步，迟早对不上。 -->
+        <noscript>
+          <p class="nojs">
+            这一页的项目清单需要 JavaScript 才能显示。
+            全部项目也可以直接在 <a href="https://github.com/decli">github.com/decli</a> 上翻。
+          </p>
+          <p class="nojs" lang="en">
+            This page renders its project list with JavaScript.
+            You can also browse everything at <a href="https://github.com/decli">github.com/decli</a>.
+          </p>
+        </noscript>
 
-      <div class="grid" id="grid"></div>
-      <p class="none" id="none" hidden></p>
+        <nav class="index" id="index"></nav>
 
-      <footer>
-        <!-- 「©」和邮箱之间不留 dot：它们是同一句话的两半（© 谁），
-             拆开会读成两条并列信息。分隔点只用在「版权」与「托管方」之间。 -->
-        <span class="owner">
-          ©
-          <button class="mail" id="mail" aria-label="Copy email">
-            <canvas id="mailc" aria-hidden="true"></canvas>
-          </button>
-          <span id="rights"></span>
-        </span>
-        <span class="dot" aria-hidden="true"></span>
-        <span>Powered by GitHub Pages</span>
-      </footer>
+        <footer>
+          <!-- 「©」和邮箱之间不留 dot：它们是同一句话的两半（© 谁），
+               拆开会读成两条并列信息。分隔点只用在「版权」与「托管方」之间。 -->
+          <span class="owner">
+            ©
+            <button class="mail" id="mail" aria-label="Copy email">
+              <canvas id="mailc" aria-hidden="true"></canvas>
+            </button>
+            <span id="rights"></span>
+          </span>
+          <span class="dot" aria-hidden="true"></span>
+          <span>Powered by GitHub Pages</span>
+        </footer>
+      </main>
+
+      <!-- 预览窗是纯展示：内容在左边每一行里都有，读屏不用听两遍 -->
+      <aside aria-hidden="true">
+        <div class="peek" id="peek"></div>
+      </aside>
     </div>
 
     <div id="toast" role="status" aria-live="polite"></div>
 
-    <script src="sites.js"></script>    <script src="sites.js"></script>
+    <script src="sites.js"></script>
     <script>
       /* ═══ 界面文案 ═══
          项目本身的中英文在 sites.js 里，这里只放界面自己的词。 */
@@ -577,38 +503,51 @@
           /* ── 这句话为什么这么写 ──
              「做了几个能用的东西」说的是**结果**，谁都能说，也就谁都记不住。
              十二个项目横跨外贸系统、公众号排版、IP 监控、安卓象棋 —— 表面上毫无关系，
-             真正把它们串起来的是**动机**：某天嫌某件事麻烦，于是自己动手。
-             说动机，比罗列品类有画面，也解释了这堆东西为什么长在一起。 */
-          title: ["嫌它麻烦，", "就自己写一个"],
-          lede: "十二个项目。有的是自己嫌麻烦顺手写的，有的是给家里人做的 —— 外贸系统、公众号排版、IP 归属地监控、取件码助手。纯前端或本地运行，免注册，打开就能用。",
-          all: "全部",
-          search: "搜项目名、用途、关键词…",
-          none: "没有匹配的项目。",
-          projects: "个项目",
-          online: "个可在线体验",
-          open: "打开",
-          source: "源码",
+             真正把它们串起来的是**动机**：某天嫌某件事麻烦，于是自己动手。 */
+          title: ["嫌它麻烦，", "就自己写一个。"],
+          /* {all} 和 {cats} 都是数出来的，加项目不用改这里 */
+          intro: "这里是{all}这样的东西：{cats}。",
+          note: "有的替自己省事，有的给家里人做的。纯前端或本地运行，免注册 —— {mark}打开就能用，其余点进去是源码。",
+          markPhrase: "标{dot}的",
+          catCount: "{n} 个{name}",
+          allWord: "{n}个",
+          join: "、",
+          /* 「和」后面紧接阿拉伯数字，要留一个中西文间距 */
+          joinLast: "和 ",
+          onlyCat: "只看{name}",
+          seeAll: "看全部",
+          escHint: "或按",
+          peekHint: "悬停或用 Tab 走列表，这里跟着换",
           liveTag: "在线",
+          srcLabel: "{name} 的源码",
           rights: "版权所有 2026",
           copied: "邮箱已复制到剪贴板",
           langBtn: "EN",
-          themeTitle: "切换明暗",
+          themeBtn: "明暗",
+          indexLabel: "项目索引",
+          loadFail: "项目清单没加载出来 —— 检查 sites.js 是否存在且语法正确。",
         },
         en: {
-          title: ["Annoyed enough", "to just build it"],
-          lede: "Twelve projects. Some scratched an itch of my own, some were built for family — a trade-ops suite, a WeChat formatter, an IP monitor, a parcel-code reader. All client-side or local, no sign-up, just open and use.",
-          all: "All",
-          search: "Search name, purpose, keyword…",
-          none: "Nothing matches.",
-          projects: "projects",
-          online: "live online",
-          open: "Open",
-          source: "Source",
+          title: ["Annoyed enough", "to just build it."],
+          intro: "Here are {all} of them: {cats}.",
+          note: "Some scratched an itch of my own, some were built for family. All client-side or local, no sign-up — {mark}open and run, the rest link to source.",
+          markPhrase: "the{dot}ones",
+          catCount: "{n} {name}",
+          allWord: "{n}",
+          join: ", ",
+          joinLast: " and ",
+          onlyCat: "Showing {name} only",
+          seeAll: "See all",
+          escHint: "or press",
+          peekHint: "Hover or Tab through the list; this follows along",
           liveTag: "Live",
+          srcLabel: "Source for {name}",
           rights: "All rights reserved 2026",
           copied: "Email copied to clipboard",
           langBtn: "中",
-          themeTitle: "Toggle theme",
+          themeBtn: "Theme",
+          indexLabel: "Projects",
+          loadFail: "The project list didn't load — check that sites.js exists and parses.",
         },
       };
 
@@ -625,150 +564,206 @@
         package: '<path d="m12 3 8 4.2v9.6L12 21l-8-4.2V7.2Z"/><path d="M4.3 7.3 12 11.4l7.7-4.1M12 11.4V21"/>',
         chess: '<path d="M9 4h6v2.6l2 2.4H7l2-2.4Z"/><path d="M8.4 9h7.2l-.9 6H9.3Z"/><path d="M6.5 20h11l-.8-2.6H7.3Z"/>',
       };
+      const GH_PATH =
+        'M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z';
+      const ghSVG = (size) =>
+        `<svg width="${size}" height="${size}" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="${GH_PATH}"/></svg>`;
 
-      const S = { lang: "zh", cat: "all", q: "" };
+      const S = { lang: "zh", cat: null };
       const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
       /* 字段可以是字符串（中英文同名），也可以是 {zh, en} */
       const L = (v) => (v && typeof v === "object" && !Array.isArray(v) ? v[S.lang] ?? v.zh : v);
       const t = (k) => I18N[S.lang][k];
+      const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (_, k) => (k in vars ? vars[k] : ""));
+
+      /* 总数要写成「十二个 / twelve」才像句子，但它得是数出来的。
+         两个小写数器，够用到 99 —— 再多这一页也该换形态了。 */
+      const ZH_D = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九"];
+      const zhNum = (n) =>
+        n < 10 ? ZH_D[n] : n < 20 ? "十" + (n % 10 ? ZH_D[n % 10] : "") : ZH_D[(n / 10) | 0] + "十" + (n % 10 ? ZH_D[n % 10] : "");
+      const EN_D = ["zero","one","two","three","four","five","six","seven","eight","nine","ten",
+        "eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen"];
+      const EN_T = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+      const enNum = (n) => (n < 20 ? EN_D[n] : EN_T[(n / 10) | 0] + (n % 10 ? "-" + EN_D[n % 10] : ""));
+      const num = (n) => (S.lang === "zh" ? zhNum(n) : enNum(n));
 
       const PROJECTS = Array.isArray(window.PROJECTS) ? window.PROJECTS : [];
       const CATEGORIES = Array.isArray(window.CATEGORIES) ? window.CATEGORIES : [];
-      /* 能点开试的排前面 —— 首屏就该是「可以马上玩」的那几个 */
+      /* 能点开试的排前面 —— 序号 01 就该是「可以马上玩」的那几个 */
       const LIST = [...PROJECTS].sort((a, b) => (b.href ? 1 : 0) - (a.href ? 1 : 0));
 
       const el = {
-        h1: document.getElementById("h1"), lede: document.getElementById("lede"),
-        stats: document.getElementById("stats"), cats: document.getElementById("cats"),
-        grid: document.getElementById("grid"), none: document.getElementById("none"),
-        q: document.getElementById("q"), lang: document.getElementById("lang"),
-        theme: document.getElementById("theme"), rights: document.getElementById("rights"),
-        toast: document.getElementById("toast"),
+        h1: document.getElementById("h1"), intro: document.getElementById("intro"),
+        note: document.getElementById("note"), hint: document.getElementById("hint"),
+        index: document.getElementById("index"), peek: document.getElementById("peek"),
+        lang: document.getElementById("lang"), theme: document.getElementById("theme"),
+        rights: document.getElementById("rights"), toast: document.getElementById("toast"),
       };
 
-      function catName(key) {
+      const catName = (key) => {
         const c = CATEGORIES.find((x) => x.key === key);
         return c ? c[S.lang] : key;
+      };
+      const href = (p) => p.href || `https://github.com/decli/${p.repo}`;
+      const repoURL = (p) => `https://github.com/decli/${p.repo}`;
+      const pretty = (u) => u.replace(/^https?:\/\//, "").replace(/^\//, "decli.github.io/");
+      const dotHTML = '<span class="li" aria-hidden="true"></span>';
+
+      function markHTML(p) {
+        if (String(p.icon || "").startsWith("/")) {
+          return `<span class="mark"><img src="${esc(p.icon)}" alt="" loading="lazy"
+            onerror="this.parentElement.classList.add('tinted');this.parentElement.style.background='linear-gradient(140deg,#64748b,#475569)';this.outerHTML='&#128279;'"></span>`;
+        }
+        const tint = p.tint || ["#64748b", "#475569"];
+        return `<span class="mark tinted" style="background:linear-gradient(140deg,${esc(tint[0])},${esc(tint[1])})">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[p.icon] || ICONS.package}</svg>
+        </span>`;
       }
 
+      /* ═══ 页面文字：标题、介绍句（含筛选器）、脚注 ═══ */
       function renderChrome() {
         const [a, b] = t("title");
-        /* 中文两段直接相连（做了几个 + 能用的东西）；英文之间要有个空格，
-           不然会渲染成 "A few thingsthat actually work" —— 一眼就是拼接出来的 */
-        const gap = S.lang === "en" ? " " : "";
-        el.h1.innerHTML = `${esc(a)}${gap}<span class="g">${esc(b)}</span>`;
-        el.lede.textContent = t("lede");
-        el.q.placeholder = t("search");
-        el.q.setAttribute("aria-label", t("search"));
-        el.none.textContent = t("none");
+        el.h1.innerHTML = `${esc(a)}<br>${esc(b)}`;
+
+        const cats = CATEGORIES.map((c) => {
+          const n = LIST.filter((p) => p.cat === c.key).length;
+          if (!n) return "";
+          const label = fill(t("catCount"), { n, name: S.lang === "en" ? c.en.toLowerCase() : c.zh });
+          return `<button class="f" type="button" data-cat="${esc(c.key)}" aria-pressed="${S.cat === c.key}">${esc(label)}</button>`;
+        }).filter(Boolean);
+
+        const joined =
+          cats.length > 1
+            ? cats.slice(0, -1).join(t("join")) + t("joinLast") + cats[cats.length - 1]
+            : cats.join("");
+        const allLabel = fill(t("allWord"), { n: num(LIST.length) });
+        const allBtn = `<button class="f" type="button" data-cat="all" aria-pressed="${S.cat === null}">${esc(allLabel)}</button>`;
+
+        el.intro.innerHTML = fill(esc(t("intro")), { all: allBtn, cats: joined });
+        const mark = `<span class="nb">${fill(esc(t("markPhrase")), { dot: dotHTML })}</span>`;
+        el.note.innerHTML = fill(esc(t("note")), { mark });
         el.lang.textContent = t("langBtn");
-        el.theme.title = t("themeTitle");
+        el.theme.textContent = t("themeBtn");
         el.rights.textContent = t("rights");
+        el.index.setAttribute("aria-label", t("indexLabel"));
         document.getElementById("mail").setAttribute("aria-label", S.lang === "zh" ? "复制邮箱" : "Copy email");
-
-        const live = LIST.filter((p) => p.href).length;
-        el.stats.innerHTML =
-          `<span class="stat"><b>${LIST.length}</b>${esc(t("projects"))}</span>` +
-          `<span class="stat"><b>${live}</b>${esc(t("online"))}</span>`;
-
-        el.cats.innerHTML =
-          `<button class="cat" data-cat="all" aria-pressed="${S.cat === "all"}">${esc(t("all"))}<em>${LIST.length}</em></button>` +
-          CATEGORIES.map((c) => {
-            const n = LIST.filter((p) => p.cat === c.key).length;
-            if (!n) return "";
-            return `<button class="cat" data-cat="${esc(c.key)}" aria-pressed="${S.cat === c.key}">${esc(c[S.lang])}<em>${n}</em></button>`;
-          }).join("");
       }
 
-      function cardHTML(p, i) {
-        const mark = String(p.icon || "").startsWith("/")
-          ? `<span class="mark"><img src="${esc(p.icon)}" alt="" loading="lazy"
-               onerror="this.parentElement.classList.add('tinted');this.parentElement.style.background='linear-gradient(140deg,#64748b,#475569)';this.outerHTML='&#128279;'"></span>`
-          : `<span class="mark tinted" style="background:linear-gradient(140deg,${esc((p.tint || ["#64748b", "#475569"])[0])},${esc((p.tint || ["#64748b", "#475569"])[1])})">
-               <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9"
-                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[p.icon] || ICONS.package}</svg>
-             </span>`;
+      /* ═══ 索引行 ═══
+         名称是链接（::after 铺满整行），描述留在链接外面当正文 ——
+         读屏拿到的链接名是干净的项目名，描述照样念得到。 */
+      function rowHTML(p, i) {
+        const live = !!p.href;
+        return `<div class="row" data-cat="${esc(p.cat)}" data-slug="${esc(p.slug)}" style="animation-delay:${Math.min(i, 12) * 35}ms">
+          <span class="no" aria-hidden="true">${String(i + 1).padStart(2, "0")}</span>
+          <a class="nm" href="${esc(href(p))}" target="_blank" rel="noopener noreferrer"
+             data-slug="${esc(p.slug)}" data-kind="${live ? "demo" : "repo"}">${esc(L(p.name))}</a>
+          ${live ? `<span class="li" aria-hidden="true"></span><span class="sr">${esc(t("liveTag"))}</span>` : ""}
+          <span class="ds">${esc(L(p.desc))}</span>
+          <span class="ct">${esc(catName(p.cat))}</span>
+          <span class="ar" aria-hidden="true">${live ? "↗" : ""}</span>
+          ${
+            live
+              ? `<a class="src" href="${esc(repoURL(p))}" target="_blank" rel="noopener noreferrer"
+                   data-slug="${esc(p.slug)}" data-kind="repo"
+                   aria-label="${esc(fill(t("srcLabel"), { name: L(p.name) }))}">${ghSVG(14)}</a>`
+              : `<span class="src" data-static aria-hidden="true">${ghSVG(14)}</span>`
+          }
+        </div>`;
+      }
 
-        const acts =
-          (p.href
-            ? `<a class="btn primary" href="${esc(p.href)}" target="_blank" rel="noopener noreferrer" data-slug="${esc(p.slug)}" data-kind="demo">
-                 ${esc(t("open"))}
-                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
-               </a>`
-            : "") +
-          `<a class="btn" href="https://github.com/decli/${esc(p.repo)}" target="_blank" rel="noopener noreferrer" data-slug="${esc(p.slug)}" data-kind="repo">
-             <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
-             ${esc(t("source"))}
-           </a>`;
-
-        const tags = (L(p.tags) || []).map((x) => `<span class="tag">${esc(x)}</span>`).join("");
-        const hay = [L(p.name), p.slug, p.repo, L(p.desc), (L(p.tags) || []).join(" "), catName(p.cat)].join(" ").toLowerCase();
-
-        return `<article class="card"${p.href ? " data-featured" : ""} data-cat="${esc(p.cat)}"
-                  data-find="${esc(hay)}" style="animation-delay:${Math.min(i, 12) * 45}ms">
-          <div class="head">
-            ${mark}
-            <div class="title">
-              <h2>${esc(L(p.name))}${p.href ? `<span class="live">${esc(t("liveTag"))}</span>` : ""}</h2>
-              <div class="kind">${esc(catName(p.cat))}</div>
-            </div>
-          </div>
-          <p class="desc">${esc(L(p.desc))}</p>
-          <div class="tags">${tags}</div>
-          <div class="acts">${acts}</div>
-        </article>`;
+      function renderPeek(p) {
+        if (!p) return;
+        el.peek.innerHTML = `<div class="in">
+          ${markHTML(p)}
+          <h2>${esc(L(p.name))}${p.href ? `<span class="badge">${esc(t("liveTag"))}</span>` : ""}</h2>
+          <p class="ds">${esc(L(p.desc))}</p>
+          <div class="tags">${(L(p.tags) || []).map((x) => `<span>${esc(x)}</span>`).join("")}</div>
+          <p class="to">→ ${esc(pretty(href(p)))}</p>
+        </div>`;
       }
 
       function render() {
         renderChrome();
         if (!LIST.length) {
-          el.grid.innerHTML = `<p class="none" style="grid-column:1/-1">项目清单没加载出来 —— 检查 sites.js 是否存在且语法正确。</p>`;
+          el.index.innerHTML = `<p style="padding:20px 0;color:var(--ink-3)">${esc(t("loadFail"))}</p>`;
           return;
         }
-        el.grid.innerHTML = LIST.map(cardHTML).join("");
-        filter();
+        el.index.innerHTML = LIST.map(rowHTML).join("");
+        applyFilter(S.cat, true);
+        renderPeek(LIST.find((p) => p.slug === peeking) || LIST[0]);
       }
 
-      function filter() {
-        const k = S.q.trim().toLowerCase();
-        let n = 0;
-        for (const c of el.grid.querySelectorAll(".card")) {
-          const ok = (S.cat === "all" || c.dataset.cat === S.cat) && (!k || c.dataset.find.includes(k));
-          c.hidden = !ok;
-          if (ok) n++;
+      /* ═══ 筛选：压暗不移除 ═══
+         压暗的行同时 inert —— 看不见的东西不该还能 Tab 到、被读屏念到。
+         inert 不支持的老浏览器只是少了这道保险，行为不变。 */
+      function applyFilter(cat, silent) {
+        S.cat = cat;
+        for (const b of el.intro.querySelectorAll(".f")) {
+          b.setAttribute("aria-pressed", String(b.dataset.cat === (cat || "all")));
         }
-        el.none.hidden = n > 0;
+        for (const r of el.index.querySelectorAll(".row")) {
+          const on = !cat || r.dataset.cat === cat;
+          r.toggleAttribute("data-on", on);
+          r.inert = !on;
+        }
+        el.index.toggleAttribute("data-filtered", !!cat);
+        if (cat) {
+          el.hint.innerHTML =
+            `${esc(fill(t("onlyCat"), { name: catName(cat) }))} —— <button type="button" id="clear">${esc(t("seeAll"))}</button>` +
+            ` <span style="opacity:.7">${esc(t("escHint"))} <kbd>Esc</kbd></span>`;
+          el.hint.hidden = false;
+        } else {
+          el.hint.hidden = true;
+          el.hint.textContent = "";
+        }
+
+        /* 筛到靠后的分类时，匹配的行可能整个在屏幕外 —— 屏幕上就只剩一片灰影，
+           看着像「全没了」。所以只在第一条匹配确实不在视口里时才滚过去；
+           它本来就看得见就一动不动，别让点一下筛选变成页面乱跳。 */
+        if (cat && !silent) {
+          const first = el.index.querySelector(".row[data-on]");
+          if (first) {
+            const r = first.getBoundingClientRect();
+            if (r.top < 0 || r.bottom > innerHeight) {
+              first.scrollIntoView({
+                block: "center",
+                behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+              });
+            }
+          }
+        }
+        if (!silent && window.gtag) gtag("event", "filter_category", { site: "portal", category: cat || "all" });
       }
 
       /* ── 事件 ── */
-      el.cats.addEventListener("click", (e) => {
-        const b = e.target.closest(".cat");
+      el.intro.addEventListener("click", (e) => {
+        const b = e.target.closest(".f");
         if (!b) return;
-        S.cat = b.dataset.cat;
-        for (const x of el.cats.querySelectorAll(".cat")) x.setAttribute("aria-pressed", String(x.dataset.cat === S.cat));
-        filter();
-        if (window.gtag) gtag("event", "filter_category", { site: "portal", category: S.cat });
+        const next = b.dataset.cat === "all" ? null : b.dataset.cat;
+        applyFilter(next === S.cat ? null : next);
       });
-
-      el.q.addEventListener("input", () => { S.q = el.q.value; filter(); });
+      document.addEventListener("click", (e) => {
+        if (e.target.id === "clear") applyFilter(null);
+      });
       addEventListener("keydown", (e) => {
-        if (e.key === "/" && document.activeElement !== el.q) { e.preventDefault(); el.q.focus(); }
-        else if (e.key === "Escape" && document.activeElement === el.q) {
-          el.q.value = ""; S.q = ""; filter(); el.q.blur();
-        }
+        if (e.key === "Escape" && S.cat) applyFilter(null);
       });
 
-      /* 光晕跟随。一个委托监听覆盖所有卡片，加卡片不用再挂事件 */
-      el.grid.addEventListener("pointermove", (e) => {
-        const c = e.target.closest(".card");
-        if (!c) return;
-        const r = c.getBoundingClientRect();
-        c.style.setProperty("--mx", `${e.clientX - r.left}px`);
-        c.style.setProperty("--my", `${e.clientY - r.top}px`);
-      });
+      /* 预览窗跟着悬停与键盘焦点走。一个委托监听覆盖所有行 */
+      let peeking = "";
+      function peekAt(row) {
+        const slug = row && row.dataset.slug;
+        if (!slug || slug === peeking) return;
+        peeking = slug;
+        renderPeek(LIST.find((p) => p.slug === slug));
+      }
+      el.index.addEventListener("pointerover", (e) => peekAt(e.target.closest(".row")));
+      el.index.addEventListener("focusin", (e) => peekAt(e.target.closest(".row")));
 
       /* 点击去哪，记一笔。只报 slug 和「点的是体验还是源码」*/
-      el.grid.addEventListener("click", (e) => {
+      el.index.addEventListener("click", (e) => {
         const a = e.target.closest("a[data-slug]");
         if (a && window.gtag) gtag("event", "open_project", { site: "portal", target: a.dataset.slug, kind: a.dataset.kind });
       });
@@ -793,20 +788,38 @@
 
       /* ── 明暗 ──
          入口页只要「跟系统」和「反过来」两种，三档轮换太重了。
-         选择记在 localStorage，跟子站各自的记忆互不干扰。 */
+         切换时从按钮位置荡开一个圆；浏览器不支持就直接切。 */
       const THEME_KEY = "decli.theme";
       const root = document.documentElement;
       try {
         const saved = localStorage.getItem(THEME_KEY);
         if (saved === "dark" || saved === "light") root.dataset.theme = saved;
       } catch (e) {}
-      el.theme.addEventListener("click", () => {
+      el.theme.addEventListener("click", (e) => {
         const sysDark = matchMedia("(prefers-color-scheme: dark)").matches;
         const next = (root.dataset.theme || (sysDark ? "dark" : "light")) === "dark" ? "light" : "dark";
-        root.dataset.theme = next;
-        try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
-        paintMail();
+        const apply = () => {
+          root.dataset.theme = next;
+          try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+          paintMail();
+        };
         if (window.gtag) gtag("event", "switch_theme", { site: "portal", to: next });
+        if (!document.startViewTransition || matchMedia("(prefers-reduced-motion: reduce)").matches) return apply();
+
+        const r = e.target.getBoundingClientRect();
+        const x = r.left + r.width / 2, y = r.top + r.height / 2;
+        const far = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+        document.startViewTransition(apply).ready.then(() => {
+          root.animate(
+            { clipPath: [`circle(0 at ${x}px ${y}px)`, `circle(${far}px at ${x}px ${y}px)`] },
+            {
+              duration: 420,
+              easing: "ease-in",
+              pseudoElement: next === "dark" ? "::view-transition-new(root)" : "::view-transition-old(root)",
+              direction: next === "dark" ? "normal" : "reverse",
+            }
+          );
+        });
       });
 
       /* ── 版权邮箱 ──
@@ -861,40 +874,7 @@
         setTimeout(() => (el.toast.dataset.on = "0"), 1800);
       });
 
-      /* ═══════════════════════════════════════════════════════════════
-         背景：一团跟着指针走的高光
-
-         pointermove 一秒能来一百多次，每次都直接写 style 会让整页跟着抖。
-         所以只记坐标，真正写样式攒到下一帧 —— 而且是**按需**请求这一帧：
-         指针不动就一帧都不排，页面闲着的时候这段代码等于不存在。
-         ═══════════════════════════════════════════════════════════════ */
-      (function () {
-        if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-        let px = 0, py = 0, queued = false, moved = false;
-        const spans = document.querySelectorAll(".aurora span");
-        // 三层各走各的，方向和快慢都不同，叠起来才有厚度
-        const FACTOR = [[0.035, 0.03], [-0.028, -0.022], [0.045, -0.035]];
-
-        function paint() {
-          queued = false;
-          document.body.style.setProperty("--px", px + "px");
-          document.body.style.setProperty("--py", py + "px");
-          const dx = px - innerWidth / 2, dy = py - innerHeight / 2;
-          spans.forEach((sp, i) => {
-            const f = FACTOR[i] || FACTOR[0];
-            sp.style.transform = `translate3d(${(dx * f[0]).toFixed(1)}px, ${(dy * f[1]).toFixed(1)}px, 0)`;
-          });
-        }
-
-        addEventListener("pointermove", (e) => {
-          px = e.clientX; py = e.clientY;
-          if (!moved) { moved = true; document.body.dataset.pointer = "1"; }
-          if (!queued) { queued = true; requestAnimationFrame(paint); }
-        }, { passive: true });
-      })();
-
-      /* ── 启动 ── */      /* ── 启动 ── */
+      /* ── 启动 ── */
       let lang0 = "zh";
       try {
         const saved = localStorage.getItem(LANG_KEY);
