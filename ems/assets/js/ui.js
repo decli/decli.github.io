@@ -170,13 +170,15 @@ const buildMail = () =>
 export function drawMailCanvas(cv) {
   if (!cv) return;
   const mail = buildMail();
+  // 取父元素的实际计算样式：邮箱内联在版权文字中间，字号/字重/颜色必须一致
   const cs = getComputedStyle(cv.parentElement);
-  const font = `500 12px ${cs.fontFamily}`;
+  const size = parseFloat(cs.fontSize) || 12;
+  const font = `${cs.fontWeight} ${size}px ${cs.fontFamily}`;
 
   const probe = document.createElement('canvas').getContext('2d');
   probe.font = font;
   const w = Math.ceil(probe.measureText(mail).width) + 2;
-  const hgt = 17;
+  const hgt = Math.ceil(size * 1.45);
   const dpr = Math.min(window.devicePixelRatio || 1, 3);
 
   cv.width = Math.round(w * dpr);

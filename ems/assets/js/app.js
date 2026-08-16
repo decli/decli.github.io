@@ -136,11 +136,9 @@ function shell() {
         </header>
         <main class="content" id="content"></main>
         <footer class="app-foot">
-          <span>© 2026 decli · 版权所有</span>
+          <span>© 2026 <canvas id="mailCv" class="mail-canvas" title="点击复制联系邮箱" aria-hidden="true"></canvas> · 版权所有</span>
           <span class="sep">·</span>
           <span>EMS 外贸营销系统 体验版</span>
-          <span class="sep">·</span>
-          <canvas id="mailCv" class="mail-canvas" title="点击复制联系邮箱" aria-hidden="true"></canvas>
         </footer>
       </div>
     </div>`;

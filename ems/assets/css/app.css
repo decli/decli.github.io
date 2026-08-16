@@ -414,8 +414,9 @@ table.tbl a.link { font-weight: 550; }
   color: var(--text-3); font-size: 11.5px; background: var(--surface);
 }
 .app-foot .sep { color: var(--border-strong); }
-.mail-canvas { vertical-align: -0.22em; cursor: pointer; opacity: .85; }
-.mail-canvas:hover { opacity: 1; }
+/* 高度 = 1.45em 且文字在画布内垂直居中，下移 (0.725 - 0.32) em 使其与相邻文字基线对齐 */
+.mail-canvas { vertical-align: -0.4em; cursor: pointer; }
+.mail-canvas:hover { opacity: .7; }
 
 /* Demo 水印条 */
 .demo-banner {
