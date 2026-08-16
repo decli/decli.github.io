@@ -8,38 +8,54 @@
     <title>页面不存在</title>
     <link rel="icon" href="/ftms/favicon.svg" type="image/svg+xml" />
 
+    <!-- SPA 清单跟首页共用一份，见 sites.js 的 SPA_PREFIXES。
+         同步加载：下面那段跳转要在页面画出来之前跑完，晚一步就会先闪一下 404。 -->
+    <script src="/sites.js"></script>
     <script>
-      /* ── /ftms/ 深链接的兜底 ──
-         /ftms/ 下是个单页应用，刷新 /ftms/follow-ups 这种地址时 GitHub Pages
-         正常会回落到 ftms/404.html（构建时由 index.html 拷来），路由读 pathname
-         就能渲染对，压根走不到这一页。
+      /* ── 单页应用的深链接兜底 ──
+         /ftms/ 这类子站是 SPA，刷新 /ftms/follow-ups 会走 404 流程。
+         正常情况下 GitHub Pages 会回落到那个子目录自己的 404.html（构建时由
+         index.html 拷来），路由读 pathname 就渲染对了，压根走不到这一页。
 
          但「Pages 会不会替子目录去找最近的那个 404.html」，官方文档说得并不硬，
          而它一旦不这么做，后果是**所有深链接刷新后全 404**。所以这里补一道：
-         把原始路径记进 sessionStorage 再跳回 /ftms/，应用启动时取回来用
-         replaceState 还原（见 src/main.tsx 的 RESCUE_KEY）。用户看到的地址
-         和刷新前一模一样。
+         把原始路径记进 sessionStorage 再跳回子站首页，应用启动时取回来用
+         replaceState 还原（ftms 那边见 src/main.tsx 的 RESCUE_KEY）——
+         用户看到的地址和刷新前一模一样，历史记录里也不多一条。
 
-         这段要写在 <head> 最前面：跳转越早，越不会先闪一下 404 的内容。 */
+         只对 SPA_PREFIXES 里列出的前缀做这件事：非 SPA 的站有自己的真 404，
+         把它们也跳走反而是帮倒忙。 */
       (function () {
+        var list = window.SPA_PREFIXES || [];
         var p = location.pathname;
-        if (p.indexOf("/ftms/") === 0) {
-          try {
-            sessionStorage.setItem("ftms:deeplink", p + location.search + location.hash);
-          } catch (e) {}
-          location.replace("/ftms/");
+        for (var i = 0; i < list.length; i++) {
+          /* `p !== list[i]` 这半句是**防死循环**的，不是多余的边界判断。
+
+             少了它：万一 /ftms/ 本身也 404（子站没部署上、或被误删），
+             跳到 /ftms/ → 又 404 → 又回到这一页 → 再跳 /ftms/ …
+             浏览器会一直转圈，比直接显示 404 难查得多，用户还看不出发生了什么。
+
+             加上之后，「子站根路径都打不开」就落回下面那张 404 —— 那时候
+             站是真没了，说实话才是对的。 */
+          if (p.indexOf(list[i]) === 0 && p !== list[i]) {
+            try {
+              sessionStorage.setItem("ftms:deeplink", p + location.search + location.hash);
+            } catch (e) {}
+            location.replace(list[i]);
+            return;
+          }
         }
       })();
     </script>
 
     <style>
-      :root { --bg:#f7f8fb; --text:#1a2233; --dim:#6b7688; --accent:#3b5bd6; }
+      :root { --bg:#f4f6fb; --text:#131c30; --dim:#7a86a0; --accent:#3b5bd6; }
       @media (prefers-color-scheme: dark) {
-        :root { --bg:#0b1220; --text:#e8eefb; --dim:#8b98ae; --accent:#7f9bff; }
+        :root { --bg:#070d1c; --text:#e9eefc; --dim:#7d8bab; --accent:#6f8dff; }
       }
       body {
         margin: 0;
-        min-height: 100vh;
+        min-height: 100dvh;
         display: grid;
         place-content: center;
         justify-items: center;
@@ -47,7 +63,8 @@
         padding: 40px 20px;
         background: var(--bg);
         color: var(--text);
-        font: 15px/1.7 "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+        font: 15px/1.7 "PingFang SC", "HarmonyOS Sans SC", "Hiragino Sans GB",
+          "Microsoft YaHei", system-ui, -apple-system, sans-serif;
         text-align: center;
       }
       b { font-size: 42px; letter-spacing: 0.04em; }
@@ -58,6 +75,6 @@
   <body>
     <b>404</b>
     <p>这个地址上没有东西。</p>
-    <p><a href="/">回首页</a> · <a href="/ftms/">信风 Tradewind</a></p>
+    <p><a href="/">回首页</a></p>
   </body>
 </html>

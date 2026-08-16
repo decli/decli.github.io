@@ -405,6 +405,12 @@
         color: var(--text-3);
         font-size: 12.5px;
       }
+      footer .owner {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        white-space: nowrap;
+      }
       footer .mail {
         display: inline-flex;
         align-items: center;
@@ -496,12 +502,15 @@
       <p class="none" id="none" hidden>没有匹配的项目。</p>
 
       <footer>
-        <span>© 2026 decli</span>
-        <span class="dot" aria-hidden="true"></span>
-        <span>版权所有</span>
-        <button class="mail" id="mail" aria-label="复制邮箱" title="点击复制邮箱">
-          <canvas id="mailc" aria-hidden="true"></canvas>
-        </button>
+        <!-- 「©」和邮箱之间不留 dot：它们是同一句话的两半（© 谁），
+             拆开会读成两条并列信息。分隔点只用在「版权」与「托管方」之间。 -->
+        <span class="owner">
+          ©
+          <button class="mail" id="mail" aria-label="复制邮箱" title="点击复制邮箱">
+            <canvas id="mailc" aria-hidden="true"></canvas>
+          </button>
+          版权所有 2026
+        </span>
         <span class="dot" aria-hidden="true"></span>
         <span>Powered by GitHub Pages</span>
       </footer>
@@ -509,47 +518,12 @@
 
     <div id="copied" role="status" aria-live="polite">邮箱已复制到剪贴板</div>
 
+    <script src="sites.js"></script>
     <script>
-      /* ═══════════════════════════════════════════════════════════
-         加一个子站：在这里加一条，别的都不用动。
-
-           slug   给埋点用的短名，也是搜索的一部分
-           href   地址。同域子目录写 /xxx/ 即可
-           name   显示名
-           desc   一句话说清「它替谁解决什么」，不是功能罗列
-           tags   3–4 个关键词，也参与搜索
-           icon   同域子站直接借它自己的 favicon；没有就写一个 emoji
-           live   false = 还没上线，卡片会标「筹备中」且不可点
-         ═══════════════════════════════════════════════════════════ */
-      const SITES = [
-        {
-          slug: "ftms",
-          href: "/ftms/",
-          name: "信风 Tradewind",
-          desc: "外贸业务全流程管理系统。询盘、报价、PI、采购生产、出运跟单、收汇、退税，一个 PI 号串到底。",
-          tags: ["外贸管理", "跟单", "出口退税", "33 个模块"],
-          icon: "/ftms/favicon.svg",
-          live: true,
-        },
-        {
-          slug: "ems",
-          href: "/ems/",
-          name: "EMS 外贸营销系统",
-          desc: "AI Agent 驱动的外贸全链路增长系统 —— 从「找到买家」到「收到货款」跑在同一套数据上。",
-          tags: ["获客", "AI Agent", "外贸营销"],
-          icon: "/ems/favicon.svg",
-          live: true,
-        },
-        {
-          slug: "wxformat3",
-          href: "/wxformat3/",
-          name: "WxMark",
-          desc: "微信公众号 Markdown 排版工具。左边写、右边预览，一键复制成带内联样式的 HTML 直接粘进后台。",
-          tags: ["公众号", "Markdown", "排版", "6 套主题"],
-          icon: "/wxformat3/favicon.svg",
-          live: true,
-        },
-      ];
+      /* 项目清单在 sites.js 里 —— 加一个项目只改那一个文件。
+         用普通 <script src> 同步加载，不是 fetch：没有异步、没有时序问题，
+         唯一的失败模式是文件 404，下面兜住了。 */
+      const SITES = Array.isArray(window.SITES) ? window.SITES : [];
 
       const ICON = {
         arrow:
@@ -559,7 +533,13 @@
       const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
       const grid = document.getElementById("grid");
-      grid.innerHTML = SITES.map((s, i) => {
+      if (!SITES.length) {
+        // sites.js 没加载上（改坏了、或部署漏了这个文件）。白板最难查，
+        // 所以直接把原因写在页面上
+        grid.innerHTML =
+          '<p class="none" style="grid-column:1/-1">项目清单没加载出来 —— 检查 sites.js 是否存在且语法正确。</p>';
+      }
+      grid.innerHTML = SITES.length ? SITES.map((s, i) => {
         const mark = s.icon.startsWith("/")
           ? `<img src="${esc(s.icon)}" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'🔗'}))">`
           : `<span>${esc(s.icon)}</span>`;
@@ -575,7 +555,7 @@
             </span>
             <span class="go">${ICON.arrow}</span>
           </${tag}>`;
-      }).join("");
+      }).join("") : grid.innerHTML;
 
       /* 光晕跟随。一个委托监听覆盖所有卡片，加卡片不用再挂事件 */
       grid.addEventListener("pointermove", (e) => {
