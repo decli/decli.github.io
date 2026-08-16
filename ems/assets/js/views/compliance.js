@@ -111,7 +111,7 @@ export default function compliance() {
         <div class="doc" style="font-size:11.5px;line-height:1.7">
 Ningbo Hengda Precision Machinery Co., Ltd.<br>
 No. 88 Jiangnan Road, Yinzhou District, Ningbo 315100, China<br>
-You are receiving this because we identified your company as an importer of hydraulic components.
+You are receiving this because we identified your company as an importer of metal fabrication equipment.
 <a href="javascript:void 0">Unsubscribe</a> · <a href="javascript:void 0">Privacy policy</a>
         </div>
         <div class="small muted mt8">公司名 + 实际地址 + 可用退订链接 + 联系原因 —— 一次性覆盖 CAN-SPAM / GDPR / CASL 的大部分要求。</div>`,

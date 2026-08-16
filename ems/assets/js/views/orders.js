@@ -62,7 +62,7 @@ function orderPane(o) {
       ${o.state === '生产中' ? h`
         <div class="hint ok mt16">
           ${icon('spark')}
-          <div><b>order-tracker 建议</b>：验货节点 8/22。该客户历来重视过程可视 —— 建议在验货完成当天推送带图进度报告。历史数据显示此举使复购间隔缩短约 3 周。
+          <div><b>order-tracker 建议</b>：客户验机节点 8/22。该客户历来重视过程可视 —— 建议在验机完成当天推送带图与切样视频的进度报告。历史数据显示此举使复购间隔缩短约 3 周。
             <button class="btn sm mt8" data-demo="生成进度通报">生成客户进度通报草稿</button></div>
         </div>` : ''}
     </div>`;

@@ -4,18 +4,18 @@ import { CUSTOMERS, DEALS, ORDERS, QUOTES, fmtMoney } from '../data.js';
 
 const TIMELINE = {
   'C-1042': [
-    { t:'2026-08-15 23:05', k:'ok',    ch:'email', title:'客户来信 · Q4 planning — indicative volumes', body:'Markus 主动启动 Q4 规划，询问 DN32 系列交期与价格指引。AI 判定为年度最大单的前置信号。' },
-    { t:'2026-08-12 10:22', k:'',      ch:'site',  title:'官网行为 · 浏览「DN32 系列」产品页 3 次', body:'来自 hydraulikventil.de，停留合计 8 分 42 秒，下载技术手册 PDF。' },
-    { t:'2026-08-02 09:14', k:'ok',    ch:'order', title:'订单 SO-2605 已开船', body:'汉堡港 ETA 09-12。已自动向客户推送带图进度报告（含验货照片 24 张）。' },
-    { t:'2026-07-23 16:40', k:'ok',    ch:'order', title:'验货通过 · 提前 1 天', body:'TÜV 第三方抽检报告已附。' },
+    { t:'2026-08-15 23:05', k:'ok',    ch:'email', title:'客户来信 · Q4 planning — indicative volumes', body:'Markus 主动启动 Q4 规划，询问 12kW 大幅面机型交期与价格指引。AI 判定为年度最大单的前置信号。' },
+    { t:'2026-08-12 10:22', k:'',      ch:'site',  title:'官网行为 · 浏览「SL-FC4020-12K」机型页 3 次', body:'来自 laserschneidmaschine.de，停留合计 8 分 42 秒，下载技术手册 PDF。' },
+    { t:'2026-08-02 09:14', k:'ok',    ch:'order', title:'订单 SO-2605 已开船', body:'汉堡港 ETA 09-12。已自动向客户推送带图进度报告（含验机照片与切样视频）。' },
+    { t:'2026-07-23 16:40', k:'ok',    ch:'order', title:'客户验机通过 · 提前 1 天', body:'切样报告与 EN 60825-1 激光安全测试报告已附。' },
     { t:'2026-06-28 11:05', k:'ok',    ch:'quote', title:'报价 Q-2603 v5 → 成交', body:'DDP Hamburg · $2.86M · 毛利率 36.1%（成本与汇率已冻结快照）。' },
-    { t:'2024-03-11 14:00', k:'muted', ch:'expo',  title:'首次接触 · 汉诺威工业展', body:'展位来访，交换名片。来源快照已存档。' },
+    { t:'2024-03-11 14:00', k:'muted', ch:'expo',  title:'首次接触 · 汉诺威金属加工展', body:'展位来访，交换名片。来源快照已存档。' },
   ],
   'C-1038': [
-    { t:'2026-08-15 13:14', k:'warn',  ch:'email', title:'客户来信 · Re: Quotation Q-2608', body:'工程评审通过；询问 3 年质保；500 台希望降价 6%。SLA 剩余 2h12m。' },
-    { t:'2026-08-14 22:30', k:'ok',    ch:'site',  title:'官网行为 · 高频访问（4 次 / 6 分 20 秒）', body:'浏览「高压柱塞泵」页面并下载 PDF 规格书 — 通常是内部评审信号。' },
-    { t:'2026-08-09 09:00', k:'',      ch:'quote', title:'报价 Q-2608 v3 已发送', body:'FOB Ningbo · $624K · 有效期至 09-05。' },
-    { t:'2026-05-02 08:12', k:'muted', ch:'radar', title:'线索入池 · 官网访客识别', body:'匿名访客反查为 Pacific Fluid Power Inc.，AI 评分 91。' },
+    { t:'2026-08-15 13:14', k:'warn',  ch:'email', title:'客户来信 · Re: Quotation Q-2608', body:'工程评审通过；询问激光器与切割头 3 年质保；8 台希望降价 6%。SLA 剩余 2h12m。' },
+    { t:'2026-08-14 22:30', k:'ok',    ch:'site',  title:'官网行为 · 高频访问（4 次 / 6 分 20 秒）', body:'浏览「6kW 光纤激光切割机」页面并下载 PDF 规格书 — 通常是内部评审信号。' },
+    { t:'2026-08-09 09:00', k:'',      ch:'quote', title:'报价 Q-2608 v3 已发送', body:'FOB Shanghai · $624K · 有效期至 09-05。' },
+    { t:'2026-05-02 08:12', k:'muted', ch:'radar', title:'线索入池 · 官网访客识别', body:'匿名访客反查为 Cascade Fabrication Systems Inc.，AI 评分 91。' },
   ],
 };
 
@@ -26,7 +26,7 @@ export default function customerDetail(id) {
   if (!c) return h`<div class="empty">未找到该客户。<a href="#/customers">返回客户列表</a></div>`;
 
   const tl = TIMELINE[c.id] || [
-    { t:c.lastActivity, k:'', ch:'email', title:'最近一次跟进', body:'（体验版仅为部分客户预置了完整时间线，可查看 Weidmann 或 Pacific Fluid）' },
+    { t:c.lastActivity, k:'', ch:'email', title:'最近一次跟进', body:'（体验版仅为部分客户预置了完整时间线，可查看 Falkenberg 或 Cascade）' },
     { t:c.firstContact, k:'muted', ch:'radar', title:'首次接触 · ' + c.source, body:'来源快照已存档。' },
   ];
   const deals = DEALS.filter(d => c.name.includes(d.company.split(' ')[0]) || d.company.includes(c.short));

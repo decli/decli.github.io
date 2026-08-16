@@ -59,7 +59,7 @@ export default function content() {
             <td>${tag(t.pri, t.pri === '高' ? 'danger' : 'warn')}</td></tr>`)}</tbody>
         </table></div>
         <div class="hint mt12">${icon('spark')}<div>
-          选题不只看搜索量，更看 <b>AI 搜索中被提问的频率</b> 与 <b>竞品内容覆盖度</b>。「hydraulic valve for electric excavator」竞品覆盖为 0，是当前最值得抢的位置。</div></div>`,
+          选题不只看搜索量，更看 <b>AI 搜索中被提问的频率</b> 与 <b>竞品内容覆盖度</b>。「laser cutting machine for EV battery tray」竞品覆盖为 0，是当前最值得抢的位置。</div></div>`,
         { title:'选题雷达', sub:'关键词 + 竞品缺口 + AI 搜索问题', right: h`<button class="btn sm" data-demo="刷新选题">刷新</button>` })}
 
       ${card(h`
@@ -83,7 +83,7 @@ export default function content() {
       title:'内容库', sub:'每篇内容都关联到具体站点与目标关键词，效果可归因', tight:true })}
 
     <div class="mt16">
-      ${hint(h`<b>内容的真正价值不是流量，是被引用</b>：一篇结构化良好的技术对照文章，可能带来的自然点击有限，但当采购经理问 ChatGPT「ISO 4401 和 DIN 24340 有什么区别」时被引用，品牌就出现在了决策的最前端。这是 2026 年外贸内容的新计分方式。`)}
+      ${hint(h`<b>内容的真正价值不是流量，是被引用</b>：一篇结构化良好的技术对照文章，可能带来的自然点击有限，但当采购经理问 ChatGPT「光纤激光和 CO2 激光切不锈钢有什么区别」时被引用，品牌就出现在了决策的最前端。这是 2026 年外贸内容的新计分方式。`)}
     </div>`;
 
   return {

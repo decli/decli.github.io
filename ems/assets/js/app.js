@@ -2,7 +2,7 @@
    应用外壳 · 路由 · 全局状态
    ========================================================================== */
 import { h, esc, icon } from './ui.js';
-import { ME, COMPANY_PROFILE, INBOX } from './data.js';
+import { ME, COMPANY_PROFILE, INBOX, DOCS_URL } from './data.js';
 
 import dashboard   from './views/dashboard.js';
 import leads       from './views/leads.js';
@@ -118,9 +118,9 @@ function shell() {
       <div class="main">
         <div class="demo-banner">
           <span>◈</span>
-          <span><b>产品体验版</b> · 全部数据为模拟数据，用于演示产品形态与业务流程</span>
+          <span><b>产品体验版</b> · 数据全部虚构，公司名与人名均为示例，与真实企业无关</span>
           <span class="sp"></span>
-          <a href="https://github.com/decli/exportmarketingsystem/tree/main/docs" target="_blank" rel="noopener">查看产品与技术方案 →</a>
+          <a href="${DOCS_URL}" target="_blank" rel="noopener">查看产品与技术方案 →</a>
         </div>
         <header class="topbar">
           <button class="icon-btn menu-toggle" id="menuBtn" aria-label="菜单">${icon('menu')}</button>

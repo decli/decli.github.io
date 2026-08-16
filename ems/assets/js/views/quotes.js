@@ -105,14 +105,14 @@ export default function quotes() {
       ${card(h`
         <div class="timeline">
           <div class="tl-item ok"><div class="tl-time">v1 · 07-28</div><div class="tl-title">初次报价 $658K</div>
-            <div class="tl-body">FOB Ningbo，标准 2 年质保</div></div>
+            <div class="tl-body">FOB Shanghai，标准 2 年质保</div></div>
           <div class="tl-item ok"><div class="tl-time">v2 · 08-04</div><div class="tl-title">客户要求增加认证 → $641K</div>
-            <div class="tl-body">调整为含 TÜV 检测费用的版本</div></div>
+            <div class="tl-body">调整为含 CE 与 EN 60825-1 检测费用的版本</div></div>
           <div class="tl-item"><div class="tl-time">v3 · 08-09</div><div class="tl-title">阶梯价方案 $624K（当前）</div>
-            <div class="tl-body">500 台阶梯价，毛利率 34.2%（成本快照已冻结）</div></div>
+            <div class="tl-body">8 台阶梯价，毛利率 34.2%（成本快照已冻结）</div></div>
           <div class="tl-item muted"><div class="tl-time">v4 · 待生成</div><div class="tl-title">建议：3 年质保 + 3.5% 让价</div>
             <div class="tl-body">AI 测算：让至毛利 30.5% 仍健康，且质保成本仅占 1.2%</div></div>
-        </div>`, { title:'Q-2608 版本历史', sub:'Pacific Fluid Power' })}
+        </div>`, { title:'Q-2608 版本历史', sub:'Cascade Fabrication Systems' })}
     </div>`;
 
   return {
@@ -122,7 +122,7 @@ export default function quotes() {
         const d = e.target.closest('[data-demo]');
         if (d) return demoClick(d.dataset.demo);
         if (e.target.closest('[data-q]')) {
-          openDrawer('形式发票 PI-2607 · Grupo Industrial Monterrey', piDoc(), (mask) => {
+          openDrawer('形式发票 PI-2607 · Grupo Corte Láser del Norte', piDoc(), (mask) => {
             mask.addEventListener('click', (ev) => {
               const b = ev.target.closest('[data-demo]');
               if (b) demoClick(b.dataset.demo);

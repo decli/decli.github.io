@@ -67,9 +67,9 @@ export default function sites() {
             <td class="muted small">${esc(a.note)}</td></tr>`)}</tbody>
         </table></div>
         <div class="hint mt12">${icon('spark')}<div>
-          <b>seo-geo-auditor 优先建议</b>：为每个产品页补充「参数对照表 + 标准声明」段落。可被 AI 直接引用的事实段落目前仅覆盖 41%，这是被引用次数落后行业头部的主因。
+          <b>seo-geo-auditor 优先建议</b>：为每个机型页补充「功率-板厚切割能力对照表 + 认证声明」段落。可被 AI 直接引用的事实段落目前仅覆盖 41%，这是被引用次数落后行业头部的主因。
           <button class="btn sm mt8" data-demo="批量生成事实段落">批量生成事实段落</button></div></div>`,
-        { title:'SEO / GEO 体检 · hengda-hydraulic.com', sub:'每周自动执行' })}
+        { title:'SEO / GEO 体检 · shenglei-laser.com', sub:'每周自动执行' })}
 
       ${card(h`
         <div class="flex ac gap12 mb16">
