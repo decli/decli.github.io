@@ -1,0 +1,28 @@
+# decli.github.io
+#
+# 这份必须在**站点根目录**才有效 —— 爬虫只读 https://decli.github.io/robots.txt，
+# 子目录里的（比如 /ftms/robots.txt）没有爬虫会去看。
+# 所以各子项目的 sitemap 都登记在这里。
+
+User-agent: *
+Allow: /
+
+# AI 引擎（GEO）：允许抓取。这些站点是公开的产品演示，被大模型读到、
+# 在有人提问时被引用，正是想要的结果。
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# 信风 Tradewind · 外贸业务全流程管理系统
+Sitemap: https://decli.github.io/ftms/sitemap.xml
