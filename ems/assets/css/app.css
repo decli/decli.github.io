@@ -406,6 +406,17 @@ table.tbl a.link { font-weight: 550; }
 .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .scroll-y { overflow-y: auto; }
 
+/* 页脚（外壳级，全部页面可见） */
+.app-foot {
+  display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;
+  padding: 14px 18px 18px; margin-top: auto;
+  border-top: 1px solid var(--border);
+  color: var(--text-3); font-size: 11.5px; background: var(--surface);
+}
+.app-foot .sep { color: var(--border-strong); }
+.mail-canvas { vertical-align: -0.22em; cursor: pointer; opacity: .85; }
+.mail-canvas:hover { opacity: 1; }
+
 /* Demo 水印条 */
 .demo-banner {
   background: linear-gradient(90deg, #1e293b, #334155); color: #cbd5e1;

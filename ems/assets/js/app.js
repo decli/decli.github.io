@@ -1,7 +1,7 @@
 /* ==========================================================================
    应用外壳 · 路由 · 全局状态
    ========================================================================== */
-import { h, esc, icon } from './ui.js';
+import { h, esc, icon, mountMailCanvas } from './ui.js';
 import { ME, COMPANY_PROFILE, INBOX, DOCS_URL } from './data.js';
 
 import dashboard   from './views/dashboard.js';
@@ -135,6 +135,13 @@ function shell() {
           <div class="avatar" title="${esc(ME.name)} · ${esc(ME.role)}">${esc(ME.initials)}</div>
         </header>
         <main class="content" id="content"></main>
+        <footer class="app-foot">
+          <span>© 2026 decli · 版权所有</span>
+          <span class="sep">·</span>
+          <span>EMS 外贸营销系统 体验版</span>
+          <span class="sep">·</span>
+          <canvas id="mailCv" class="mail-canvas" title="点击复制联系邮箱" aria-hidden="true"></canvas>
+        </footer>
       </div>
     </div>`;
 }
@@ -185,6 +192,8 @@ function route() {
 /* ---------- 启动 ---------- */
 function boot() {
   document.getElementById('app').innerHTML = shell();
+
+  mountMailCanvas(document.getElementById('mailCv'));
 
   const tick = () => { document.getElementById('clock').innerHTML = clockHtml(); };
   tick();

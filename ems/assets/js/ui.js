@@ -155,3 +155,54 @@ export function toast(msg, kind = '') {
 
 /** 供演示：未实现功能的统一反馈 */
 export const demoClick = (label) => toast(`体验版：「${label}」在正式版中可用`, 'warn');
+
+/* ==========================================================================
+   页脚联系邮箱
+   画在 canvas 上而不是写进 DOM：页面里没有文本节点、源码里也没有可被正则
+   直接捞走的邮箱字面量，能挡掉绝大多数批量抓取的爬虫。
+   点击可复制 —— canvas 里的字选不中，得给个拿到地址的办法。
+   ========================================================================== */
+const MAIL_USER = [100, 101, 99, 108, 105];              // 用户名
+const MAIL_HOST = [113, 113, 46, 99, 111, 109];          // 域名
+const buildMail = () =>
+  String.fromCharCode.apply(null, MAIL_USER) + '@' + String.fromCharCode.apply(null, MAIL_HOST);
+
+export function drawMailCanvas(cv) {
+  if (!cv) return;
+  const mail = buildMail();
+  const cs = getComputedStyle(cv.parentElement);
+  const font = `500 12px ${cs.fontFamily}`;
+
+  const probe = document.createElement('canvas').getContext('2d');
+  probe.font = font;
+  const w = Math.ceil(probe.measureText(mail).width) + 2;
+  const hgt = 17;
+  const dpr = Math.min(window.devicePixelRatio || 1, 3);
+
+  cv.width = Math.round(w * dpr);
+  cv.height = Math.round(hgt * dpr);
+  cv.style.width = w + 'px';
+  cv.style.height = hgt + 'px';
+
+  const ctx = cv.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.font = font;
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = cs.color;
+  ctx.fillText(mail, 1, hgt / 2);
+}
+
+export function mountMailCanvas(cv) {
+  if (!cv) return;
+  drawMailCanvas(cv);
+  // 跨屏拖动会改变 devicePixelRatio，重绘一次避免糊
+  addEventListener('resize', () => drawMailCanvas(cv));
+  cv.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(buildMail());
+      toast('联系邮箱已复制到剪贴板');
+    } catch {
+      toast('复制失败，请手动输入页脚显示的邮箱', 'warn');
+    }
+  });
+}
