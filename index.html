@@ -10,9 +10,9 @@
     <title>decli · 作品集</title>
     <meta
       name="description"
-      content="decli 做的十几个在线工具、浏览器扩展、油猴脚本与移动应用：信风 Tradewind 外贸全流程管理、EMS 外贸营销系统、WxMark 公众号排版、IP 归属地监控、职得投 JobOrNot 等。全部免注册，打开即用。"
+      content="decli 做的十几个在线工具、浏览器扩展、油猴脚本、桌面与移动应用：信风 Tradewind 外贸全流程管理、EMS 外贸营销系统、WxMark 公众号排版、MacPleco Mac 清理工具、IP 归属地监控、职得投 JobOrNot 等。全部免注册，打开即用。"
     />
-    <meta name="keywords" content="decli,作品集,外贸管理系统,公众号排版,Chrome 扩展,油猴脚本,开源项目" />
+    <meta name="keywords" content="decli,作品集,外贸管理系统,公众号排版,Mac 清理工具,Chrome 扩展,油猴脚本,开源项目" />
     <meta name="author" content="decli" />
     <meta name="copyright" content="© 2026 decli" />
     <link rel="canonical" href="https://decli.github.io/" />
@@ -29,14 +29,14 @@
     <meta property="og:title" content="decli · 作品集" />
     <meta
       property="og:description"
-      content="在线工具、浏览器扩展、油猴脚本与移动应用。全部免注册，打开即用，数据留在你自己的设备上。"
+      content="在线工具、浏览器扩展、油猴脚本、桌面与移动应用。全部免注册，打开即用，数据留在你自己的设备上。"
     />
     <meta property="og:image" content="https://decli.github.io/ftms/og.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="decli · 作品集" />
-    <meta name="twitter:description" content="在线工具、浏览器扩展、油猴脚本与移动应用。全部免注册，打开即用。" />
+    <meta name="twitter:description" content="在线工具、浏览器扩展、油猴脚本、桌面与移动应用。全部免注册，打开即用。" />
     <meta name="twitter:image" content="https://decli.github.io/ftms/og.png" />
 
     <link rel="icon" href="/ftms/favicon.svg" type="image/svg+xml" />
@@ -458,6 +458,197 @@
       }
       .btn.primary:hover { color: #fff; filter: brightness(1.06); }
 
+      /* ═══════════════════════════════════════════════════════════════
+         产品截图
+
+         ── 入口为什么在按钮右边那条空白上 ──
+         卡片底部那一行，左边是「打开 / 源码」，右边一直空着。空白本来就是
+         卡片上唯一一处「没在说事」的地方，把预览挂在那儿，谁都不挡谁：
+         想去的人一眼看得见，不想看的人视线根本不经过。
+         再加一个真按钮当它的实体 —— 否则「这儿能停鼠标」这件事没人知道，
+         而且触屏和键盘就彻底进不来了。
+
+         ── 三种设备三条路 ──
+         鼠标：停在入口上 → 卡内展开；点一下 → 全屏大图
+         键盘：Tab 到入口，回车 → 全屏大图（悬停那套对键盘没有意义）
+         触屏：没有 hover，点一下 → 全屏大图
+
+         ── 卡内预览为什么不盖住底部那一行 ──
+         盖住就等于把「打开」「源码」两个主按钮埋了：鼠标要走到面板上才能
+         翻页，而面板正压在按钮上，人就没路可退了。所以面板下沿停在 acts
+         上方（--acts-h），预览开着的时候两个按钮照样能点。
+
+         ── 图为什么是 contain 不是 cover ──
+         这堆截图从 16:10 的看板到 0.46 的手机竖屏都有，cover 会把竖屏截图
+         裁得只剩中间一条。contain 会留黑边，但留白比裁掉内容诚实。
+         ═══════════════════════════════════════════════════════════════ */
+      .card { --acts-h: 56px; }              /* padding 18 + 按钮 34 + acts 的 padding-top 4 */
+      .card[data-featured] { --acts-h: 60px; }
+      /* 有截图的卡片给个下限，好让预览面板有二百四十来像素可用。
+         不给的话面板只剩一百六，横屏截图裁到只认得出个导航条 ——
+         那就不叫预览了。同一行的卡片会跟着一起长高，看着更透气，不算亏。
+         只在**有悬停**的设备上加：手机根本展不开卡内预览，这几十像素
+         在那儿纯粹是标签和按钮之间一段空当，白让人多划一屏。 */
+      @media (hover: hover) and (pointer: fine) {
+        .card[data-shots] { min-height: 280px; }
+        .card[data-shots][data-featured] { min-height: 292px; }
+      }
+
+      .peek {
+        flex: 1 1 auto; min-width: 0;
+        display: inline-flex; align-items: center; gap: 6px;
+        height: 34px; padding: 0 10px;
+        border: 0; border-radius: 10px;
+        background: transparent; color: var(--text-3);
+        font: inherit; font-size: 12.5px; font-weight: 560;
+        cursor: pointer; white-space: nowrap; overflow: hidden;
+        transition: color 0.16s, background 0.16s;
+      }
+      .card:hover .peek { color: var(--text-2); background: color-mix(in srgb, var(--text) 5%, transparent); }
+      .peek:hover, .peek[data-on="1"] {
+        color: var(--brand);
+        background: color-mix(in srgb, var(--brand) 10%, transparent);
+      }
+      .peek:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+      .peek svg { flex: none; }
+      .peek em { font-style: normal; font-variant-numeric: tabular-nums; opacity: 0.75; }
+
+      .peekbox {
+        position: absolute; left: 0; right: 0; top: 0; bottom: var(--acts-h);
+        z-index: 2;
+        display: flex; flex-direction: column;
+        background: var(--card-solid);
+        opacity: 0; transition: opacity 0.2s;
+      }
+      .peekbox[data-on="1"] { opacity: 1; }
+      .peekbox[hidden] { display: none; }
+
+      .peekfig {
+        position: relative; flex: 1; min-height: 0; overflow: hidden;
+        /* 竖图 contain 之后两侧会露底，给一点很淡的底纹，别是一片死白 */
+        background:
+          radial-gradient(120% 90% at 50% 0%, color-mix(in srgb, var(--brand) 7%, transparent), transparent 70%),
+          var(--card-solid);
+      }
+      /* 绝对定位撑满，别靠 max-height:100% —— 父级的高度是 flex 算出来的，
+         百分比高度在这种链路上时灵时不灵，图会直接漫出去被裁掉。
+         object-fit 到底取 cover 还是 contain 由 JS 按图的方向定，见 fitShot。 */
+      .peekfig img {
+        position: absolute; inset: 0;
+        width: 100%; height: 100%;
+        object-fit: contain;
+        object-position: 50% 0;      /* 万一是 cover，从顶上开始留 —— 界面的身份都在顶上 */
+        opacity: 0; transition: opacity 0.24s;
+        cursor: zoom-in;
+      }
+      .peekfig img[data-ready="1"] { opacity: 1; }
+      /* 图还没到时的微光扫描。图在缓存里时这一帧根本不会出现 */
+      .peekfig::after {
+        content: ""; position: absolute; inset: 0; pointer-events: none;
+        background: linear-gradient(100deg, transparent 24%, var(--glow) 50%, transparent 76%);
+        background-size: 240% 100%;
+        opacity: 0; transition: opacity 0.2s;
+        animation: sweep 1.15s linear infinite;
+      }
+      .peekfig[data-loading="1"]::after { opacity: 1; }
+      @keyframes sweep { from { background-position: 140% 0; } to { background-position: -140% 0; } }
+
+      .peekbar {
+        display: flex; align-items: center; gap: 4px;
+        height: 30px; flex: none; padding: 0 5px;
+        border-top: 1px solid var(--line);
+      }
+      .peekcap {
+        flex: 1; min-width: 0; text-align: center;
+        overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        color: var(--text-2); font-size: 11.5px;
+      }
+      .peekcap b { margin-left: 6px; color: var(--text-3); font-weight: 600; font-variant-numeric: tabular-nums; }
+      .peeknav {
+        width: 24px; height: 24px; flex: none;
+        display: grid; place-content: center;
+        border: 0; border-radius: 8px; background: none;
+        color: var(--text-3); cursor: pointer;
+        transition: color 0.14s, background 0.14s;
+      }
+      .peeknav:hover { color: var(--text); background: color-mix(in srgb, var(--text) 9%, transparent); }
+      .peeknav[hidden] { display: none; }
+
+      /* ═══ 全屏大图 ═══
+         卡内那块最多两百来像素高，看个轮廓够了，看清楚不够。
+         点一下进这里：图给到 84vh，左右翻页、圆点跳转、Esc 退出。
+         底色两套主题都用深色 —— 截图多半是浅色界面，深底才托得住。 */
+      .lb {
+        position: fixed; inset: 0; z-index: 50;
+        display: flex; flex-direction: column;
+        padding: clamp(10px, 2.2vh, 20px) clamp(10px, 2.4vw, 26px);
+        background: rgba(6, 10, 24, 0.82);
+        backdrop-filter: blur(16px);
+        opacity: 0; transition: opacity 0.22s;
+      }
+      .lb[data-on="1"] { opacity: 1; }
+      .lb[hidden] { display: none; }
+
+      .lbhead { display: flex; align-items: center; gap: 10px; flex: none; color: #eaf0ff; }
+      .lbtitle { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; font-weight: 650; }
+      .lbclose {
+        width: 38px; height: 38px; flex: none;
+        display: grid; place-content: center;
+        border: 1px solid rgba(234, 240, 255, 0.22); border-radius: 12px;
+        background: rgba(255, 255, 255, 0.06); color: #eaf0ff;
+        cursor: pointer; transition: background 0.14s, border-color 0.14s;
+      }
+      .lbclose:hover { background: rgba(255, 255, 255, 0.14); border-color: rgba(234, 240, 255, 0.4); }
+
+      .lbstage { flex: 1 1 0; min-height: 0; display: flex; align-items: center; gap: clamp(6px, 1.6vw, 16px); }
+      /* align-self:stretch 把高度交给 flex 行直接定死，contain 才有一个确定的框可依。
+         max-width 是防超宽屏把 1200 宽的原图硬拉大 —— 拉大就是糊。 */
+      .lbstage img {
+        flex: 1 1 auto; min-width: 0; align-self: stretch;
+        max-width: 1240px; margin-inline: auto; display: block;
+        object-fit: contain;
+        opacity: 0; transition: opacity 0.2s;
+        cursor: zoom-out;
+      }
+      .lbstage img[data-ready="1"] { opacity: 1; }
+      .lbnav {
+        width: 46px; height: 46px; flex: none;
+        display: grid; place-content: center;
+        border: 1px solid rgba(234, 240, 255, 0.2); border-radius: 50%;
+        background: rgba(255, 255, 255, 0.07); color: #eaf0ff;
+        cursor: pointer; transition: background 0.14s, transform 0.14s;
+      }
+      .lbnav:hover { background: rgba(255, 255, 255, 0.17); transform: scale(1.06); }
+      .lbnav[hidden] { display: none; }
+
+      .lbfoot { flex: none; display: grid; gap: 8px; justify-items: center; padding-top: clamp(8px, 1.6vh, 14px); }
+      .lbcap { color: rgba(234, 240, 255, 0.82); font-size: 13px; text-align: center; }
+      .lbcap b { margin-left: 8px; color: rgba(234, 240, 255, 0.5); font-weight: 600; font-variant-numeric: tabular-nums; }
+      .lbdots { display: flex; gap: 7px; }
+      .lbdot {
+        width: 7px; height: 7px; padding: 0;
+        border: 0; border-radius: 50%;
+        background: rgba(234, 240, 255, 0.3);
+        cursor: pointer; transition: background 0.14s, transform 0.14s;
+      }
+      .lbdot:hover { background: rgba(234, 240, 255, 0.6); }
+      .lbdot[aria-current="true"] { background: #eaf0ff; transform: scale(1.25); }
+      .lbclose:focus-visible, .lbnav:focus-visible, .lbdot:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+      /* 窄屏上左右两个圆钮要吃掉近百像素宽，而这块屏本来就只有三百多 ——
+         横屏截图能有多大全看宽度。所以窄屏改成浮在图上，宽度全让给图。 */
+      @media (max-width: 560px) {
+        .lb { padding: 10px 8px; }
+        .lbstage { position: relative; }
+        .lbnav {
+          position: absolute; z-index: 1; top: 50%;
+          width: 38px; height: 38px; transform: translateY(-50%);
+        }
+        .lbnav[data-d="-1"] { left: 2px; }
+        .lbnav[data-d="1"] { right: 2px; }
+        .lbnav:hover { transform: translateY(-50%); }
+      }
+
       .none { padding: 44px 0; text-align: center; color: var(--text-3); font-size: 14px; }
       .none[hidden] { display: none; }
 
@@ -489,7 +680,7 @@
       }
       #toast[data-on="1"] { opacity: 1; transform: translate(-50%, 0); }
 
-      /* 有人明确要求少动效，就一动不动 */      /* 有人明确要求少动效，就一动不动 */
+      /* 有人明确要求少动效，就一动不动 */
       @media (prefers-reduced-motion: reduce) {
         html { scroll-behavior: auto; }
         .aurora i, .wind path { animation: none; }
@@ -499,6 +690,11 @@
         .card { animation: none; }
         .card, .btn, .ghost, .cat { transition: none; }
         .card:hover, .btn:hover, .ghost:hover { transform: none; }
+        /* 预览：过渡和扫光全停，图和翻页一个不少 */
+        .peek, .peekbox, .peekfig img, .peeknav, .lb, .lbstage img, .lbnav, .lbclose, .lbdot { transition: none; }
+        .peekfig::after { animation: none; }
+        .lbnav:hover { transform: none; }
+        .lbdot[aria-current="true"] { transform: none; }
       }
     </style>
   </head>
@@ -568,7 +764,31 @@
 
     <div id="toast" role="status" aria-live="polite"></div>
 
-    <script src="sites.js"></script>    <script src="sites.js"></script>
+    <!-- 全屏大图。整站只有这一份，谁点开就借给谁用 —— 十三张卡片各挂一个
+         对话框，DOM 里就多十二个永远用不上的空壳。 -->
+    <div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-labelledby="lbtitle">
+      <div class="lbhead">
+        <span class="lbtitle" id="lbtitle"></span>
+        <button class="lbclose" id="lbclose">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+        </button>
+      </div>
+      <div class="lbstage" id="lbstage">
+        <button class="lbnav" data-d="-1">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+        </button>
+        <img id="lbimg" alt="" decoding="async" />
+        <button class="lbnav" data-d="1">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+        </button>
+      </div>
+      <div class="lbfoot">
+        <span class="lbcap" id="lbcap"></span>
+        <div class="lbdots" id="lbdots"></div>
+      </div>
+    </div>
+
+    <script src="sites.js"></script>
     <script>
       /* ═══ 界面文案 ═══
          项目本身的中英文在 sites.js 里，这里只放界面自己的词。 */
@@ -576,39 +796,53 @@
         zh: {
           /* ── 这句话为什么这么写 ──
              「做了几个能用的东西」说的是**结果**，谁都能说，也就谁都记不住。
-             十二个项目横跨外贸系统、公众号排版、IP 监控、安卓象棋 —— 表面上毫无关系，
+             十三个项目横跨外贸系统、公众号排版、Mac 清理、IP 监控、安卓象棋 —— 表面上毫无关系，
              真正把它们串起来的是**动机**：某天嫌某件事麻烦，于是自己动手。
              说动机，比罗列品类有画面，也解释了这堆东西为什么长在一起。 */
           title: ["嫌它麻烦，", "就自己写一个"],
-          lede: "十二个项目。有的是自己嫌麻烦顺手写的，有的是给家里人做的 —— 外贸系统、公众号排版、IP 归属地监控、取件码助手。纯前端或本地运行，免注册，打开就能用。",
+          lede: "十三个项目。有的是自己嫌麻烦顺手写的，有的是给家里人做的 —— 外贸系统、公众号排版、Mac 清理、IP 归属地监控、取件码助手。纯前端或本地运行，免注册，打开就能用。",
           all: "全部",
           search: "搜项目名、用途、关键词…",
           none: "没有匹配的项目。",
           projects: "个项目",
           online: "个可在线体验",
           open: "打开",
+          download: "下载",
           source: "源码",
           liveTag: "在线",
           rights: "版权所有 2026",
           copied: "邮箱已复制到剪贴板",
           langBtn: "EN",
           themeTitle: "切换明暗",
+          preview: "预览",
+          previewA11y: "查看 %s 的产品截图",
+          shotOf: "第 %1 张，共 %2 张",
+          closeShots: "关闭",
+          prevShot: "上一张",
+          nextShot: "下一张",
         },
         en: {
           title: ["Annoyed enough", "to just build it"],
-          lede: "Twelve projects. Some scratched an itch of my own, some were built for family — a trade-ops suite, a WeChat formatter, an IP monitor, a parcel-code reader. All client-side or local, no sign-up, just open and use.",
+          lede: "Thirteen projects. Some scratched an itch of my own, some were built for family — a trade-ops suite, a WeChat formatter, a Mac cleaner, an IP monitor, a parcel-code reader. All client-side or local, no sign-up, just open and use.",
           all: "All",
           search: "Search name, purpose, keyword…",
           none: "Nothing matches.",
           projects: "projects",
           online: "live online",
           open: "Open",
+          download: "Download",
           source: "Source",
           liveTag: "Live",
           rights: "All rights reserved 2026",
           copied: "Email copied to clipboard",
           langBtn: "中",
           themeTitle: "Toggle theme",
+          preview: "Preview",
+          previewA11y: "See screenshots of %s",
+          shotOf: "%1 of %2",
+          closeShots: "Close",
+          prevShot: "Previous",
+          nextShot: "Next",
         },
       };
 
@@ -637,6 +871,14 @@
       /* 能点开试的排前面 —— 首屏就该是「可以马上玩」的那几个 */
       const LIST = [...PROJECTS].sort((a, b) => (b.href ? 1 : 0) - (a.href ? 1 : 0));
 
+      /* 截图清单单独拷一份出来管：图挂了就从这儿删（见 dropShot），
+         直接改 sites.js 那份数组等于把数据源改脏了 */
+      const SHOTS = Object.create(null);
+      for (const p of LIST) {
+        if (Array.isArray(p.shots) && p.shots.length) SHOTS[p.slug] = p.shots.slice();
+      }
+      const shotsOf = (slug) => SHOTS[slug] || [];
+
       const el = {
         h1: document.getElementById("h1"), lede: document.getElementById("lede"),
         stats: document.getElementById("stats"), cats: document.getElementById("cats"),
@@ -644,6 +886,15 @@
         q: document.getElementById("q"), lang: document.getElementById("lang"),
         theme: document.getElementById("theme"), rights: document.getElementById("rights"),
         toast: document.getElementById("toast"),
+      };
+
+      /* 全屏大图那一份 DOM。声明放在这儿而不是下面的事件区：
+         keydown 是全局监听，脚本一跑完就能触发，引用得先立在那儿。 */
+      const lb = {
+        root: document.getElementById("lb"), img: document.getElementById("lbimg"),
+        stage: document.getElementById("lbstage"), cap: document.getElementById("lbcap"),
+        dots: document.getElementById("lbdots"), title: document.getElementById("lbtitle"),
+        close: document.getElementById("lbclose"),
       };
 
       function catName(key) {
@@ -665,6 +916,10 @@
         el.theme.title = t("themeTitle");
         el.rights.textContent = t("rights");
         document.getElementById("mail").setAttribute("aria-label", S.lang === "zh" ? "复制邮箱" : "Copy email");
+        lb.close.setAttribute("aria-label", t("closeShots"));
+        for (const n of lb.root.querySelectorAll(".lbnav")) {
+          n.setAttribute("aria-label", t(Number(n.dataset.d) < 0 ? "prevShot" : "nextShot"));
+        }
 
         const live = LIST.filter((p) => p.href).length;
         el.stats.innerHTML =
@@ -681,6 +936,7 @@
       }
 
       function cardHTML(p, i) {
+        const shots = shotsOf(p.slug);
         const mark = String(p.icon || "").startsWith("/")
           ? `<span class="mark"><img src="${esc(p.icon)}" alt="" loading="lazy"
                onerror="this.parentElement.classList.add('tinted');this.parentElement.style.background='linear-gradient(140deg,#64748b,#475569)';this.outerHTML='&#128279;'"></span>`
@@ -696,16 +952,53 @@
                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
                </a>`
             : "") +
+          /* 下载：给「装完才能跑」的原生 App。它不带「在线」徽标，也不进
+             「个可在线体验」那个计数 —— 下一个安装包和点开就能试，不是一回事 */
+          (!p.href && p.dl
+            ? `<a class="btn primary" href="${esc(p.dl)}" target="_blank" rel="noopener noreferrer" data-slug="${esc(p.slug)}" data-kind="download">
+                 ${esc(t("download"))}
+                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0 4-4m-4 4-4-4M5 19h14"/></svg>
+               </a>`
+            : "") +
           `<a class="btn" href="https://github.com/decli/${esc(p.repo)}" target="_blank" rel="noopener noreferrer" data-slug="${esc(p.slug)}" data-kind="repo">
              <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
              ${esc(t("source"))}
-           </a>`;
+           </a>` +
+          /* 预览入口：按钮右边那条空白（flex:1 就是让它把空白占满）。
+             真按钮，不是纯 hover 的热区 —— 键盘 Tab 得到，触屏点得到。 */
+          (shots.length
+            ? `<button class="peek" type="button" aria-haspopup="dialog"
+                       aria-label="${esc(t("previewA11y").replace("%s", L(p.name)))}">
+                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                   <rect x="3" y="4.5" width="18" height="15" rx="2.5"/><circle cx="8.6" cy="9.8" r="1.5"/><path d="m4 17 5-4.6 3.4 3.1L16 11l4 4.4"/>
+                 </svg>
+                 <span>${esc(t("preview"))}</span><em>${shots.length}</em>
+               </button>`
+            : "");
 
         const tags = (L(p.tags) || []).map((x) => `<span class="tag">${esc(x)}</span>`).join("");
         const hay = [L(p.name), p.slug, p.repo, L(p.desc), (L(p.tags) || []).join(" "), catName(p.cat)].join(" ").toLowerCase();
 
-        return `<article class="card"${p.href ? " data-featured" : ""} data-cat="${esc(p.cat)}"
-                  data-find="${esc(hay)}" style="animation-delay:${Math.min(i, 12) * 45}ms">
+        /* 卡内预览整块对读屏隐藏（aria-hidden），里面的翻页键也一并退出
+           Tab 序列 —— 它是纯鼠标的东西，键盘和读屏走「预览」按钮进大图，
+           那条路信息更全。aria-hidden 里留可聚焦元素是硬伤，别省这个 tabindex。 */
+        const nav = (d, label) => `<button class="peeknav" type="button" data-d="${d}" tabindex="-1" aria-label="${esc(t(label))}">
+             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d < 0 ? "M15 5l-7 7 7 7" : "M9 5l7 7-7 7"}"/></svg>
+           </button>`;
+        const peekBox = shots.length
+          ? `<div class="peekbox" hidden aria-hidden="true">
+               <div class="peekfig"><img alt="" decoding="async"></div>
+               <div class="peekbar">
+                 ${shots.length > 1 ? nav(-1, "prevShot") : ""}
+                 <span class="peekcap"></span>
+                 ${shots.length > 1 ? nav(1, "nextShot") : ""}
+               </div>
+             </div>`
+          : "";
+
+        return `<article class="card"${p.href ? " data-featured" : ""}${shots.length ? " data-shots" : ""}
+                  data-cat="${esc(p.cat)}" data-slug="${esc(p.slug)}" data-find="${esc(hay)}"
+                  style="animation-delay:${Math.min(i, 12) * 45}ms">
           <div class="head">
             ${mark}
             <div class="title">
@@ -716,6 +1009,7 @@
           <p class="desc">${esc(L(p.desc))}</p>
           <div class="tags">${tags}</div>
           <div class="acts">${acts}</div>
+          ${peekBox}
         </article>`;
       }
 
@@ -725,7 +1019,11 @@
           el.grid.innerHTML = `<p class="none" style="grid-column:1/-1">项目清单没加载出来 —— 检查 sites.js 是否存在且语法正确。</p>`;
           return;
         }
+        /* 切语言会把整个网格重建一遍，开着的预览连同它挂在卡片上的翻页位置
+           一起没了 —— 先手动收掉，不然 peekCard 会指着一个已经不在文档里的节点 */
+        closePeek();
         el.grid.innerHTML = LIST.map(cardHTML).join("");
+        if (!lb.root.hidden) paintLb();   // 大图开着的话，标题和说明也跟着换语言
         filter();
       }
 
@@ -752,6 +1050,24 @@
 
       el.q.addEventListener("input", () => { S.q = el.q.value; filter(); });
       addEventListener("keydown", (e) => {
+        /* 大图开着的时候键盘归它管：这时候按 `/` 想搜索是没有的事，
+           而焦点必须留在对话框里 —— 否则读屏会读到底下那一整页 */
+        if (!lb.root.hidden) {
+          if (e.key === "Escape") { e.preventDefault(); return closeLb(); }
+          if (e.key === "ArrowRight") { e.preventDefault(); lbI += 1; return paintLb(); }
+          if (e.key === "ArrowLeft") { e.preventDefault(); lbI -= 1; return paintLb(); }
+          if (e.key === "Home") { e.preventDefault(); lbI = 0; return paintLb(); }
+          if (e.key === "End") { e.preventDefault(); lbI = shotsOf(lbSlug).length - 1; return paintLb(); }
+          if (e.key === "Tab") {
+            const f = [...lb.root.querySelectorAll("button")].filter((b) => !b.hidden && b.offsetParent);
+            if (!f.length) return;
+            const first = f[0], last = f[f.length - 1];
+            if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+            else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+          }
+          return;
+        }
+        if (e.key === "Escape" && peekCard) { closePeek(); return; }
         if (e.key === "/" && document.activeElement !== el.q) { e.preventDefault(); el.q.focus(); }
         else if (e.key === "Escape" && document.activeElement === el.q) {
           el.q.value = ""; S.q = ""; filter(); el.q.blur();
@@ -772,6 +1088,282 @@
         const a = e.target.closest("a[data-slug]");
         if (a && window.gtag) gtag("event", "open_project", { site: "portal", target: a.dataset.slug, kind: a.dataset.kind });
       });
+
+      /* ═══════════════════════════════════════════════════════════════
+         产品截图：卡内预览 + 全屏大图
+
+         图一律**用到才下载**。首屏这一页本来只有一个 HTML 文件，
+         26 张截图要是跟着首屏一起发，等于把一个零依赖的入口页做成了
+         一兆多的图库。所以 img 出厂时没有 src，展开才填。
+
+         预取分两步，都踩在人真实的动作节奏上：
+           指针进卡片 → 悄悄下第一张（这时人还在往按钮那边走）
+           翻到第 i 张 → 顺手把 i±1 也下了（十有八九下一步就翻到）
+         等指针真的停到「预览」上，图基本已经躺在缓存里了。
+         ═══════════════════════════════════════════════════════════════ */
+      const HOVER_OK = matchMedia("(hover: hover) and (pointer: fine)").matches;
+      const HOVER_DELAY = 130;      // 比「路过」长、比「我想看看」短
+      const shotCap = (s) => (s ? s[S.lang] ?? s.zh ?? "" : "");
+      const prefetched = new Set();
+
+      function prefetch(src) {
+        if (!src || prefetched.has(src)) return;
+        prefetched.add(src);
+        new Image().src = src;
+      }
+
+      /* 图挂了（最典型的是外链那张）就把它从清单里摘掉，顺手把入口上的
+         计数改对；一张不剩就连入口一起撤 —— 与其留个点开是空的按钮，
+         不如当它没有过。 */
+      function dropShot(slug, src) {
+        const list = SHOTS[slug];
+        if (!list) return [];
+        const left = list.filter((s) => s.src !== src);
+        SHOTS[slug] = left;
+        for (const card of el.grid.querySelectorAll(`.card[data-slug="${CSS.escape(slug)}"]`)) {
+          const btn = card.querySelector(".peek");
+          if (!btn) continue;
+          if (!left.length) {
+            closePeek();
+            card.querySelector(".peekbox")?.remove();
+            btn.remove();
+          } else {
+            btn.querySelector("em").textContent = String(left.length);
+            card.querySelectorAll(".peeknav").forEach((n) => (n.hidden = left.length < 2));
+          }
+        }
+        return left;
+      }
+
+      /* cover 还是 contain，按「裁掉的是哪一边」来定，不是按图横竖。
+         cover 总是从图相对更大的那条边上裁：
+           图比框更扁（比例大于框）→ 裁两侧。侧栏、右边那列全没了，不行
+           图比框更方/更竖（比例小于框）→ 裁上下。配上 object-position 顶对齐，
+           留下的正好是页头和第一屏，界面的身份全在那儿 —— 这个可以
+         所以：只在「裁上下」那一档用 cover，其余一律 contain（宁可留白，不砍内容）。 */
+      function fitShot(img, fig) {
+        if (!img.naturalWidth || !fig) return;
+        const r = fig.getBoundingClientRect();
+        if (!r.width || !r.height) return;
+        const cover = img.naturalWidth / img.naturalHeight < r.width / r.height;
+        img.style.objectFit = cover ? "cover" : "contain";
+        /* 顶对齐只在 cover 时有意义（留住页头）。contain 还顶着放的话，
+           空出来的一条全堆在下边，看着像图掉下去了 —— 那时候居中才对。 */
+        img.style.objectPosition = cover ? "50% 0" : "50% 50%";
+      }
+
+      /* 把 src 装进某个 img，管好「加载中 / 好了 / 挂了」三个状态。
+         同一个 src 重复设不会再触发 onload，所以先短路掉。 */
+      function loadShot(img, wrap, src, onFail, onLoad) {
+        if (img.dataset.src === src && img.dataset.ready === "1") return;
+        img.dataset.src = src;
+        img.dataset.ready = "0";
+        wrap.dataset.loading = "1";
+        img.onload = () => {
+          if (img.dataset.src !== src) return;   // 期间又翻了一张，这次的结果作废
+          wrap.dataset.loading = "0";
+          img.dataset.ready = "1";
+          onLoad && onLoad(img);
+        };
+        img.onerror = () => {
+          wrap.dataset.loading = "0";
+          onFail && onFail();
+        };
+        img.src = src;
+      }
+
+      /* ── 卡内预览 ── */
+      let peekCard = null, peekTimer = 0;
+
+      function paintPeek(card) {
+        const list = shotsOf(card.dataset.slug);
+        if (!list.length) return;
+        const i = (card._i = Math.max(0, Math.min(card._i || 0, list.length - 1)));
+        const box = card.querySelector(".peekbox");
+        const img = box.querySelector("img");
+        const fig = box.querySelector(".peekfig");
+        box.querySelector(".peekcap").innerHTML =
+          `${esc(shotCap(list[i]))}${list.length > 1 ? `<b>${i + 1}/${list.length}</b>` : ""}`;
+        loadShot(img, fig, list[i].src, () => {
+          const left = dropShot(card.dataset.slug, list[i].src);
+          if (left.length) { card._i = i % left.length; paintPeek(card); }
+        }, (im) => fitShot(im, fig));
+        prefetch(list[(i + 1) % list.length]?.src);
+        prefetch(list[(i - 1 + list.length) % list.length]?.src);
+      }
+
+      function openPeek(card) {
+        if (peekCard === card) return;
+        closePeek();
+        const box = card.querySelector(".peekbox");
+        if (!box || !shotsOf(card.dataset.slug).length) return;
+        peekCard = card;
+        card._i = card._i || 0;
+        box.hidden = false;
+        paintPeek(card);
+        /* 先取消 hidden，下一帧再打开透明度 —— 同一帧里做，浏览器不会
+           把它当成过渡的起点，淡入就直接跳过去了 */
+        requestAnimationFrame(() => box.dataset.on = "1");
+        card.querySelector(".peek")?.setAttribute("data-on", "1");
+        if (window.gtag) gtag("event", "preview_project", { site: "portal", target: card.dataset.slug, mode: "peek" });
+      }
+
+      function closePeek() {
+        if (!peekCard) return;
+        const box = peekCard.querySelector(".peekbox");
+        if (box) { box.dataset.on = "0"; box.hidden = true; }
+        peekCard.querySelector(".peek")?.removeAttribute("data-on");
+        peekCard = null;
+      }
+
+      function stepPeek(card, d) {
+        const list = shotsOf(card.dataset.slug);
+        if (list.length < 2) return;
+        card._i = ((card._i || 0) + d + list.length) % list.length;   // 到头就绕回来
+        paintPeek(card);
+      }
+
+      el.grid.addEventListener("pointerover", (e) => {
+        const card = e.target.closest(".card");
+        if (!card) return;
+        // 指针一进卡片就把封面那张备着，人这会儿还在往下走
+        prefetch(shotsOf(card.dataset.slug)[0]?.src);
+        if (!HOVER_OK) return;
+        const trigger = e.target.closest(".peek, .peekbox");
+        clearTimeout(peekTimer);
+        if (trigger) {
+          if (peekCard !== card) peekTimer = setTimeout(() => openPeek(card), HOVER_DELAY);
+        } else if (peekCard === card) {
+          // 从预览面板退回卡片正文，说明人不想看了 —— 收起来，别赖着
+          peekTimer = setTimeout(closePeek, HOVER_DELAY);
+        }
+      });
+      /* 用 pointerout + relatedTarget 判「真的离开这张卡了吗」。
+         写成 pointerleave 挂在 grid 上捕获会误伤：从「预览」按钮挪到面板里
+         也算离开了按钮，预览会当场消失，人根本翻不了页。 */
+      el.grid.addEventListener("pointerout", (e) => {
+        const card = e.target.closest(".card");
+        if (!card || card !== peekCard) return;
+        if (e.relatedTarget && card.contains(e.relatedTarget)) return;
+        clearTimeout(peekTimer);
+        peekTimer = setTimeout(closePeek, HOVER_DELAY);
+      });
+      // 页面一滚，卡片就从指针底下走开了，预览留着没有意义
+      addEventListener("scroll", () => { clearTimeout(peekTimer); closePeek(); }, { passive: true });
+      // 窗口变了，框的宽高比也变了，cover / contain 得重算一遍
+      addEventListener("resize", () => {
+        if (!peekCard) return;
+        const fig = peekCard.querySelector(".peekfig");
+        fitShot(fig.querySelector("img"), fig);
+      });
+
+      /* 翻页：面板里的箭头、滚轮。滚轮只在预览开着时拦，
+         其余时候页面该怎么滚怎么滚。 */
+      el.grid.addEventListener("click", (e) => {
+        const nav = e.target.closest(".peeknav");
+        if (!nav) return;
+        e.preventDefault();
+        stepPeek(nav.closest(".card"), Number(nav.dataset.d));
+      });
+      el.grid.addEventListener(
+        "wheel",
+        (e) => {
+          if (!peekCard || !e.target.closest(".peekbox")) return;
+          e.preventDefault();
+          stepPeek(peekCard, (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY) > 0 ? 1 : -1);
+        },
+        { passive: false },
+      );
+
+      /* ── 全屏大图 ── */
+      let lbSlug = null, lbI = 0, lbBack = null;
+
+      function paintLb() {
+        const list = shotsOf(lbSlug);
+        if (!list.length) return closeLb();
+        lbI = (lbI + list.length) % list.length;
+        const p = LIST.find((x) => x.slug === lbSlug) || {};
+        const cap = shotCap(list[lbI]);
+        lb.title.textContent = L(p.name) || "";
+        lb.cap.innerHTML = `${esc(cap)}${list.length > 1 ? `<b>${t("shotOf").replace("%1", lbI + 1).replace("%2", list.length)}</b>` : ""}`;
+        lb.img.alt = `${L(p.name) || ""} — ${cap}`;
+        loadShot(lb.img, lb.stage, list[lbI].src, () => {
+          const left = dropShot(lbSlug, list[lbI].src);
+          if (!left.length) closeLb(); else paintLb();
+        });
+        for (const n of lb.root.querySelectorAll(".lbnav")) n.hidden = list.length < 2;
+        lb.dots.innerHTML = list.length > 1
+          ? list.map((s, k) =>
+              `<button class="lbdot" data-i="${k}" aria-current="${k === lbI}" aria-label="${esc(shotCap(s))}"></button>`).join("")
+          : "";
+        prefetch(list[(lbI + 1) % list.length]?.src);
+        prefetch(list[(lbI - 1 + list.length) % list.length]?.src);
+      }
+
+      function openLb(slug, i) {
+        if (!shotsOf(slug).length) return;
+        closePeek();
+        lbBack = document.activeElement;
+        lbSlug = slug;
+        lbI = i || 0;
+        lb.root.hidden = false;
+        document.body.style.overflow = "hidden";
+        paintLb();
+        requestAnimationFrame(() => (lb.root.dataset.on = "1"));
+        lb.close.focus();
+        if (window.gtag) gtag("event", "preview_project", { site: "portal", target: slug, mode: "lightbox" });
+      }
+
+      function closeLb() {
+        if (lb.root.hidden) return;
+        lb.root.dataset.on = "0";
+        lb.root.hidden = true;
+        document.body.style.overflow = "";
+        lbSlug = null;
+        /* 焦点还给点开它的那个按钮 —— 不还的话焦点会掉回 body，
+           键盘用户下一次 Tab 得从整页开头再走一遍 */
+        if (lbBack && document.contains(lbBack)) lbBack.focus();
+        lbBack = null;
+      }
+
+      el.grid.addEventListener("click", (e) => {
+        const btn = e.target.closest(".peek");
+        if (btn) {
+          const card = btn.closest(".card");
+          return openLb(card.dataset.slug, card._i || 0);
+        }
+        // 卡内预览点图也进大图：那儿正好是人已经在看的地方
+        const fig = e.target.closest(".peekfig");
+        if (fig) {
+          const card = fig.closest(".card");
+          openLb(card.dataset.slug, card._i || 0);
+        }
+      });
+
+      lb.close.addEventListener("click", closeLb);
+      lb.root.addEventListener("click", (e) => {
+        const nav = e.target.closest(".lbnav");
+        if (nav) { lbI += Number(nav.dataset.d); return paintLb(); }
+        const dot = e.target.closest(".lbdot");
+        if (dot) { lbI = Number(dot.dataset.i); return paintLb(); }
+        // 点图片本身或点空处都关掉 —— 大图看完了就该退出去
+        if (e.target === lb.img || e.target === lb.root || e.target === lb.stage) closeLb();
+      });
+
+      /* 触屏左右滑。阈值 40px：比手指停在屏幕上的抖动大，比一次真滑动小 */
+      let swipeX = null;
+      lb.stage.addEventListener("pointerdown", (e) => (swipeX = e.clientX));
+      lb.stage.addEventListener("pointerup", (e) => {
+        if (swipeX === null) return;
+        const dx = e.clientX - swipeX;
+        swipeX = null;
+        if (Math.abs(dx) > 40) { lbI += dx < 0 ? 1 : -1; paintLb(); }
+      });
+      lb.root.addEventListener(
+        "wheel",
+        (e) => { e.preventDefault(); },
+        { passive: false },
+      );
 
       /* ── 语言 ──
          默认跟浏览器走：navigator.language 不是中文就开英文。
@@ -894,7 +1486,7 @@
         }, { passive: true });
       })();
 
-      /* ── 启动 ── */      /* ── 启动 ── */
+      /* ── 启动 ── */
       let lang0 = "zh";
       try {
         const saved = localStorage.getItem(LANG_KEY);

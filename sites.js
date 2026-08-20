@@ -16,15 +16,33 @@
  *          否则当 ICONS 里的 key，用 tint 上色
  *   tint   图标底色 [起, 止]
  *   href   在线地址。没有就不填 —— 卡片只留「源码」
+ *   dl     安装包地址。给下载了才能跑的东西用（原生 App），
+ *          渲染成主按钮「下载」。它**不算**「可在线体验」，
+ *          也不占两格 —— 首页把大版面留给零门槛点开就能试的东西
  *   repo   GitHub 仓库名
+ *   shots  产品截图。鼠标停在卡片底部那条空白上就展开，见 index.html 的 peek
+ *          [{ src, zh, en }]，src 用站内 /shots/<slug>/<名>.webp，
+ *          第一张是封面 —— 挑最能说明「这是什么」的那张放前面
  *
  * 有 href 的会自动排在前面并占两格（见 index.html 的 featured）。
+ *
+ * ── 截图是怎么来的 ──
+ * 一律来自项目自己，没有一张是画出来的示意图：
+ *   ftms / ems / wxformat3   本地起服务跑真实构建产物，Playwright 截图
+ *   macpleco / ip-geo(popup) 项目仓库 README 里现成的截图
+ *   jobornot / ip-geo(设置)  Chromium 加载未打包扩展，开扩展页截图
+ *   pagescroll               把用户脚本注进真实网页（就是这一页），截控件那一角
+ * 原图统一压到宽 1200 的 webp（25 张不到 1 MB），源在 README「产品截图」一节。
+ * 没有截图的几个不是漏了：TabInfoCopy 压根没有界面，公众号导出和 Bing 壁纸
+ * 脚本要登录到目标站点才有东西可看，安卓两个没有模拟器 —— 与其摆张示意图，
+ * 不如不摆，卡片上那条预览入口也就不出现。
  */
 
 window.CATEGORIES = [
   { key: "web", zh: "在线应用", en: "Web Apps" },
   { key: "ext", zh: "浏览器扩展", en: "Extensions" },
   { key: "script", zh: "用户脚本", en: "Userscripts" },
+  { key: "desktop", zh: "桌面应用", en: "Desktop Apps" },
   { key: "app", zh: "移动应用", en: "Mobile Apps" },
 ];
 
@@ -42,6 +60,13 @@ window.PROJECTS = [
     icon: "/ftms/favicon.svg",
     href: "/ftms/",
     repo: "ftms",
+    shots: [
+      { src: "/shots/ftms/dashboard.webp", zh: "数据看板", en: "Dashboard" },
+      { src: "/shots/ftms/follow-ups.webp", zh: "跟单表", en: "Shipment tracker" },
+      { src: "/shots/ftms/orders.webp", zh: "订单核算跟踪", en: "Order margins" },
+      { src: "/shots/ftms/tax-refund.webp", zh: "退税管理", en: "Tax refunds" },
+      { src: "/shots/ftms/login.webp", zh: "登录页", en: "Sign-in" },
+    ],
   },
   {
     slug: "ems",
@@ -57,6 +82,13 @@ window.PROJECTS = [
     icon: "/ems/favicon.svg",
     href: "/ems/",
     repo: "ems",
+    shots: [
+      { src: "/shots/ems/dashboard.webp", zh: "工作台", en: "Workspace" },
+      { src: "/shots/ems/leads.webp", zh: "线索雷达", en: "Lead radar" },
+      { src: "/shots/ems/inbox.webp", zh: "统一收件箱", en: "Unified inbox" },
+      { src: "/shots/ems/agents.webp", zh: "AI Agents", en: "AI agents" },
+      { src: "/shots/ems/analytics.webp", zh: "经营分析", en: "Analytics" },
+    ],
   },
   {
     slug: "wxformat3",
@@ -70,6 +102,35 @@ window.PROJECTS = [
     icon: "/wxformat3/favicon.svg",
     href: "/wxformat3/",
     repo: "wxformat3",
+    shots: [
+      { src: "/shots/wxformat3/editor.webp", zh: "左写右看", en: "Write & preview" },
+      { src: "/shots/wxformat3/themes.webp", zh: "换一套主题", en: "Another theme" },
+      { src: "/shots/wxformat3/customizer.webp", zh: "配色工坊", en: "Colour studio" },
+    ],
+  },
+
+  /* ── 桌面应用 ───────────────────────────────────────────── */
+  {
+    slug: "macpleco",
+    cat: "desktop",
+    name: "MacPleco",
+    desc: {
+      zh: "Mac 清理工具。删什么都先进废纸篓，风险项一律不替你勾，每一条都写清它到底是什么、在哪个路径 —— 不靠制造焦虑卖清理。",
+      en: "A calm Mac cleaner. Everything goes to the Trash first, risky items are never ticked for you, and every row says in plain words what it is and where it lives.",
+    },
+    tags: { zh: ["macOS 15+", "Swift 6", "清理 / 监控"], en: ["macOS 15+", "Swift 6", "Clean & Monitor"] },
+    /* 借它自己的应用图标（去掉 macOS 图标外圈那层透明留白）—— 跟子站借 favicon 一个道理 */
+    icon: "/icons/macpleco.png",
+    dl: "https://github.com/decli/MacPleco/releases/latest",
+    repo: "MacPleco",
+    shots: [
+      { src: "/shots/macpleco/overview.webp", zh: "概览 · 一屏说完", en: "Overview" },
+      { src: "/shots/macpleco/clean.webp", zh: "清理 · 路径全摊开", en: "Clean" },
+      { src: "/shots/macpleco/apps.webp", zh: "应用 · 连残留一起卸", en: "Apps" },
+      { src: "/shots/macpleco/space.webp", zh: "空间 · 磁盘热力图", en: "Space" },
+      { src: "/shots/macpleco/tune-up.webp", zh: "优化 · 八项对症修复", en: "Tune-Up" },
+      { src: "/shots/macpleco/monitor.webp", zh: "监控 · 实时四表", en: "Monitor" },
+    ],
   },
 
   /* ── 浏览器扩展 ─────────────────────────────────────────── */
@@ -85,6 +146,10 @@ window.PROJECTS = [
     icon: "globe",
     tint: ["#0ea5e9", "#2563eb"],
     repo: "IP_Geolocation_Extension_Chrome",
+    shots: [
+      { src: "/shots/ip-geo/popup.webp", zh: "工具栏弹窗", en: "Toolbar popup" },
+      { src: "/shots/ip-geo/options.webp", zh: "设置", en: "Settings" },
+    ],
   },
   {
     slug: "jobornot",
@@ -98,6 +163,10 @@ window.PROJECTS = [
     icon: "target",
     tint: ["#f59e0b", "#ef4444"],
     repo: "JobOrNot",
+    shots: [
+      { src: "/shots/jobornot/sidepanel.webp", zh: "侧边栏 · 两步开工", en: "Side panel" },
+      { src: "/shots/jobornot/options.webp", zh: "设置 · 自带 Key", en: "Settings · BYOK" },
+    ],
   },
   {
     slug: "wx-export",
@@ -152,6 +221,11 @@ window.PROJECTS = [
     icon: "scroll",
     tint: ["#06b6d4", "#0891b2"],
     repo: "pagescroll",
+    /* 就是在这一页上截的 —— 这脚本本来就匹配所有网站，随便哪张网页都算数 */
+    shots: [
+      { src: "/shots/pagescroll/pill.webp", zh: "悬浮胶囊 · 就在这一页", en: "The pill, on this very page" },
+      { src: "/shots/pagescroll/settings.webp", zh: "右键改默认位置", en: "Right-click to reposition" },
+    ],
   },
   {
     slug: "bing-wallpaper",
@@ -180,6 +254,16 @@ window.PROJECTS = [
     icon: "package",
     tint: ["#f97316", "#ea580c"],
     repo: "CodeHelper",
+    /* 这台机器上没有安卓模拟器，截不了新的；直接引 CodeHelper README 里那张。
+       它是 GitHub 的附件地址，拿不到就自己消失（见 index.html 的 onerror）——
+       想要它跟别的一样稳，把图存进 CodeHelper 仓库再换成 /shots/ 下的本地副本 */
+    shots: [
+      {
+        src: "https://github.com/user-attachments/assets/f3d01b4f-31aa-4289-be76-27b72f03ed24",
+        zh: "首页 · 还没取的包裹",
+        en: "Home · unclaimed parcels",
+      },
+    ],
   },
   {
     slug: "chinesechess",
