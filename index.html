@@ -602,14 +602,37 @@
 
       .lbstage { flex: 1 1 0; min-height: 0; display: flex; align-items: center; gap: clamp(6px, 1.6vw, 16px); }
       /* align-self:stretch 把高度交给 flex 行直接定死，contain 才有一个确定的框可依。
-         max-width 是防超宽屏把 1200 宽的原图硬拉大 —— 拉大就是糊。 */
+         宽度上限由 JS 按图自己的像素数算（见 sizeLb），这里只兜一个底。 */
       .lbstage img {
         flex: 1 1 auto; min-width: 0; align-self: stretch;
         max-width: 1240px; margin-inline: auto; display: block;
         object-fit: contain;
         opacity: 0; transition: opacity 0.2s;
+        cursor: zoom-in;
+      }
+      /* ── 放大到原始像素 ──
+         点一下图从「适应窗口」切到 1:1，超出的部分拖着看。
+         flex 居中 + overflow 会把溢出的左边裁掉（老毛病），所以放大时
+         改成左上角对齐、margin 归零，靠滚动定位。 */
+      .lbstage[data-zoom="1"] {
+        overflow: auto;
+        align-items: flex-start; justify-content: flex-start;
+        cursor: grab; overscroll-behavior: contain;
+      }
+      .lbstage[data-zoom="1"]:active { cursor: grabbing; }
+      .lbstage[data-zoom="1"] img {
+        flex: none; align-self: flex-start;
+        max-width: none; margin: 0;
+        object-fit: none;
         cursor: zoom-out;
       }
+      .lbraw {
+        color: rgba(234, 240, 255, 0.55); font-size: 12px; text-decoration: none;
+        border-bottom: 1px solid rgba(234, 240, 255, 0.22); padding-bottom: 1px;
+        transition: color 0.14s, border-color 0.14s;
+      }
+      .lbraw:hover { color: #eaf0ff; border-color: rgba(234, 240, 255, 0.6); }
+      .lbraw:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
       .lbstage img[data-ready="1"] { opacity: 1; }
       .lbnav {
         width: 46px; height: 46px; flex: none;
@@ -622,6 +645,7 @@
       .lbnav[hidden] { display: none; }
 
       .lbfoot { flex: none; display: grid; gap: 8px; justify-items: center; padding-top: clamp(8px, 1.6vh, 14px); }
+      .lbline { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; justify-content: center; }
       .lbcap { color: rgba(234, 240, 255, 0.82); font-size: 13px; text-align: center; }
       .lbcap b { margin-left: 8px; color: rgba(234, 240, 255, 0.5); font-weight: 600; font-variant-numeric: tabular-nums; }
       .lbdots { display: flex; gap: 7px; }
@@ -783,7 +807,12 @@
         </button>
       </div>
       <div class="lbfoot">
-        <span class="lbcap" id="lbcap"></span>
+        <div class="lbline">
+          <span class="lbcap" id="lbcap"></span>
+          <!-- 点图能放大到 1:1，但那是要先点了才知道的事；这条链接是明写出来的
+               那一半 —— 直接把原文件在新标签打开，谁都不用猜。 -->
+          <a class="lbraw" id="lbraw" target="_blank" rel="noopener noreferrer"></a>
+        </div>
         <div class="lbdots" id="lbdots"></div>
       </div>
     </div>
@@ -856,6 +885,7 @@
           closeShots: "关闭",
           prevShot: "上一张",
           nextShot: "下一张",
+          rawShot: "原图 ↗",
         },
         en: {
           title: ["Annoyed enough", "to just build it"],
@@ -879,6 +909,7 @@
           closeShots: "Close",
           prevShot: "Previous",
           nextShot: "Next",
+          rawShot: "Original ↗",
         },
       };
 
@@ -945,7 +976,7 @@
         root: document.getElementById("lb"), img: document.getElementById("lbimg"),
         stage: document.getElementById("lbstage"), cap: document.getElementById("lbcap"),
         dots: document.getElementById("lbdots"), title: document.getElementById("lbtitle"),
-        close: document.getElementById("lbclose"),
+        close: document.getElementById("lbclose"), raw: document.getElementById("lbraw"),
       };
 
       function catName(key) {
@@ -1337,14 +1368,41 @@
       /* ── 全屏大图 ── */
       let lbSlug = null, lbI = 0, lbBack = null;
 
-      /* 大图**不放大**：显示宽度最多等于图自己的物理像素数。
-         2 倍屏上把一张 1600 宽的图铺到 1240 CSS px，等于放大 1.55 倍 —— 糊。
-         上游 README 只给到那么大的几张（MacPleco、IP 弹窗）就让它小一点，
-         小而清楚，好过大而糊。 */
-      function capLb(img) {
-        if (!img.naturalWidth) return;
+      /* ── 大图有两档：适应窗口 / 原始像素 ──
+         一开始只做了「绝不放大」，结果 1600 宽的原图（MacPleco、IP 弹窗）在
+         2 倍屏上只能占 800 CSS px，一张小图浮在一大片黑里，而点它只会关掉 ——
+         等于把「看大图」这件事弄没了。现在分两档：
+
+         适应窗口（默认）：铺满可用宽度，但放大不超过 1.5 倍。1.5 倍是有点软，
+           不是糊；再往上就明显了。2560 那批图在这一档根本轮不到放大。
+         原始像素（点图切换）：按图自己的像素数 1:1 铺开，超出部分拖着看。
+           想看清某个角落的人要的是这个，不是把整张图塞进一屏。 */
+      const FIT_UPSCALE = 1.5;
+
+      function fitWidth(img) {
         const dpr = Math.max(1, window.devicePixelRatio || 1);
-        img.style.maxWidth = `${Math.min(1240, Math.round(img.naturalWidth / dpr))}px`;
+        return Math.min(1240, Math.round((img.naturalWidth * FIT_UPSCALE) / dpr));
+      }
+
+      function sizeLb(img) {
+        if (!img.naturalWidth) return;
+        if (lb.stage.dataset.zoom === "1") {
+          img.style.maxWidth = "none";
+          img.style.width = `${img.naturalWidth}px`;
+        } else {
+          img.style.maxWidth = `${fitWidth(img)}px`;
+          img.style.width = "";
+        }
+      }
+
+      function setZoom(on) {
+        lb.stage.dataset.zoom = on ? "1" : "0";
+        sizeLb(lb.img);
+        if (on) {
+          // 从中间开始看，不是从左上角 —— 界面的主体多半在中间
+          lb.stage.scrollLeft = (lb.stage.scrollWidth - lb.stage.clientWidth) / 2;
+          lb.stage.scrollTop = 0;
+        }
       }
 
       function paintLb() {
@@ -1356,10 +1414,13 @@
         lb.title.textContent = L(p.name) || "";
         lb.cap.innerHTML = `${esc(cap)}${list.length > 1 ? `<b>${t("shotOf").replace("%1", lbI + 1).replace("%2", list.length)}</b>` : ""}`;
         lb.img.alt = `${L(p.name) || ""} — ${cap}`;
+        lb.raw.href = list[lbI].src;
+        lb.raw.textContent = t("rawShot");
+        setZoom(false);            // 换一张就回到适应窗口，别把上一张的缩放带过来
         loadShot(lb.img, lb.stage, list[lbI].src, () => {
           const left = dropShot(lbSlug, list[lbI].src);
           if (!left.length) closeLb(); else paintLb();
-        }, capLb);
+        }, sizeLb);
         for (const n of lb.root.querySelectorAll(".lbnav")) n.hidden = list.length < 2;
         lb.dots.innerHTML = list.length > 1
           ? list.map((s, k) =>
@@ -1387,6 +1448,7 @@
         if (lb.root.hidden) return;
         lb.root.dataset.on = "0";
         lb.root.hidden = true;
+        setZoom(false);      // 归位，下次打开是「适应窗口」
         document.body.style.overflow = "";
         lbSlug = null;
         /* 焦点还给点开它的那个按钮 —— 不还的话焦点会掉回 body，
@@ -1415,22 +1477,52 @@
         if (nav) { lbI += Number(nav.dataset.d); return paintLb(); }
         const dot = e.target.closest(".lbdot");
         if (dot) { lbI = Number(dot.dataset.i); return paintLb(); }
-        // 点图片本身或点空处都关掉 —— 大图看完了就该退出去
-        if (e.target === lb.img || e.target === lb.root || e.target === lb.stage) closeLb();
+        if (e.target.closest(".lbraw") || e.target.closest(".lbclose")) return;  // 这俩自己有事做
+        /* 放大之后拖着看，松手浏览器照样派一个 click 出来，落点还可能是舞台 ——
+           不挡住的话「拖一下」就把大图关了。这一条必须排在下面两条前面。 */
+        if (panned) { panned = false; return; }
+        /* 点图 = 放大 / 还原。原来这里是「点图关掉」—— 那等于把「看大图」
+           这条路堵死了：图小的时候你唯一想做的事就是把它放大。 */
+        if (e.target === lb.img) return setZoom(lb.stage.dataset.zoom !== "1");
+        /* 其余任何地方都关掉。别只认 lb.root 和 lbstage —— 图铺满之后
+           那两块加起来只剩几十像素，「点旁边退出」等于没有。 */
+        closeLb();
       });
 
-      /* 触屏左右滑。阈值 40px：比手指停在屏幕上的抖动大，比一次真滑动小 */
-      let swipeX = null;
-      lb.stage.addEventListener("pointerdown", (e) => (swipeX = e.clientX));
+      /* 一个指针手势两种含义：没放大时左右滑翻页，放大后拖着平移。
+         阈值 40px：比手指停在屏幕上的抖动大，比一次真滑动小。 */
+      let drag = null, panned = false;
+      lb.stage.addEventListener("pointerdown", (e) => {
+        panned = false;
+        drag = {
+          x: e.clientX, y: e.clientY,
+          sl: lb.stage.scrollLeft, st: lb.stage.scrollTop,
+          zoom: lb.stage.dataset.zoom === "1",
+        };
+      });
+      lb.stage.addEventListener("pointermove", (e) => {
+        if (!drag || !drag.zoom) return;
+        lb.stage.scrollLeft = drag.sl - (e.clientX - drag.x);
+        lb.stage.scrollTop = drag.st - (e.clientY - drag.y);
+        if (Math.abs(e.clientX - drag.x) > 4 || Math.abs(e.clientY - drag.y) > 4) panned = true;
+      });
       lb.stage.addEventListener("pointerup", (e) => {
-        if (swipeX === null) return;
-        const dx = e.clientX - swipeX;
-        swipeX = null;
+        const d = drag;
+        drag = null;
+        /* 拖完不一定有 click 跟着来（浏览器对大位移会吞掉），标记就挂在那儿，
+           下一次点击白白被吃掉。排到 click 之后清掉它，谁也别赖着。 */
+        setTimeout(() => (panned = false), 0);
+        if (!d || d.zoom) return;                    // 放大状态下这一下是拖动，不翻页
+        const dx = e.clientX - d.x;
         if (Math.abs(dx) > 40) { lbI += dx < 0 ? 1 : -1; paintLb(); }
       });
       lb.root.addEventListener(
         "wheel",
-        (e) => { e.preventDefault(); },
+        (e) => {
+          // 放大之后滚轮归舞台，用来看图的另一半；没放大时才拦住，免得底下页面跟着滚
+          if (lb.stage.dataset.zoom === "1" && e.target.closest(".lbstage")) return;
+          e.preventDefault();
+        },
         { passive: false },
       );
 
