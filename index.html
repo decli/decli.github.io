@@ -788,7 +788,43 @@
       </div>
     </div>
 
-    <script src="sites.js"></script>
+    <!-- 资源版本号表。由 tools/stamp.py 生成 —— 推到 main 时 GitHub Actions 会
+         自动跑一遍。它必须排在 sites.js 前面：下面那个 V() 要靠它拼 ?v=。 -->
+    <!-- ASSET-VERSIONS:BEGIN -->
+    <script>
+      /* 由 tools/stamp.py 生成，别手改 */
+      window.ASSET_V = {
+        "/sites.js": "3f5a4bf2",
+        "/shots/ems/agents.webp": "d1a56510",
+        "/shots/ems/analytics.webp": "3732cc99",
+        "/shots/ems/dashboard.webp": "94474d0c",
+        "/shots/ems/inbox.webp": "d69a8be7",
+        "/shots/ems/leads.webp": "14e114b7",
+        "/shots/ftms/dashboard.webp": "51126932",
+        "/shots/ftms/follow-ups.webp": "e3185473",
+        "/shots/ftms/login.webp": "a2f227bb",
+        "/shots/ftms/orders.webp": "769e211a",
+        "/shots/ftms/tax-refund.webp": "5f9e0e53",
+        "/shots/ip-geo/options.webp": "412c1c88",
+        "/shots/ip-geo/popup.webp": "6ef1c789",
+        "/shots/jobornot/options.webp": "1724da91",
+        "/shots/jobornot/sidepanel.webp": "7d44dea1",
+        "/shots/macpleco/apps.webp": "8d4d8267",
+        "/shots/macpleco/clean.webp": "93e3035c",
+        "/shots/macpleco/monitor.webp": "1b90e26c",
+        "/shots/macpleco/overview.webp": "137efdfd",
+        "/shots/macpleco/space.webp": "a04b127f",
+        "/shots/macpleco/tune-up.webp": "27e63033",
+        "/shots/pagescroll/pill.webp": "2f4ed5b7",
+        "/shots/pagescroll/settings.webp": "ae77c21a",
+        "/shots/wxformat3/customizer.webp": "aed3c31a",
+        "/shots/wxformat3/editor.webp": "86860e17",
+        "/shots/wxformat3/themes.webp": "7b125828",
+        "/icons/macpleco.png": "e790be29"
+      };
+    </script>
+    <!-- ASSET-VERSIONS:END -->
+    <script src="sites.js?v=3f5a4bf2"></script>
     <script>
       /* ═══ 界面文案 ═══
          项目本身的中英文在 sites.js 里，这里只放界面自己的词。 */
@@ -871,11 +907,26 @@
       /* 能点开试的排前面 —— 首屏就该是「可以马上玩」的那几个 */
       const LIST = [...PROJECTS].sort((a, b) => (b.href ? 1 : 0) - (a.href ? 1 : 0));
 
+      /* ── 资源版本号 ──
+         GitHub Pages 给所有响应发 max-age=600，而且不支持自定义响应头，改不掉。
+         但缓存是按 URL 存的 —— 地址里带上内容哈希，图换了、sites.js 改了，
+         新的 index.html 一到就会去取新的，不会拿旧缓存对付。
+         表由 tools/stamp.py 生成（见 head 里那对 ASSET-VERSIONS 标记）。
+         表里没有的原样返回：子站 favicon 归各自仓库管，外链图更轮不到这儿定。 */
+      const V = (p) => {
+        const h = window.ASSET_V && window.ASSET_V[p];
+        return h ? `${p}?v=${h}` : p;
+      };
+
       /* 截图清单单独拷一份出来管：图挂了就从这儿删（见 dropShot），
-         直接改 sites.js 那份数组等于把数据源改脏了 */
+         直接改 sites.js 那份数组等于把数据源改脏了。
+         版本号在这里一次性拼好 —— 预取和真正加载必须是同一个 URL，
+         各拼各的就等于同一张图下两遍。 */
       const SHOTS = Object.create(null);
       for (const p of LIST) {
-        if (Array.isArray(p.shots) && p.shots.length) SHOTS[p.slug] = p.shots.slice();
+        if (Array.isArray(p.shots) && p.shots.length) {
+          SHOTS[p.slug] = p.shots.map((s) => ({ ...s, src: V(s.src) }));
+        }
       }
       const shotsOf = (slug) => SHOTS[slug] || [];
 
@@ -938,7 +989,7 @@
       function cardHTML(p, i) {
         const shots = shotsOf(p.slug);
         const mark = String(p.icon || "").startsWith("/")
-          ? `<span class="mark"><img src="${esc(p.icon)}" alt="" loading="lazy"
+          ? `<span class="mark"><img src="${esc(V(p.icon))}" alt="" loading="lazy"
                onerror="this.parentElement.classList.add('tinted');this.parentElement.style.background='linear-gradient(140deg,#64748b,#475569)';this.outerHTML='&#128279;'"></span>`
           : `<span class="mark tinted" style="background:linear-gradient(140deg,${esc((p.tint || ["#64748b", "#475569"])[0])},${esc((p.tint || ["#64748b", "#475569"])[1])})">
                <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9"
@@ -1105,11 +1156,19 @@
       const HOVER_DELAY = 130;      // 比「路过」长、比「我想看看」短
       const shotCap = (s) => (s ? s[S.lang] ?? s.zh ?? "" : "");
       const prefetched = new Set();
+      /* 正在下的那几个 Image 得有人拿着。`new Image().src = ...` 写完就没人引用了，
+         下载途中被回收掉请求就跟着取消 —— 表现是「预取好像没生效」，还不报错。
+         下完立刻松手：留着的话 25 张 2560×1600 解码后是几百兆内存，
+         而字节本来就在 HTTP 缓存里，不需要这边替它存。 */
+      const inflight = new Set();
 
       function prefetch(src) {
         if (!src || prefetched.has(src)) return;
         prefetched.add(src);
-        new Image().src = src;
+        const im = new Image();
+        inflight.add(im);
+        im.onload = im.onerror = () => inflight.delete(im);
+        im.src = src;
       }
 
       /* 图挂了（最典型的是外链那张）就把它从清单里摘掉，顺手把入口上的
@@ -1278,6 +1337,16 @@
       /* ── 全屏大图 ── */
       let lbSlug = null, lbI = 0, lbBack = null;
 
+      /* 大图**不放大**：显示宽度最多等于图自己的物理像素数。
+         2 倍屏上把一张 1600 宽的图铺到 1240 CSS px，等于放大 1.55 倍 —— 糊。
+         上游 README 只给到那么大的几张（MacPleco、IP 弹窗）就让它小一点，
+         小而清楚，好过大而糊。 */
+      function capLb(img) {
+        if (!img.naturalWidth) return;
+        const dpr = Math.max(1, window.devicePixelRatio || 1);
+        img.style.maxWidth = `${Math.min(1240, Math.round(img.naturalWidth / dpr))}px`;
+      }
+
       function paintLb() {
         const list = shotsOf(lbSlug);
         if (!list.length) return closeLb();
@@ -1290,7 +1359,7 @@
         loadShot(lb.img, lb.stage, list[lbI].src, () => {
           const left = dropShot(lbSlug, list[lbI].src);
           if (!left.length) closeLb(); else paintLb();
-        });
+        }, capLb);
         for (const n of lb.root.querySelectorAll(".lbnav")) n.hidden = list.length < 2;
         lb.dots.innerHTML = list.length > 1
           ? list.map((s, k) =>
