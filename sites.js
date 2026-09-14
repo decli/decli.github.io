@@ -107,6 +107,7 @@ window.PROJECTS = [
     repo: "logicc",
     shots: [
       { src: "/shots/logicc/home.webp", zh: "十二个游戏", en: "Twelve games" },
+      { src: "/shots/logicc/tetris.webp", zh: "会掉下来的方块", en: "Falling blocks" },
     ],
   },
   {
