@@ -94,6 +94,22 @@ window.PROJECTS = [
     ],
   },
   {
+    slug: "logicc",
+    cat: "web",
+    name: { zh: "思维小画本", en: "Logicc" },
+    desc: {
+      zh: "给幼儿园大班孩子的思维训练游戏。把她做不下去的纸质练习册改成十二个平板游戏，全程语音读题，不识字也能自己玩。",
+      en: "Thinking games for a kindergartener. Turns the paper worksheets she kept giving up on into twelve tablet games, every prompt read aloud so she can play without reading.",
+    },
+    tags: { zh: ["幼儿", "思维训练", "12 个游戏", "语音读题"], en: ["Kids", "Cognitive", "12 games", "Voice"] },
+    icon: "/logicc/icon-192.png",
+    href: "/logicc/",
+    repo: "logicc",
+    shots: [
+      { src: "/shots/logicc/home.webp", zh: "十二个游戏", en: "Twelve games" },
+    ],
+  },
+  {
     slug: "wxformat3",
     cat: "web",
     name: "WxMark",
