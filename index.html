@@ -312,8 +312,15 @@
       h1 .g {
         background: linear-gradient(96deg, var(--brand), var(--brand-2) 55%, var(--brand-3));
         -webkit-background-clip: text; background-clip: text; color: transparent;
+        /* 整块换行：窄屏上标题要断也断在逗号处，别把「一行代码没写」劈成两半 */
+        display: inline-block;
       }
-      .lede { margin: 0 0 22px; max-width: 52ch; color: var(--text-2); font-size: clamp(15px, 1.9vw, 17px); }
+      /* 三句话三行：white-space 保住文案里的换行，窄屏各自再自然折行。
+         宽度给到 68ch 是为了让最长那句在桌面端不被折断 —— 一句一行，节奏才在。 */
+      .lede {
+        margin: 0 0 22px; max-width: 68ch; color: var(--text-2);
+        font-size: clamp(15px, 1.9vw, 17px); white-space: pre-line;
+      }
 
       .stats { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-bottom: 30px; }
       .stat { display: flex; align-items: baseline; gap: 6px; color: var(--text-3); font-size: 13px; }
@@ -871,9 +878,12 @@
              再说清楚人在里面干什么 —— 提出问题、做出选择、验收结果。
              「人出判断，AI 出产能」比「拥抱 AI」有画面，也经得起追问。
              结尾停在「工作范式」这句上，不再补使用说明 —— 怎么用、能不能在线打开，
-             卡片上的「在线」角标和按钮已经说清楚了，首屏再说一遍反而泄气。 */
+             卡片上的「在线」角标和按钮已经说清楚了，首屏再说一遍反而泄气。
+             三句话拆成三行：事实、角色、判断各占一行，读的人一眼看见结构。 */
           title: ["十五个作品，", "一行代码没写"],
-          lede: "从界面设计到每一行代码，全部由 AI 完成。我只做三件事：提出问题、做出选择、验收结果 —— 人出判断，AI 出产能。这不是尝鲜，是 AI Native 时代新的工作范式。",
+          lede: "从界面设计到每一行代码，全部由 AI 完成。\n"
+            + "我只做三件事：提出问题、做出选择、验收结果 —— 人出判断，AI 出产能。\n"
+            + "不是尝鲜，这是 AI Native 时代新的工作范式。",
           all: "全部",
           search: "搜项目名、用途、关键词…",
           none: "没有匹配的项目。",
@@ -897,7 +907,9 @@
         },
         en: {
           title: ["Fifteen products,", "not one line typed"],
-          lede: "From the interface down to every line of code, all of it written by AI. My part is three things: pose the problem, make the calls, sign off on the result — I bring the judgment, AI brings the throughput. Not an experiment; this is what work looks like in the AI-native era.",
+          lede: "From the interface down to every line of code, all of it written by AI.\n"
+            + "My part is three things: pose the problem, make the calls, sign off on the result — I bring the judgment, AI brings the throughput.\n"
+            + "Not an experiment — this is what work looks like in the AI-native era.",
           all: "All",
           search: "Search name, purpose, keyword…",
           none: "Nothing matches.",
