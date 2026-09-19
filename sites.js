@@ -52,6 +52,26 @@ window.CATEGORIES = [
 window.PROJECTS = [
   /* ── 在线应用：打开就能用 ───────────────────────────────── */
   {
+    slug: "codeless",
+    cat: "web",
+    name: "codeless",
+    desc: {
+      zh: "说一句话，它在容器里写代码、跑测试、改 bug，再由 CI 部署成一个能打开的网站。全程不用碰 IDE，做完接着说「换成卡片风格」就能改。",
+      en: "Say what you want. It writes the code in a container, runs the tests, fixes what fails, then ships it through CI as a site you can open — no IDE, and you keep iterating by just talking to it.",
+    },
+    tags: { zh: ["AI Agent", "自托管", "Docker + CI"], en: ["AI Agent", "Self-hosted", "Docker + CI"] },
+    icon: "wand",
+    tint: ["#7c3aed", "#06b6d4"],
+    /* 没有 href：它要 Docker 和一把模型 key，跑在自己机器上，给不了一个点开就能试的地址 */
+    repo: "codeless",
+    shots: [
+      { src: "/shots/codeless/chat.webp", zh: "一句话下去，验收测试、CI、上线地址都在这一屏", en: "One sentence in — tests, CI and the live URL in one view" },
+      { src: "/shots/codeless/blog.webp", zh: "它做出来的博客，卡片风格是第二轮改的", en: "A blog it built — the card layout came from a follow-up" },
+      { src: "/shots/codeless/cafe.webp", zh: "它做出来的咖啡店官网", en: "A café site it built" },
+      { src: "/shots/codeless/new.webp", zh: "起点：只有一个输入框", en: "Where it starts: one text box" },
+    ],
+  },
+  {
     slug: "ftms",
     cat: "web",
     name: { zh: "信风 Tradewind", en: "Tradewind" },
