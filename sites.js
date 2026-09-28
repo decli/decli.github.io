@@ -308,7 +308,7 @@ window.PROJECTS = [
   {
     slug: "chinesechess",
     cat: "app",
-    name: { zh: "老爸下象棋", en: "Chinese Chess" },
+    name: { zh: "中国象棋-老人版", en: "Chinese Chess" },
     desc: {
       zh: "Android 平板上的中国象棋，按 14 寸横屏放大过布局，三档 AI，落子有音效和语音播报。",
       en: "Chinese chess for Android tablets — layout scaled up for a 14-inch landscape screen, three AI levels, move sounds and voice callouts.",
