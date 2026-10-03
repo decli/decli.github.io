@@ -549,8 +549,9 @@
         border: 1px solid var(--line-2); text-decoration: none; font: 500 12px/1 var(--f-body); color: var(--ink-2);
         transition: background 0.2s, color 0.2s, border-color 0.2s; white-space: nowrap;
       }
-      .ilink:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+      /* pri 得写在 :hover 前面：两条权重一样，写在后面的会把悬停时的反色字盖回黑字，整颗按钮一片黑 */
       .ilink.pri { border-color: var(--ink); color: var(--ink); }
+      .ilink:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
       .none { padding: 40px 0; color: var(--ink-3); font: 400 13px var(--f-mono); }
       /* 悬停预览：跟着指针走的一张小片子 */
       .float {
