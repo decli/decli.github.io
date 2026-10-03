@@ -1780,20 +1780,28 @@
         const fl = $("float"), img = fl.querySelector("img"), cap = fl.querySelector(".label");
         if (!matchMedia("(hover: hover) and (pointer: fine)").matches) return;
         // 外链的那张（取件码助手）拿不到就不弹 —— 宁可没有，也不留一个空框
-        img.onerror = () => { fl.dataset.on = "0"; };
-        let cur = null, x = 0, y = 0, raf = 0;
-        const move = () => { raf = 0; fl.style.transform = `translate3d(${x + 24}px, ${y - 90}px, 0)`; };
+        img.onerror = () => { shot = false; fl.dataset.on = "0"; };
+        let cur = null, shot = false, edge = 0, x = 0, y = 0, raf = 0;
+        const move = () => { raf = 0; fl.style.transform = `translate3d(${x}px, ${y}px, 0)`; };
         document.addEventListener("pointermove", (e) => {
           const row = e.target.closest(".row");
-          x = Math.min(e.clientX, innerWidth - 340); y = Math.max(110, Math.min(e.clientY, innerHeight - 120));
           if (row !== cur) {
             cur = row;
             const p = row && PROJECTS.find((q) => q.slug === row.dataset.slug);
             const s = p && p.shots && p.shots[0];
-            if (s) { img.src = V(s.src); cap.textContent = `${L(p.name)} · ${s[S.lang] || s.zh}`; fl.dataset.on = "1"; }
-            else fl.dataset.on = "0";
+            shot = !!s;
+            if (s) { img.src = V(s.src); cap.textContent = `${L(p.name)} · ${s[S.lang] || s.zh}`; }
+            // 「打开 / 下载 / 源码」那一栏留给点击。窄屏下每行这一栏宽窄不一，取最靠左的那一行，
+            // 片子上下会压到邻行，邻行的按钮也不能盖
+            if (row) edge = Math.min(...[...document.querySelectorAll(".row:not([hidden]) .go")].map((g) => g.getBoundingClientRect().left)) - 16;
           }
-          if (cur && !raf) raf = requestAnimationFrame(move);
+          if (!cur) { fl.dataset.on = "0"; return; }
+          // 指针进了按钮那一栏就收起；没进时片子只放在它左边，右边放不下就翻到指针左边
+          fl.dataset.on = shot && e.clientX < edge ? "1" : "0";
+          const w = fl.offsetWidth;
+          x = e.clientX + 24 + w <= edge ? e.clientX + 24 : Math.max(8, e.clientX - 24 - w);
+          y = Math.max(110, Math.min(e.clientY, innerHeight - 120)) - 90;
+          if (!raf) raf = requestAnimationFrame(move);
         }, { passive: true });
         addEventListener("scroll", () => { fl.dataset.on = "0"; cur = null; }, { passive: true });
       })();
