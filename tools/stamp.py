@@ -11,9 +11,14 @@ sites.js，新的 index.html 一到就会去取新的，不会拿旧缓存对付
 最多有 10 分钟旧副本还在。那一段只能硬刷新，仓库这边做什么都没用。
 
 ── 它怎么做 ──
-1. 算出 sites.js、shots/**、icons/** 每个文件的 sha256 前 8 位
+1. 算出 sites.js、shots/**、icons/**、code/**、fonts/** 每个文件的 sha256 前 8 位
 2. 把这张表写进 index.html 两个标记之间的 `window.ASSET_V`
 3. 顺手把 `<script src="sites.js">` 改成 `sites.js?v=<哈希>`
+4. CSS 里的 `url(/fonts/x.woff2)` 和 `<link rel="preload" href="/fonts/x.woff2">` 也盖上 ?v=
+   —— 这两处在 JS 跑起来之前就要用，进不了 V()；而且两处必须是同一个地址，
+   不然预加载的那份白下了，浏览器还会在控制台抱怨一句
+5. 把 code/index.json 里各项目的行数抄进同一个块（window.CODE_STATS）——
+   首屏那个 80,084 和每件作品的行数首帧就有，不用再等一次请求、也不会画完再跳一下
 
 index.html 里的 `V()` 查这张表拼 `?v=`；表里没有的（子站 favicon、外链图）
 原样返回。表整个不存在也不报错，就是退回没有版本号的状态。
@@ -39,7 +44,9 @@ END = "<!-- ASSET-VERSIONS:END -->"
 # 要盖版本号的：本仓库自己发的、会被 index.html 按地址引用的静态资源。
 # 子站的 favicon（/ftms/favicon.svg 之类）不在这儿 —— 那些文件归各自仓库管，
 # 这边算不出哈希，也不该替它们决定缓存。
-TARGETS = ["sites.js", "shots", "icons"]
+TARGETS = ["sites.js", "shots", "icons", "code", "fonts"]
+# 除了 index.html，这些页面里的字体地址也要盖（404 用的是同一套字）
+PAGES = ["index.html", "404.html"]
 
 
 def digest(path: pathlib.Path) -> str:
@@ -80,11 +87,19 @@ def main() -> int:
 
     # 一行一个键，diff 起来看得清是哪个文件变了；别压成一整行
     body = ",\n        ".join(f'"{k}": "{v}"' for k, v in assets.items())
+    # 各项目的行数（code/index.json）也直接写进来：首屏那个 80,084 不用再等一次请求
+    stats = ""
+    idx = ROOT / "code" / "index.json"
+    if idx.exists():
+        data = json.loads(idx.read_text(encoding="utf-8"))
+        slim = {"total": data.get("total"), "projects": {k: {"loc": v.get("loc"), "files": v.get("files")} for k, v in data.get("projects", {}).items()}}
+        stats = f"      window.CODE_STATS = {json.dumps(slim, ensure_ascii=False, separators=(',', ':'))};\n"
     block = (
         f"{BEGIN}\n"
         f"    <script>\n"
         f"      /* 由 tools/stamp.py 生成，别手改 */\n"
         f"      window.ASSET_V = {{\n        {body}\n      }};\n"
+        f"{stats}"
         f"    </script>\n"
         f"    {END}"
     )
@@ -93,15 +108,41 @@ def main() -> int:
     # sites.js 是用 <script src> 引的，进不了 V()，只能在这儿直接改地址
     sj = assets.get("/sites.js")
     if sj:
-        out = re.sub(r'src="sites\.js(?:\?v=[0-9a-f]+)?"', f'src="sites.js?v={sj}"', out)
+        out = re.sub(r'src="(/?)sites\.js(?:\?v=[0-9a-f]+)?"', lambda m: f'src="{m.group(1)}sites.js?v={sj}"', out)
+    out = stamp_fonts(out, assets)
+    changed = out != src
+    if changed:
+        INDEX.write_text(out, encoding="utf-8")
 
-    if out == src:
-        print(f"没有变化（{len(assets)} 个资源）")
-        return 0
+    # 其余页面只盖字体
+    for name in PAGES:
+        page = ROOT / name
+        if page == INDEX or not page.exists():
+            continue
+        txt = page.read_text(encoding="utf-8")
+        new = stamp_fonts(txt, assets)
+        if new != txt:
+            page.write_text(new, encoding="utf-8")
+            changed = True
 
-    INDEX.write_text(out, encoding="utf-8")
-    print(f"已盖版本号：{len(assets)} 个资源 → index.html")
+    print(f"{'已盖版本号' if changed else '没有变化'}：{len(assets)} 个资源")
     return 0
+
+
+def stamp_fonts(text: str, assets: dict) -> str:
+    """/fonts/x.woff2 → /fonts/x.woff2?v=<哈希>（CSS 的 url() 和 preload 的 href 两处一起）。
+    版本号表本身不碰 —— 表里的键得是干净的路径"""
+    def sub(m):
+        path = m.group(1)
+        h = assets.get(path)
+        return f"{path}?v={h}" if h else path
+    def stamp(part):
+        return re.sub(r"(/fonts/[\w.-]+\.woff2)(?:\?v=[0-9a-f]+)?", sub, part)
+    if BEGIN in text and END in text:
+        a, rest = text.split(BEGIN, 1)
+        mid, b = rest.split(END, 1)
+        return stamp(a) + BEGIN + mid + END + stamp(b)
+    return stamp(text)
 
 
 if __name__ == "__main__":

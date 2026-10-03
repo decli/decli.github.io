@@ -1,0 +1,170 @@
+{
+ "generated": "2026-10-03",
+ "total": 80084,
+ "projects": {
+  "codeless": {
+   "repo": "codeless",
+   "loc": 2400,
+   "files": 32,
+   "langs": {
+    "py": 1735,
+    "html": 359,
+    "yml": 149,
+    "sh": 114,
+    "yaml": 18,
+    "css": 13,
+    "toml": 12
+   }
+  },
+  "ftms": {
+   "repo": "ftms",
+   "loc": 37031,
+   "files": 123,
+   "langs": {
+    "tsx": 17595,
+    "ts": 11891,
+    "css": 7231,
+    "html": 242,
+    "yml": 58,
+    "svg": 14
+   }
+  },
+  "ems": {
+   "repo": "ems",
+   "loc": 3514,
+   "files": 23,
+   "langs": {
+    "js": 3028,
+    "css": 410,
+    "html": 30,
+    "yml": 28,
+    "svg": 18
+   }
+  },
+  "logicc": {
+   "repo": "logicc",
+   "loc": 2967,
+   "files": 1,
+   "langs": {
+    "html": 2967
+   }
+  },
+  "wxformat3": {
+   "repo": "wxformat3",
+   "loc": 2345,
+   "files": 11,
+   "langs": {
+    "js": 1330,
+    "css": 861,
+    "html": 144,
+    "svg": 10
+   }
+  },
+  "macpleco": {
+   "repo": "MacPleco",
+   "loc": 11936,
+   "files": 58,
+   "langs": {
+    "swift": 11305,
+    "py": 281,
+    "sh": 167,
+    "yml": 130,
+    "plist": 53
+   }
+  },
+  "ip-geo": {
+   "repo": "IP_Geolocation_Extension_Chrome",
+   "loc": 2449,
+   "files": 23,
+   "langs": {
+    "js": 1890,
+    "html": 211,
+    "yml": 160,
+    "sh": 125,
+    "css": 63
+   }
+  },
+  "jobornot": {
+   "repo": "JobOrNot",
+   "loc": 2829,
+   "files": 34,
+   "langs": {
+    "tsx": 1485,
+    "ts": 1183,
+    "yml": 41,
+    "css": 41,
+    "html": 36,
+    "js": 24,
+    "mjs": 19
+   }
+  },
+  "wx-export": {
+   "repo": "weixin_public_export",
+   "loc": 2774,
+   "files": 3,
+   "langs": {
+    "js": 2774
+   }
+  },
+  "tabinfocopy": {
+   "repo": "TabInfoCopy",
+   "loc": 64,
+   "files": 4,
+   "langs": {
+    "js": 54,
+    "html": 10
+   }
+  },
+  "ip-display": {
+   "repo": "IPDisplayExtension",
+   "loc": 105,
+   "files": 5,
+   "langs": {
+    "js": 72,
+    "html": 22,
+    "css": 11
+   }
+  },
+  "pagescroll": {
+   "repo": "pagescroll",
+   "loc": 1174,
+   "files": 1,
+   "langs": {
+    "js": 1174
+   }
+  },
+  "bing-wallpaper": {
+   "repo": "BingWDByte4KBatchDownloader",
+   "loc": 663,
+   "files": 1,
+   "langs": {
+    "js": 663
+   }
+  },
+  "codehelper": {
+   "repo": "CodeHelper",
+   "loc": 6087,
+   "files": 48,
+   "langs": {
+    "kt": 5691,
+    "yml": 151,
+    "xml": 110,
+    "kts": 101,
+    "toml": 33,
+    "pro": 1
+   }
+  },
+  "chinesechess": {
+   "repo": "chinesechess03",
+   "loc": 3746,
+   "files": 24,
+   "langs": {
+    "kt": 3307,
+    "xml": 293,
+    "kts": 88,
+    "yml": 58,
+    "pro": 0
+   }
+  }
+ }
+}

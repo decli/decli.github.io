@@ -6,7 +6,7 @@
     <meta name="color-scheme" content="light dark" />
     <meta name="robots" content="noindex" />
     <title>页面不存在</title>
-    <link rel="icon" href="/ftms/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
     <!-- SPA 清单跟首页共用一份，见 sites.js 的 SPA_PREFIXES。
          同步加载：下面那段跳转要在页面画出来之前跑完，晚一步就会先闪一下 404。 -->
@@ -49,32 +49,71 @@
     </script>
 
     <style>
-      :root { --bg:#f4f6fb; --text:#131c30; --dim:#7a86a0; --accent:#3b5bd6; }
+      /* 跟首页同一套材质：看片灯的白、X 光片的蓝黑、一支荧光笔 */
+      @font-face { font-family: "Smiley"; src: url(/fonts/smiley.woff2?v=ec435e70) format("woff2"); font-display: swap; }
+      @font-face { font-family: "Martian"; src: url(/fonts/martian.woff2?v=3c8a4fa7) format("woff2"); font-weight: 300 700; font-stretch: 75% 100%; font-display: swap; }
+      :root {
+        --paper: #f1f2ee; --ink: #14171a; --ink-2: #545b61; --ink-3: #8a9196; --hl: #ffe24a;
+        --film: #0a1016; --film-ink: #7d90a1; --film-dim: #3c4b58; --film-str: #8fb4c7;
+        color-scheme: light;
+      }
       @media (prefers-color-scheme: dark) {
-        :root { --bg:#070d1c; --text:#e9eefc; --dim:#7d8bab; --accent:#6f8dff; }
+        :root { --paper: #0f1113; --ink: #e8ebe7; --ink-2: #a2a9ad; --ink-3: #6c7378; --film: #04080c; color-scheme: dark; }
       }
+      * { box-sizing: border-box; }
       body {
-        margin: 0;
-        min-height: 100dvh;
-        display: grid;
-        place-content: center;
-        justify-items: center;
-        gap: 10px;
-        padding: 40px 20px;
-        background: var(--bg);
-        color: var(--text);
-        font: 15px/1.7 "PingFang SC", "HarmonyOS Sans SC", "Hiragino Sans GB",
-          "Microsoft YaHei", system-ui, -apple-system, sans-serif;
-        text-align: center;
+        margin: 0; min-height: 100dvh; padding: 40px clamp(20px, 6vw, 72px);
+        display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 40px 64px;
+        background: var(--paper); color: var(--ink);
+        font: 400 16px/1.7 -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
       }
-      b { font-size: 42px; letter-spacing: 0.04em; }
-      p { margin: 0; color: var(--dim); }
-      a { color: var(--accent); }
+      .label { font: 500 11px/1.4 "Martian", ui-monospace, monospace; font-stretch: 87.5%; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); }
+      h1 { margin: 14px 0 18px; font: 400 clamp(48px, 9vw, 120px)/1.02 "Smiley", "PingFang SC", sans-serif; letter-spacing: -0.01em; }
+      .hl { background: linear-gradient(100deg, transparent 0.3em, var(--hl) 0.4em, var(--hl) calc(100% - 0.35em), transparent calc(100% - 0.2em)) no-repeat 0 65% / 100% 90%; color: #14171a; padding-inline: 0.18em; margin-inline: -0.18em; }
+      p { margin: 0 0 26px; color: var(--ink-2); max-width: 30em; text-wrap: pretty; }
+      a.home {
+        display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px;
+        background: var(--ink); color: var(--paper); text-decoration: none; font-weight: 500; font-size: 14px;
+      }
+      a.home:hover { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+      a.home:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+      /* 一枚停着的透镜：底下是这个地址该有、却没有的那段代码 */
+      .lens { position: relative; width: clamp(220px, 30vw, 340px); aspect-ratio: 1; }
+      .lens .film {
+        position: absolute; inset: 0; border-radius: 50%; overflow: hidden; background: var(--film);
+        display: grid; place-content: center; padding: 0 12%;
+        font: 400 clamp(10px, 1.05vw, 12.5px)/1.65 "Martian", ui-monospace, monospace; font-stretch: 75%; color: var(--film-ink); white-space: pre;
+        box-shadow: 0 0 0 1.25px var(--ink);
+      }
+      .film pre { margin: 0; font: inherit; }
+      .film .c { color: var(--film-dim); font-style: italic; }
+      .film .k { color: #c3d1dd; }
+      .film .s { color: var(--film-str); }
+      .film .h { color: var(--hl); }
+      .lens svg { position: absolute; inset: -16px; width: calc(100% + 32px); height: calc(100% + 32px); color: var(--ink); }
+      @media (max-width: 720px) { body { grid-template-columns: 1fr; align-content: center; } .lens { justify-self: start; width: 220px; } }
     </style>
   </head>
   <body>
-    <b>404</b>
-    <p>这个地址上没有东西。</p>
-    <p><a href="/">回首页</a></p>
+    <main>
+      <span class="label">404 · Not found</span>
+      <h1><span class="hl">这里什么都没写。</span></h1>
+      <p>这个地址上没有东西。可能是链接拼错了，也可能是那个项目搬了家。</p>
+      <a class="home" href="/">回首页 ↗</a>
+    </main>
+    <div class="lens" aria-hidden="true">
+      <div class="film"><pre><span class="c">// 404.html</span>
+<span class="k">const</span> page = routes[path];
+<span class="k">if</span> (!page) {
+  show(<span class="h">"这里什么都没写。"</span>);
+}</pre></div>
+      <svg viewBox="-186 -186 372 372" fill="none" stroke="currentColor">
+        <circle r="170" stroke-width="1.25" />
+        <g stroke-width="1">
+          <path d="M0-174V-186M0 174V186M-174 0H-186M174 0H186" stroke-width="1.5" />
+          <path d="M87-150.7 93-161.1M150.7-87 161.1-93M150.7 87 161.1 93M87 150.7 93 161.1M-87 150.7-93 161.1M-150.7 87-161.1 93M-150.7-87-161.1-93M-87-150.7-93-161.1" />
+        </g>
+      </svg>
+    </div>
   </body>
 </html>
