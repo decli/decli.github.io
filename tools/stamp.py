@@ -87,7 +87,7 @@ def main() -> int:
 
     # 一行一个键，diff 起来看得清是哪个文件变了；别压成一整行
     body = ",\n        ".join(f'"{k}": "{v}"' for k, v in assets.items())
-    # 各项目的行数（code/index.json）也直接写进来：首屏那个 80,084 不用再等一次请求
+    # 各项目的行数（code/index.json）也直接写进来：首屏那个总数不用再等一次请求
     stats = ""
     idx = ROOT / "code" / "index.json"
     if idx.exists():
