@@ -1,6 +1,6 @@
 {
  "generated": "2026-10-03",
- "total": 80084,
+ "total": 238096,
  "projects": {
   "codeless": {
    "repo": "codeless",
@@ -166,5 +166,11 @@
     "pro": 0
    }
   }
+ },
+ "others": {
+  "repos": 13,
+  "loc": 158012,
+  "files": 708,
+  "generated": "2026-10-04"
  }
 }

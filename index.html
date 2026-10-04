@@ -145,7 +145,7 @@
         "/code/codeless.json": "e202c23d",
         "/code/ems.json": "b01f5fb1",
         "/code/ftms.json": "0622a55b",
-        "/code/index.json": "ad8104fa",
+        "/code/index.json": "08f86ea5",
         "/code/ip-display.json": "7028003b",
         "/code/ip-geo.json": "755495d3",
         "/code/jobornot.json": "2f81d149",
@@ -159,7 +159,7 @@
         "/fonts/martian.woff2": "3c8a4fa7",
         "/fonts/smiley.woff2": "f7a98a45"
       };
-      window.CODE_STATS = {"total":80084,"projects":{"codeless":{"loc":2400,"files":32},"ftms":{"loc":37031,"files":123},"ems":{"loc":3514,"files":23},"logicc":{"loc":2967,"files":1},"wxformat3":{"loc":2345,"files":11},"macpleco":{"loc":11936,"files":58},"ip-geo":{"loc":2449,"files":23},"jobornot":{"loc":2829,"files":34},"wx-export":{"loc":2774,"files":3},"tabinfocopy":{"loc":64,"files":4},"ip-display":{"loc":105,"files":5},"pagescroll":{"loc":1174,"files":1},"bing-wallpaper":{"loc":663,"files":1},"codehelper":{"loc":6087,"files":48},"chinesechess":{"loc":3746,"files":24}}};
+      window.CODE_STATS = {"total":238096,"projects":{"codeless":{"loc":2400,"files":32},"ftms":{"loc":37031,"files":123},"ems":{"loc":3514,"files":23},"logicc":{"loc":2967,"files":1},"wxformat3":{"loc":2345,"files":11},"macpleco":{"loc":11936,"files":58},"ip-geo":{"loc":2449,"files":23},"jobornot":{"loc":2829,"files":34},"wx-export":{"loc":2774,"files":3},"tabinfocopy":{"loc":64,"files":4},"ip-display":{"loc":105,"files":5},"pagescroll":{"loc":1174,"files":1},"bing-wallpaper":{"loc":663,"files":1},"codehelper":{"loc":6087,"files":48},"chinesechess":{"loc":3746,"files":24}},"others":{"repos":13,"loc":158012}};
     </script>
     <!-- ASSET-VERSIONS:END -->
     <script src="sites.js?v=48ef9d36" charset="utf-8"></script>
@@ -385,7 +385,7 @@
       .lede { grid-column: 1 / span 6; grid-row: 2; align-self: start; margin: 0; max-width: 34em; font-size: clamp(16px, 1.25vw, 18.5px); line-height: 1.85; color: var(--ink-2); white-space: pre-line; text-wrap: pretty; }
       body[data-lang="en"] .lede { line-height: 1.65; max-width: 38em; }
 
-      /* 一和八万：我写的、AI 写的 */
+      /* 零和全部：我写的、AI 写的 */
       .ratio { grid-column: 9 / span 4; grid-row: 1; display: grid; gap: 16px; padding-bottom: 0.6vw; }
       .rrow { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 8px 16px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
       .rrow .label { align-self: end; padding-bottom: 6px; }
@@ -393,11 +393,13 @@
       .rnum small { font: 500 12px/1 var(--f-mono); font-stretch: 87.5%; letter-spacing: 0.04em; color: var(--ink-3); margin-left: 8px; }
       .rrow.me .rnum b { font-weight: 600; }
       .rnum .hl { background: var(--hl); color: var(--hl-ink); padding: 0.02em 0.12em 0; margin: 0; }
-      /* 一根条码：八万行按项目分成十五段，宽度就是行数。我那一段宽度是零，只剩一道黄线 */
+      /* 一根条码：按项目分段，宽度就是行数。我那一段宽度是零，只剩一道黄线。
+         最后那段斜纹是作品清单以外的仓库（含私有）：只计入总数，不列名字 */
       .bars { position: relative; display: flex; height: 28px; gap: 1px; margin-top: 4px; }
       .bars::before { content: ""; position: absolute; left: -5px; top: -6px; bottom: -6px; width: 3px; background: var(--hl); }
       .bars span { position: relative; flex: var(--n) 1 0; min-width: 1px; background: var(--ink); opacity: 0.86; transition: opacity 0.2s; }
       .bars span:nth-child(2n) { opacity: 0.62; }
+      .bars span.oth { opacity: 0.86; background: repeating-linear-gradient(135deg, var(--ink) 0 2px, transparent 2px 5px); }
       .bars:hover span { opacity: 0.3; }
       .bars span:hover { opacity: 1; }
       .bars-cap { display: flex; justify-content: space-between; gap: 12px; color: var(--ink-3); }
@@ -850,7 +852,7 @@
             + "我只做三件事：提出问题、选择方案、验收结果 —— 人出判断，AI 出产能。\n"
             + "不是尝鲜，这是 AI Native 时代工作新范式。",
           me: "我写的代码", ai: "AI 写的代码", lines: "行",
-          barsCap: "15 个仓库的产品代码 · 非空行实数", barsOf: "%s · %n 行",
+          barsCap: "%r 个仓库的产品代码（含私有）· 非空行实数", barsOf: "%s · %n 行", barsOthers: "其余 %r 个仓库（含私有）",
           hintLens: "移动光标，看看每一个表面底下", hintKey: "整页透视", hintTouch: "点右下角的透镜，看看表面底下",
           xOn: "透视", xA11y: "透视：把整页换成底下的代码",
           mLabel: "方法", mTitle: "我只做三件事", mNote: "其余的一切交给 AI。三件事都落在「判断」上：问什么、选哪条、算不算完。",
@@ -879,7 +881,7 @@
             + "My part is three things: pose the problem, make the calls, sign off on the result — I bring the judgment, AI brings the throughput.\n"
             + "Not an experiment — this is what work looks like in the AI-native era.",
           me: "Lines I wrote", ai: "Lines AI wrote", lines: "lines",
-          barsCap: "Product code across 15 repos · non-blank lines", barsOf: "%s · %n lines",
+          barsCap: "Product code across %r repos, private ones included · non-blank lines", barsOf: "%s · %n lines", barsOthers: "%r more repos, private ones included",
           hintLens: "Move the cursor to see beneath any surface", hintKey: "X-ray the page", hintTouch: "Tap the lens bottom-right to see beneath the surface",
           xOn: "X-ray", xA11y: "X-ray: show the code beneath the whole page",
           mLabel: "Method", mTitle: "I only do three things", mNote: "Everything else goes to AI. All three are judgment calls: what to ask, which path, when it's done.",
@@ -947,15 +949,20 @@
         $("h1").innerHTML = `<span>${esc(a)}</span><span>${esc(b)}</span>`;
         $("lede").textContent = t("lede");
         const total = S.stats ? S.stats.total : null;
+        // 作品清单以外的仓库（含私有）：只有一个合计，接在条码最后一段，不列名字
+        const oth = S.stats && S.stats.others;
+        const othName = oth ? t("barsOthers").replace("%r", oth.repos) : "";
         const segs = S.stats
           ? PROJECTS.filter((p) => locOf(p.slug)).map((p) =>
               `<span style="--n:${locOf(p.slug)}" title="${esc(t("barsOf").replace("%s", L(p.name)).replace("%n", fmt(locOf(p.slug))))}" data-n="${esc(L(p.name))} · ${fmt(locOf(p.slug))}"></span>`).join("")
+            + (oth ? `<span class="oth" style="--n:${oth.loc}" title="${esc(t("barsOf").replace("%s", othName).replace("%n", fmt(oth.loc)))}" data-n="${esc(othName)} · ${fmt(oth.loc)}"></span>` : "")
           : "";
+        const nRepos = (S.stats ? PROJECTS.filter((p) => locOf(p.slug)).length : PROJECTS.length) + (oth ? oth.repos : 0);
         $("ratio").innerHTML = `
           <div class="rrow me"><span class="label">${esc(t("me"))}</span><span class="rnum"><b class="hl">0</b><small>${esc(t("lines"))}</small></span></div>
           <div class="rrow"><span class="label">${esc(t("ai"))}</span><span class="rnum">${total ? fmt(total) : "—"}<small>${esc(t("lines"))}</small></span></div>
           ${segs ? `<div class="bars" id="bars" aria-hidden="true">${segs}</div>` : ""}
-          <div class="bars-cap label"><span>${esc(t("barsCap"))}</span><output id="barsOut" aria-live="off"></output></div>`;
+          <div class="bars-cap label"><span>${esc(t("barsCap").replace("%r", nRepos))}</span><output id="barsOut" aria-live="off"></output></div>`;
         const touch = matchMedia("(hover: none), (pointer: coarse)").matches;
         $("hint").innerHTML = touch
           ? `<span><i class="reticle"></i><span class="label">${esc(t("hintTouch"))}</span></span>`

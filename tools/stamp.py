@@ -17,8 +17,8 @@ sites.js，新的 index.html 一到就会去取新的，不会拿旧缓存对付
 4. CSS 里的 `url(/fonts/x.woff2)` 和 `<link rel="preload" href="/fonts/x.woff2">` 也盖上 ?v=
    —— 这两处在 JS 跑起来之前就要用，进不了 V()；而且两处必须是同一个地址，
    不然预加载的那份白下了，浏览器还会在控制台抱怨一句
-5. 把 code/index.json 里各项目的行数抄进同一个块（window.CODE_STATS）——
-   首屏那个 80,084 和每件作品的行数首帧就有，不用再等一次请求、也不会画完再跳一下
+5. 把 code/index.json 里各项目的行数、作品清单以外那些仓库的合计抄进同一个块（window.CODE_STATS）——
+   首屏那个总数和每件作品的行数首帧就有，不用再等一次请求、也不会画完再跳一下
 
 index.html 里的 `V()` 查这张表拼 `?v=`；表里没有的（子站 favicon、外链图）
 原样返回。表整个不存在也不报错，就是退回没有版本号的状态。
@@ -93,6 +93,8 @@ def main() -> int:
     if idx.exists():
         data = json.loads(idx.read_text(encoding="utf-8"))
         slim = {"total": data.get("total"), "projects": {k: {"loc": v.get("loc"), "files": v.get("files")} for k, v in data.get("projects", {}).items()}}
+        if data.get("others"):
+            slim["others"] = {"repos": data["others"]["repos"], "loc": data["others"]["loc"]}
         stats = f"      window.CODE_STATS = {json.dumps(slim, ensure_ascii=False, separators=(',', ':'))};\n"
     block = (
         f"{BEGIN}\n"
