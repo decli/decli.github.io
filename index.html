@@ -37,7 +37,7 @@
     <meta name="twitter:description" content="需求、设计、编码、测试、部署，全部由 AI 完成。移动光标，透视每个界面底下的真代码。" />
     <meta name="twitter:image" content="https://decli.github.io/og.png" />
 
-    <link rel="preload" href="/fonts/smiley.woff2?v=d6e570ae" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/smiley.woff2?v=04ef46ff" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/martian.woff2?v=3c8a4fa7" as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
@@ -87,7 +87,7 @@
             "@id": "https://decli.github.io/#works",
             "url": "https://decli.github.io/",
             "name": "decli · 作品集",
-            "description": "十五个作品，需求、设计、编码、测试、部署全部由 AI 完成；人只负责定方向、立规则、验结果。",
+            "description": "十五个作品，需求、设计、编码、测试、部署全部由 AI 完成；人只负责定方向、设规则、验结果。",
             "isPartOf": { "@id": "https://decli.github.io/#page" },
             "author": { "@id": "https://decli.github.io/#me" }
           }
@@ -157,7 +157,7 @@
         "/code/wxformat3.json": "77a0d821",
         "/fonts/geist.woff2": "178994d7",
         "/fonts/martian.woff2": "3c8a4fa7",
-        "/fonts/smiley.woff2": "d6e570ae"
+        "/fonts/smiley.woff2": "04ef46ff"
       };
       window.CODE_STATS = {"total":438804,"projects":{"codeless":{"loc":4370,"files":52},"ftms":{"loc":45236,"files":135},"ems":{"loc":4873,"files":29},"logicc":{"loc":14374,"files":34},"wxformat3":{"loc":2819,"files":12},"macpleco":{"loc":16213,"files":68},"ip-geo":{"loc":4128,"files":37},"jobornot":{"loc":7508,"files":40},"wx-export":{"loc":3564,"files":10},"tabinfocopy":{"loc":83,"files":6},"ip-display":{"loc":142,"files":7},"pagescroll":{"loc":1905,"files":5},"bing-wallpaper":{"loc":897,"files":4},"codehelper":{"loc":12730,"files":102},"chinesechess":{"loc":5414,"files":33}},"others":{"repos":14,"loc":314548}};
     </script>
@@ -186,7 +186,7 @@
 
       @font-face {
         font-family: "Smiley";
-        src: url(/fonts/smiley.woff2?v=d6e570ae) format("woff2");
+        src: url(/fonts/smiley.woff2?v=04ef46ff) format("woff2");
         font-display: swap;
       }
       @font-face {
@@ -849,14 +849,14 @@
           title: ["代码已不稀缺，", "判断才是。"],
           // ¶lede
           lede: "需求、设计、编码、测试、部署，全部由 AI 完成。\n"
-            + "我只做三件事：定方向、立规则、验结果 —— 人出判断，AI 出产能。\n"
+            + "我只做三件事：定方向、设规则、验结果 —— 人出判断，AI 出产能。\n"
             + "不逐行 Review 不等于不管质量：AI 自己验，规则兜底，人最后抽查。",
           me: "我写的代码", ai: "AI 写的代码", lines: "行",
           barsCap: "%r 个仓库的代码与文档 · 总行数", barsOf: "%s · %n 行", barsOthers: "其余 %r 个仓库",
           hintLens: "移动光标，看看每一个表面底下", hintKey: "整页透视", hintTouch: "点右下角的透镜，看看表面底下",
           xOn: "透视", xA11y: "透视：把整页换成底下的代码",
           mLabel: "方法", mTitle: "我只做三件事", mNote: "其余的一切交给 AI。三件事都落在「判断」上：往哪走、守什么、算不算完。",
-          steps: [["定方向", "想清楚替谁、解决什么、先做哪一步"], ["立规则", "AI 反复犯的错，改规则，不改 AI"], ["验结果", "AI 先当用户验一遍，人最后抽查"]],
+          steps: [["定方向", "想清楚替谁、解决什么、先做哪一步"], ["设规则", "AI 反复犯的错，改规则，不改 AI"], ["验结果", "AI 先当用户验一遍，人最后抽查"]],
           restLabel: "其余的一切 · AI", rest: ["UI 交互设计", "写代码", "跑测试", "修 bug", "部署上线"],
           wLabel: "作品", wTitle: "精选六件", wNote: "截图一律去色 —— 那是 AI 的产能。透镜底下，是画出这一屏的那个源文件。",
           open: "打开", download: "下载", source: "源码", shots: "看大图", live: "在线",
@@ -988,7 +988,7 @@
         drawTicks();
       }
       /* 一条长长的灰：每一道竖线是一次 AI 的产出，三道黄线是我的三次判断。
-         疏密是随机的，但三道黄线的位置不是 —— 一头定方向，一尾验结果，中间立规则。 */
+         疏密是随机的，但三道黄线的位置不是 —— 一头定方向，一尾验结果，中间设规则。 */
       let ticksP = 1;
       function drawTicks(p = ticksP) {
         ticksP = p;
