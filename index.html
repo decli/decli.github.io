@@ -214,6 +214,7 @@
         --line-2: rgba(20, 23, 26, 0.26);
         --hl: #ffe24a;
         --hl-ink: #14171a;
+        --mark: #ffe24a;
         --film: #0a1016;
         --film-2: #0e1720;
         --film-ink: #7d90a1;
@@ -249,6 +250,7 @@
           --film-hi: #b4c4d2;
           --film-str: #7fa6ba;
           --glow: rgba(126, 206, 255, 0.12);
+          --mark: rgba(255, 200, 40, 0.42);
           color-scheme: dark;
         }
       }
@@ -267,6 +269,7 @@
         --film-hi: #b4c4d2;
         --film-str: #7fa6ba;
         --glow: rgba(126, 206, 255, 0.12);
+        --mark: rgba(255, 200, 40, 0.42);
         color-scheme: dark;
       }
 
@@ -298,20 +301,24 @@
       }
       .skip:focus { transform: none; }
 
-      /* 荧光笔：我的判断。背景是一道笔触，不是色块 —— 两头略斜，宽窄不匀 */
+      /* 荧光笔：我的判断。像真拿荧光笔划了一道 —— 只涂字的下半截，往右下错开一点，两头斜切。
+         整块铺满的黄底太像按钮、太重；半截笔触让字还是字，黄色只是「划过」。
+         错开靠右侧多垫一截 padding、再用等量负 margin 抵掉，排版位置不动；换行处每行各划一道 */
       .hl {
-        color: var(--hl-ink);
-        background-image: linear-gradient(100deg, transparent 0.3em, var(--hl) 0.4em, var(--hl) calc(100% - 0.35em), transparent calc(100% - 0.2em));
+        --mk-h: 0.48em;
+        --mk-x: 0.24em;
+        --mk-y: 0.04em;
+        background-image: linear-gradient(97deg, transparent 0.08em, var(--mark) 0.22em, var(--mark) calc(100% - 0.18em), transparent calc(100% - 0.04em));
         background-repeat: no-repeat;
-        background-size: 100% 90%;
-        background-position: 0 65%;
+        background-size: calc(100% - var(--mk-x)) var(--mk-h);
+        background-position: var(--mk-x) calc(100% - var(--mk-y));
         box-decoration-break: clone;
         -webkit-box-decoration-break: clone;
-        padding-inline: 0.18em;
-        margin-inline: -0.18em;
+        padding-inline: 0 var(--mk-x);
+        margin-inline: 0 calc(-1 * var(--mk-x));
         transition: background-size 0.9s var(--ease);
       }
-      [data-ink="0"] .hl { background-size: 0% 90%; }
+      [data-ink="0"] .hl { background-size: 0 var(--mk-h); }
 
       .mono { font-family: var(--f-mono); font-stretch: 87.5%; }
       .label {
@@ -392,7 +399,7 @@
       .rnum { font: 600 clamp(40px, 4.6vw, 76px)/0.9 var(--f-mono); font-stretch: 75%; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; text-align: right; }
       .rnum small { font: 500 12px/1 var(--f-mono); font-stretch: 87.5%; letter-spacing: 0.04em; color: var(--ink-3); margin-left: 8px; }
       .rrow.me .rnum b { font-weight: 600; }
-      .rnum .hl { background: var(--hl); color: var(--hl-ink); padding: 0.02em 0.12em 0; margin: 0; }
+      .rnum .hl { --mk-h: 0.42em; --mk-x: 0.1em; }
       /* 一根条码：按项目分段，宽度就是行数。我那一段宽度是零，只剩一道黄线。
          最后那段斜纹是作品清单以外的仓库：只计入总数，不列名字 */
       .bars { position: relative; display: flex; height: 28px; gap: 1px; margin-top: 4px; }
@@ -567,6 +574,7 @@
 
       /* ═══ §colophon 版权页 ═══ */
       .colophon { border-top: 1px solid var(--ink); padding-block: clamp(56px, 10vh, 120px) clamp(28px, 5vh, 44px); }
+      .colophon .big .hl { --mk-y: 0.12em; }   /* 行距紧，笔触往上收一点，别贴到下一行 */
       .colophon .big { margin: 0; font: 400 clamp(32px, 4.4vw, 72px)/1.12 var(--f-display); letter-spacing: -0.008em; max-width: 18em; text-wrap: balance; }
       body[data-lang="en"] .colophon .big { max-width: 22em; }
       .colophon .sub { margin: 26px 0 0; color: var(--ink-2); max-width: 40em; font-size: 15px; line-height: 1.85; }
