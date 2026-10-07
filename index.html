@@ -605,9 +605,10 @@
       .colophon .sub { margin: 26px 0 0; color: var(--ink-2); max-width: 40em; font-size: 15px; line-height: 1.85; }
       .colophon .sub button { border: 0; background: none; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; font-weight: 600; color: var(--ink); }
       .foot { margin-top: clamp(48px, 9vh, 96px); padding-top: 18px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 10px 26px; align-items: center; color: var(--ink-3); }
-      .foot .mail { display: inline-flex; align-items: center; gap: 8px; border: 0; background: none; padding: 0; cursor: pointer; color: inherit; }
+      .foot .mail { display: inline-flex; align-items: center; gap: 8px; border: 0; background: none; padding: 0; cursor: pointer; color: inherit; text-transform: inherit; letter-spacing: inherit; }   /* 按钮默认不继承大写和字距 */
       .foot .mail:hover { color: var(--ink); }
       .foot canvas { display: block; }
+      body[data-lang="zh"] .foot .mail { gap: 2px; }   /* 「联系方式：」的全角冒号自带半格空 */
       .foot .sp { flex: 1; }
 
       /* ═══ §xray 透镜 ═══
@@ -915,7 +916,7 @@
           colSub: "这一页也一样：版式、配色、动效，和生成它的 %n 行代码，都出自 AI。我选了方向，验了收。",
           colBtn: "按 X 看看它自己",
           fonts: "字体 · 得意黑、Martian Mono、Geist（SIL OFL 1.1，按页切字自托管）",
-          rights: "版权所有", copied: "邮箱已复制", mailA11y: "复制邮箱", gh: "托管于 GitHub Pages",
+          rights: "版权所有", contact: "联系方式：", copied: "邮箱已复制", mailA11y: "复制邮箱", gh: "托管于 GitHub Pages",
           fig: "图", shotOf: "第 %1 张，共 %2 张", raw: "原图 ↗", close: "关闭", prev: "上一张", next: "下一张",
           lensOff: "透镜在这一栏收起来，免得挡字",
         },
@@ -948,7 +949,7 @@
           colSub: "This page included: the layout, the colours, the motion, and the %n lines of code behind it were all written by AI. I picked the direction and signed off.",
           colBtn: "press X to see it",
           fonts: "Type · Smiley Sans, Martian Mono, Geist (SIL OFL 1.1, subset and self-hosted)",
-          rights: "All rights reserved", copied: "Email copied", mailA11y: "Copy email", gh: "Hosted on GitHub Pages",
+          rights: "All rights reserved", contact: "Contact:", copied: "Email copied", mailA11y: "Copy email", gh: "Hosted on GitHub Pages",
           fig: "Fig.", shotOf: "%1 of %2", raw: "Original ↗", close: "Close", prev: "Previous", next: "Next",
           lensOff: "The lens folds away here so it won't cover the text",
         },
@@ -1222,9 +1223,8 @@
           <p class="big" data-xr="echo" data-key="colophon"><span class="hl">${esc(a)}</span>${S.lang === "en" ? " " : ""}${esc(b)}</p>
           <p class="sub">${esc(t("colSub").replace("%n", pageLines ? fmt(pageLines) : "—"))} <button type="button" id="colX">${esc(t("colBtn"))}</button></p>
           <div class="foot label">
-            <span>© 2026</span>
-            <button class="mail" id="mail" type="button" aria-label="${esc(t("mailA11y"))}"><canvas id="mailc" aria-hidden="true"></canvas></button>
-            <span>${esc(t("rights"))}</span>
+            <span>© 2026 ${esc(t("rights"))}</span>
+            <button class="mail" id="mail" type="button" aria-label="${esc(t("mailA11y"))}"><span>${esc(t("contact"))}</span><canvas id="mailc" aria-hidden="true"></canvas></button>
             <span class="sp"></span>
             <span>${esc(t("fonts"))}</span>
             <span>${esc(t("gh"))}</span>
