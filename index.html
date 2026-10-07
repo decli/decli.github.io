@@ -37,7 +37,7 @@
     <meta name="twitter:description" content="需求、设计、编码、测试、部署，流程一步不少，执行全部交给 AI。移动光标，透视每个界面底下的真代码。" />
     <meta name="twitter:image" content="https://decli.github.io/og.png" />
 
-    <link rel="preload" href="/fonts/smiley.woff2?v=8f761432" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/smiley.woff2?v=a79eb433" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/martian.woff2?v=3c8a4fa7" as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
@@ -157,7 +157,7 @@
         "/code/wxformat3.json": "77a0d821",
         "/fonts/geist.woff2": "178994d7",
         "/fonts/martian.woff2": "3c8a4fa7",
-        "/fonts/smiley.woff2": "8f761432"
+        "/fonts/smiley.woff2": "a79eb433"
       };
       window.CODE_STATS = {"total":448067,"projects":{"codeless":{"loc":4370,"files":52},"ftms":{"loc":45236,"files":135},"ems":{"loc":4873,"files":29},"logicc":{"loc":23414,"files":65},"wxformat3":{"loc":2819,"files":12},"macpleco":{"loc":16213,"files":68},"ip-geo":{"loc":4128,"files":37},"jobornot":{"loc":7508,"files":40},"wx-export":{"loc":3564,"files":10},"tabinfocopy":{"loc":83,"files":6},"ip-display":{"loc":142,"files":7},"pagescroll":{"loc":1921,"files":5},"bing-wallpaper":{"loc":897,"files":4},"codehelper":{"loc":12730,"files":102},"chinesechess":{"loc":5414,"files":33}},"others":{"repos":14,"loc":314755}};
     </script>
@@ -186,7 +186,7 @@
 
       @font-face {
         font-family: "Smiley";
-        src: url(/fonts/smiley.woff2?v=8f761432) format("woff2");
+        src: url(/fonts/smiley.woff2?v=a79eb433) format("woff2");
         font-display: swap;
       }
       @font-face {
@@ -416,6 +416,31 @@
       .hint kbd { font: 500 10.5px/1 var(--f-mono); padding: 3px 6px; border: 1px solid var(--line-2); border-radius: 4px; color: var(--ink-2); }
       .hint .reticle { width: 18px; height: 18px; border: 1px solid var(--ink-2); border-radius: 50%; position: relative; }
       .hint .reticle::after { content: ""; position: absolute; inset: 7px; border-radius: 50%; background: var(--ink-2); }
+
+      /* ═══ §about 判断从哪来 ═══
+         首屏下面一小段，回答「这些判断是谁做的、凭什么」。比其余几章轻：标题小一号，不进导航。
+         一条时间线 —— 前四家挨着排，「现在」那家隔开一栏、实心点，后面接一段虚线（还在往前走）；
+         下面两栏正好分在「过去」和「现在」底下。没有荧光笔：荧光笔只划判断，履历不是判断 */
+      .about { border-top: 1px solid var(--line); padding-block: clamp(44px, 7vh, 80px); }
+      .about .shead { margin-bottom: clamp(26px, 4vh, 40px); }
+      .about .shead h2 { font-size: clamp(26px, 2.6vw, 38px); }
+      .cv { --g: 24px; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--g); row-gap: clamp(28px, 4.5vh, 44px); }
+      .trail {
+        grid-column: 4 / -1; position: relative; list-style: none; margin: 0; padding: 34px 0 0;
+        display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); column-gap: var(--g);   /* 跟外层同一套栏，「现在」落在第 9 栏 */
+      }
+      .trail::before, .trail::after { content: ""; position: absolute; top: 33px; height: 1.5px; }
+      .trail::before { left: 0; width: calc((100% - 8 * var(--g)) / 9 * 5 + 5 * var(--g)); background: var(--line-2); }
+      .trail::after { left: calc((100% - 8 * var(--g)) / 9 * 5 + 5 * var(--g)); right: 0; background: repeating-linear-gradient(90deg, var(--line-2) 0 2px, transparent 2px 8px); }
+      .trail li { position: relative; padding-top: 20px; font-size: 15px; font-weight: 500; color: var(--ink-2); white-space: nowrap; }
+      .trail li::before { content: ""; position: absolute; left: 0; top: -4.5px; width: 8px; height: 8px; border-radius: 50%; background: var(--ink-3); }
+      .trail li.now { grid-column: 6; color: var(--ink); font-weight: 600; }
+      .trail li.now::before { left: -2px; top: -6.5px; width: 12px; height: 12px; background: var(--ink); box-shadow: 0 0 0 5px var(--paper), 0 0 0 6.5px var(--line-2); }
+      .trail li.now .label { position: absolute; left: 0; top: -34px; font-weight: 500; }
+      .cvb h3 { margin: 0 0 8px; font: 400 clamp(21px, 1.9vw, 27px)/1.2 var(--f-display); text-wrap: balance; }
+      .cvb p { margin: 0; color: var(--ink-2); font-size: 14.5px; line-height: 1.7; max-width: 34em; text-wrap: pretty; }
+      .cvb.past { grid-column: 4 / span 5; }
+      .cvb.now { grid-column: 9 / span 4; }
 
       /* ═══ §method 我只做三件事 ═══ */
       .method { border-top: 1px solid var(--line); padding-block: clamp(56px, 9vh, 104px); }
@@ -718,6 +743,9 @@
         .shead h2 { grid-column: 1 / -1; }
         .shead p { grid-column: 1 / -1; margin-top: 12px; max-width: 34em; }
         .steps ol, .track { grid-column: 1 / -1; }
+        .trail, .cvb.past, .cvb.now { grid-column: 1 / -1; }
+        .cvb.now { order: 1; }          /* 窄屏上下排：先说现在，再说过去 */
+        .cvb.past { order: 2; }
         .txt, .spread[data-flip] .txt { grid-column: 1 / -1; grid-row: auto; position: static; }
         .fig, .spread[data-flip] .fig { grid-column: 1 / -1; grid-row: auto; }
         .q, .cats { grid-column: 1 / -1; }
@@ -733,6 +761,11 @@
         .brand span { display: none; }
         .tbtn.xbtn span, .tbtn.xbtn kbd { display: none; }
         .steps ol { grid-template-columns: 1fr; gap: 28px; }
+        /* 手机：五家一排排开，「现在」在最右；线一路实到底 */
+        .trail { display: flex; justify-content: space-between; gap: 10px; }
+        .trail::before { width: 100%; }
+        .trail::after { display: none; }
+        .trail li { font-size: 13.5px; white-space: normal; }
         .hint .keyhint { display: none; }
         .rnum { font-size: clamp(40px, 13vw, 64px); }
         .row .nm { font-size: 19px; }
@@ -784,6 +817,9 @@
           <p class="hint" id="hint"></p>
         </div>
       </section>
+
+      <!-- §about -->
+      <section class="about wrap" id="about" data-xr="band" data-band="about" aria-labelledby="ah"></section>
 
       <!-- §method -->
       <section class="method wrap" id="method" data-xr="band" data-band="method" aria-labelledby="mh"></section>
@@ -863,6 +899,10 @@
           barsCap: "%r 个仓库的代码与文档 · 总行数", barsOf: "%s · %n 行", barsOthers: "其余 %r 个仓库",
           hintLens: "移动光标，看看每一个表面底下", hintKey: "整页透视", hintTouch: "点右下角的透镜，看看表面底下",
           xOn: "透视", xA11y: "透视：把整页换成底下的代码",
+          aLabel: "履历", aTitle: "判断从哪来", aNowTag: "现在",
+          career: ["腾讯", "58 同城", "京东", "华泰证券", "某银行"],
+          aPast: ["负责数据中台与业务中台建设", "行业覆盖互联网、电商、证券与国家级金融基础设施。"],
+          aNow: ["现任某银行关基项目总架构师", "主导 AI 驱动的架构设计与研发范式落地；兼具从 0 到 1 组建团队与 ToB 商业化交付经验。"],
           mLabel: "方法", mTitle: "我只做三件事", mNote: "流程一步不少，全部交给 AI 执行；AI 先自己验，人再抽查。人只做三件事，都落在「判断」上：往哪走、守什么、算不算完。",
           steps: [["定方向", "想清楚替谁、解决什么、先做哪一步"], ["设规则", "AI 反复犯的错，改规则，不改 AI"], ["验结果", "AI 先当用户验一遍，人最后抽查"]],
           restLabel: "其余的一切 · AI", rest: ["写需求", "做设计", "写代码", "跑测试", "部署上线"],
@@ -892,6 +932,10 @@
           barsCap: "Code and docs across %r repos · total lines", barsOf: "%s · %n lines", barsOthers: "%r more repos",
           hintLens: "Move the cursor to see beneath any surface", hintKey: "X-ray the page", hintTouch: "Tap the lens bottom-right to see beneath the surface",
           xOn: "X-ray", xA11y: "X-ray: show the code beneath the whole page",
+          aLabel: "Background", aTitle: "Where the judgment comes from", aNowTag: "Now",
+          career: ["Tencent", "58.com", "JD.com", "Huatai Securities", "A bank"],
+          aPast: ["Built data and business middle platforms", "Across internet, e-commerce, securities and national-level financial infrastructure."],
+          aNow: ["Chief architect of a critical infrastructure project at a bank", "Leading AI-driven architecture design and a new way of building software; experienced in building teams from zero and in B2B commercial delivery."],
           mLabel: "Method", mTitle: "I only do three things", mNote: "Not a step skipped: AI executes all of it and checks its own work, then a human spot-checks. My part is three judgment calls: where to go, what to hold to, when it's done.",
           steps: [["Set the direction", "Who it's for, what it solves, what ships first"], ["Set the rules", "When AI repeats a mistake, fix the rules"], ["Check the results", "AI tries it like a user first; a human spot-checks last"]],
           restLabel: "Everything else · AI", rest: ["Requirements", "Design", "Writing code", "Running tests", "Shipping"],
@@ -978,6 +1022,17 @@
           ? `<span><i class="reticle"></i><span class="label">${esc(t("hintTouch"))}</span></span>`
           : `<span><i class="reticle"></i><span class="label">${esc(t("hintLens"))}</span></span>
              <span class="keyhint"><kbd>X</kbd><span class="label">${esc(t("hintKey"))}</span></span>`;
+      }
+
+      // §about
+      function renderAbout() {
+        const names = t("career"), past = names.slice(0, -1), now = names[names.length - 1];
+        $("about").innerHTML = `
+          <div class="shead"><span class="label">${esc(t("aLabel"))}</span><h2 id="ah">${esc(t("aTitle"))}</h2></div>
+          <div class="cv">
+            <ol class="trail">${past.map((n) => `<li>${esc(n)}</li>`).join("")}<li class="now"><span class="label">${esc(t("aNowTag"))}</span>${esc(now)}</li></ol>
+            ${[["past", t("aPast")], ["now", t("aNow")]].map(([k, [h, p]]) => `<div class="cvb ${k}"><h3>${esc(h)}</h3><p>${esc(p)}</p></div>`).join("")}
+          </div>`;
       }
 
       // §method
@@ -1195,6 +1250,7 @@
       function render() {
         renderChrome();
         renderHero();
+        renderAbout();
         renderMethod();
         renderWorks();
         renderIndex();
