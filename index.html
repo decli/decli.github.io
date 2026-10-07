@@ -1921,7 +1921,7 @@
       matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { drawTicks(); paintMail(); });
 
       /* ═══ 邮箱：画在 canvas 上，源码里没有可以被正则捞走的字面量 ═══ */
-      const LOCAL = [100, 101, 99, 108, 105], HOST = [113, 113, 46, 99, 111, 109];
+      const LOCAL = [99, 117, 48, 55, 49, 54, 55], HOST = [103, 109, 97, 105, 108, 46, 99, 111, 109];
       const mail = () => String.fromCharCode.apply(null, LOCAL) + "@" + String.fromCharCode.apply(null, HOST);
       function paintMail() {
         const cv = $("mailc");
