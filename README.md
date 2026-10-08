@@ -79,7 +79,7 @@ robots.txt    站点级（爬虫只读根目录这一份）
 | `/ems/` | [decli/ems](https://github.com/decli/ems) |
 | `/wxformat3/` | [decli/wxformat3](https://github.com/decli/wxformat3) |
 | `/logicc/` | [decli/logicc](https://github.com/decli/logicc) |
-| `https://ctne.cu07167.workers.dev/` | decli/ctne（私有，部署在 Cloudflare Workers，不在本域名下） |
+| `https://ctne.zerolineai.com/` | decli/ctne（私有，部署在 Cloudflare Workers 的自有域名上，不在本域名下） |
 
 > 项目站点的路径**就是仓库名**，一字不差、不能自选 —— 想要 `/xxx/`，仓库就得叫 `xxx`。
 > 这也是为什么 `ForeignTradeManagementSystem` 和 `ExportMarketingSystem` 改成了 `ftms` / `ems`。

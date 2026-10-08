@@ -161,7 +161,7 @@ window.PROJECTS = [
     icon: "/icons/ctne.svg",
     /* 部署在 Cloudflare Workers，不是本站的子路径；仓库在客户签约前是私有的，
        所以标 private：首页不出「源码」按钮（点了只会是 404），在线地址、截图和透视照常 */
-    href: "https://ctne.cu07167.workers.dev/",
+    href: "https://ctne.zerolineai.com/",
     repo: "ctne",
     private: true,
     shots: [
