@@ -20,6 +20,7 @@
  *   dl     安装包地址。给下载了才能跑的东西用（原生 App），渲染成主按钮「下载」。
  *          它**不算**「在线」，不带那个徽标
  *   repo   GitHub 仓库名
+ *   private  仓库是私有的（比如客户还没签约）：首页不出「源码」按钮，在线地址、截图、行数和透视照常
  *   code   代表这个项目的源文件（仓库里的相对路径）。tools/harvest.mjs 从这里摘代码，
  *          可选，不写就取仓库里最大的那个源文件
  *   shots  产品截图。上了版面的作品在版面里摆出来（一律去色，指上去才回原色），
@@ -37,6 +38,7 @@
  *   macpleco / ip-geo(popup) 项目仓库 README 里现成的截图
  *   jobornot / ip-geo(设置)  Chromium 加载未打包扩展，开扩展页截图
  *   pagescroll               把用户脚本注进真实网页（就是这一页），截控件那一角
+ *   ctne                     本地起服务跑真实构建产物，Playwright 截图（WebGL 用 SwiftShader 真渲染）
  * 原图统一压到长边 2560 的 webp（25 张 2.1 MB）—— 全屏大图最宽会到 1240 CSS px，
  * 2 倍屏就是 2480 物理像素，出图小于这个数就是在放大，放大就是糊。
  * 引用地址由 tools/stamp.py 盖上内容哈希，改了图不会被缓存挡住。
@@ -143,6 +145,32 @@ window.PROJECTS = [
     shots: [
       { src: "/shots/logicc/home.webp", code: "index.html#const GAMES", zh: "十二个游戏", en: "Twelve games" },
       { src: "/shots/logicc/tetris.webp", code: "index.html#10 方块拼拼", zh: "会掉下来的方块", en: "Falling blocks" },
+    ],
+  },
+  {
+    slug: "ctne",
+    cat: "web",
+    code: "site/src/three/line.js",
+    name: { zh: "储能 PACK 线官网", en: "ESS Line Site" },
+    desc: {
+      zh: "让储能装备厂商把一份 19 页的产线方案书，变成海外买家一看就懂的中英双语官网：沿 55 米产线滚动的 3D 参观、产能与厂房估算、30 秒宣传片，SEO / GEO 一并做好。",
+      en: "Turns a 19-page production-line proposal into a bilingual site overseas buyers get at a glance — a scroll-driven 3D walk along the 55 m line, capacity and plant-fit estimates, a 30-second film, SEO and GEO built in.",
+    },
+    brief: { zh: "把 19 页产线方案书，做成能沿 55 米产线滚动参观的 3D 官网。", en: "A 19-page line proposal, rebuilt as a 3D site you scroll along all 55 metres." },
+    tags: { zh: ["Three.js", "中英双语", "SEO / GEO", "宣传片"], en: ["Three.js", "Bilingual", "SEO / GEO", "Promo film"] },
+    icon: "/icons/ctne.svg",
+    /* 部署在 Cloudflare Workers，不是本站的子路径；仓库在客户签约前是私有的，
+       所以标 private：首页不出「源码」按钮（点了只会是 404），在线地址、截图和透视照常 */
+    href: "https://ctne.cu07167.workers.dev/",
+    repo: "ctne",
+    private: true,
+    shots: [
+      { src: "/shots/ctne/hero.webp", code: "site/src/components/Journey.astro", zh: "首屏：沿 55 米产线滚动的 3D 旅程", en: "Hero: a scroll-driven 3D walk along the 55 m line" },
+      { src: "/shots/ctne/journey.webp", code: "site/src/three/journey.js", zh: "沿产线前进，每一段的工位与设备", en: "Travelling the line, station by station" },
+      { src: "/shots/ctne/film.webp", code: "video/film/film.js", zh: "30 秒宣传片，用站点同一套 3D 渲染", en: "The 30-second film, rendered from the site's own 3D" },
+      { src: "/shots/ctne/anatomy.webp", code: "site/src/three/cell.js", zh: "13 颗电芯，一个模组的爆炸视图", en: "Thirteen cells, one module, exploded" },
+      { src: "/shots/ctne/twin.webp", code: "site/src/three/twin.js", zh: "数字孪生：产能估算与厂房适配检查", en: "Line twin: capacity estimate and plant-fit check" },
+      { src: "/shots/ctne/equipment.webp", code: "site/src/views/EquipmentDetail.astro", zh: "八台关键设备，每台一页参数", en: "Eight key machines, one datasheet each" },
     ],
   },
   {

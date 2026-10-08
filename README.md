@@ -10,7 +10,7 @@
 
 ## 这一页在说什么
 
-代码已不稀缺，判断才是。十五个作品，一行代码没写 —— 首页要让人**看见**这件事，而不只是读到它：
+代码已不稀缺，判断才是。十六个作品，一行代码没写 —— 首页要让人**看见**这件事，而不只是读到它：
 
 **光标是一枚透镜。** 移到哪里，哪里就露出画出它的那段真代码 —— 截图底下是画出那一屏的
 源文件（信风看板底下就是 `src/pages/Dashboard.tsx`），页面底下是这一页自己的源码。
@@ -32,7 +32,7 @@
 
 ## 怎么做出来的
 
-这一页和十五件作品，都按同一套做法做出来：**一条流程、两层验证、三件事、一份记忆。**
+这一页和十六件作品，都按同一套做法做出来：**一条流程、两层验证、三件事、一份记忆。**
 
 - **一条流程。** 需求 → 设计 → 原型 → 编码 → 测试 → 部署，一步不少，执行全部交给 AI。
   人只在关键路径上拍板：做不做、选哪个、好不好用。
@@ -67,7 +67,7 @@ robots.txt    站点级（爬虫只读根目录这一份）
 回提交）—— 它只往 `index.html` / `404.html` 里写资源哈希，不改别的，也不生成任何产物。
 删掉 `.github/workflows/stamp.yml` 这页照样能跑，只是资源缓存会顽固十分钟。
 
-`code/` 和 `fonts/` 也是生成的，但**不在流水线里**：一个要去克隆十五个仓库，一个要原始字体，
+`code/` 和 `fonts/` 也是生成的，但**不在流水线里**：一个要去克隆各件作品的仓库，一个要原始字体，
 都是改了相应东西之后手动跑一次、结果提交进来。忘了跑不会坏，只是旧（见下面各自那一节）。
 
 各个项目**不在这里** —— 它们各自是独立仓库的项目站点，自己发自己的：
@@ -79,6 +79,7 @@ robots.txt    站点级（爬虫只读根目录这一份）
 | `/ems/` | [decli/ems](https://github.com/decli/ems) |
 | `/wxformat3/` | [decli/wxformat3](https://github.com/decli/wxformat3) |
 | `/logicc/` | [decli/logicc](https://github.com/decli/logicc) |
+| `https://ctne.cu07167.workers.dev/` | decli/ctne（私有，部署在 Cloudflare Workers，不在本域名下） |
 
 > 项目站点的路径**就是仓库名**，一字不差、不能自选 —— 想要 `/xxx/`，仓库就得叫 `xxx`。
 > 这也是为什么 `ForeignTradeManagementSystem` 和 `ExportMarketingSystem` 改成了 `ftms` / `ems`。
@@ -103,6 +104,7 @@ robots.txt    站点级（爬虫只读根目录这一份）
   dl:   "https://…/releases/latest",  // 装完才能跑的（原生 App）写这个，渲染成「下载」
   featured: true,                 // 没有在线地址也要上版面的（比如 codeless），单独标
   repo: "xxx",                    // GitHub 仓库名
+  private: true,                  // 仓库是私有的：不出「源码」按钮（点了只会 404），在线地址、截图、行数、透视照常
   shots: [                        // 产品截图。没有就整条不写
     { src: "/shots/xxx/主界面.webp", code: "src/pages/Main.tsx", zh: "主界面", en: "Main view" },
   ],
@@ -183,17 +185,20 @@ python3 tools/stamp.py              # 忘了也行，推上去 Actions 会补
 首屏对外只报一个量级（两位有效数字往下取整，带个 `+`），所以不抠细节；每件作品和条码上的是实数。
 
 **数哪些仓库：我和 AI 提交过的全部仓库**，公开的、私有的都算（没提交过的 fork 不算）。
-作品清单照旧只列公开的十五件；其余仓库在首屏那根条码上并成最后一段斜纹，`code/index.json` 里也只有一个合计
-`others = { repos, loc, files }` —— 私有仓库的名字和代码都不出现在这个公开仓库里。
+作品清单列的是公开的十五件，外加一件**仓库私有、但有在线地址**的（ctne，储能 PACK 线官网：客户签约前仓库不公开，
+`sites.js` 里标了 `private`，首页不出「源码」按钮）—— 它是经本人决定才上的清单，所以名字、行数和截图对应的代码摘录照常出现。
+其余仓库在首屏那根条码上并成最后一段斜纹，`code/index.json` 里也只有一个合计
+`others = { repos, loc, files }` —— 没上清单的私有仓库，名字和代码都不出现在这个公开仓库里。
 
 同时它从每件作品的仓库摘出截图对应的那几个源文件的开头一段（跳过文件头的 import 和版权注释），
 存成 `code/<slug>.json` 给透镜用。加 `--skyline <文件>` 还会另存一份每一行源码的长度 ——
 首页用不上，是给 GitHub 个人主页那卷「长卷」画远山用的。摘录和行长只看源码文件，不看文档、锁文件、生成物。
 
 ```sh
-node tools/harvest.mjs                                # 自己把十五件作品克隆到临时目录
+node tools/harvest.mjs                                # 自己把各件作品的仓库克隆到临时目录
 node tools/harvest.mjs --repos <目录>                  # 已经克隆好了
 node tools/harvest.mjs --repos <目录> --others <目录>   # 再算上其余仓库；两个可以是同一个目录
+node tools/harvest.mjs --only <slug> --repos <目录>     # 只重收新加或刚改过的那一件，其余作品沿用 index.json 里的数
 ```
 
 没给 `--others` 就沿用上一次的合计，总数不会悄悄变少。
@@ -223,6 +228,7 @@ node tools/harvest.mjs --repos <目录> --others <目录>   # 再算上其余仓
 | macpleco · ip-geo（弹窗） | 项目仓库 README 里现成那几张 |
 | jobornot · ip-geo（设置） | Chromium 加载未打包扩展，直接开 `chrome-extension://` 那几个页面 |
 | pagescroll | 把用户脚本按 `document-start` 注进真实网页，截控件那一角 |
+| ctne | 本地起服务跑真实构建产物，Playwright 1280×800 两倍屏截图（WebGL 走 SwiftShader 真渲染，影片截的是正在播放的那一帧） |
 
 **剩下几个没有，是真的没法有，不是漏了：**
 TabInfoCopy 从头到尾没有界面（点图标即复制，连提示都不弹）；公众号数据导出和

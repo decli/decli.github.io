@@ -6,6 +6,8 @@
  *     node tools/harvest.mjs --repos <目录>   # 已经克隆好了，直接读
  *     node tools/harvest.mjs --repos <目录> --others <目录>
  *                                            # 再算上作品清单以外的仓库（含私有）；两个可以是同一个目录
+ *     node tools/harvest.mjs --only <slug> --repos <目录>
+ *                                            # 只重收这一个项目（新加的、刚改过的），其余项目沿用 index.json 里的数
  *
  * ── 它产出什么 ──
  *   code/index.json      每个项目的行数、文件数、语言分布，以及总数
@@ -45,7 +47,7 @@ const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..")
 const OUT = path.join(ROOT, "code");
 
 const CODE_EXT = new Set([
-  ".js", ".mjs", ".cjs", ".ts", ".tsx", ".jsx", ".html", ".css", ".scss", ".py", ".swift", ".kt",
+  ".js", ".mjs", ".cjs", ".ts", ".tsx", ".jsx", ".astro", ".html", ".css", ".scss", ".py", ".swift", ".kt",
   ".kts", ".java", ".sh", ".xml", ".svg", ".toml", ".yml", ".yaml", ".gradle", ".pro", ".plist",
 ]);
 const SKIP_DIRS = new Set(["docs", ".git", "node_modules", "dist", "build", "vendor", ".next", "out", "coverage", "__pycache__", ".gradle"]);
@@ -152,10 +154,14 @@ function excerpt(repoDir, spec) {
 
 function main() {
   const projects = loadSites();
+  const only = arg("--only");
+  if (only && !projects.some((p) => p.slug === only)) throw new Error(`sites.js 里没有 ${only}`);
+  let prev = null;
+  try { prev = JSON.parse(fs.readFileSync(path.join(OUT, "index.json"), "utf8")); } catch {}
   let base = arg("--repos");
   if (!base) {
     base = fs.mkdtempSync(path.join(os.tmpdir(), "harvest-"));
-    for (const p of projects) {
+    for (const p of projects.filter((q) => !only || q.slug === only)) {
       console.log(`克隆 ${p.repo} …`);
       execFileSync("git", ["clone", "-q", "--depth", "1", `https://github.com/decli/${p.repo}.git`, path.join(base, p.repo)]);
     }
@@ -166,6 +172,11 @@ function main() {
   const sky = [];
 
   for (const p of projects) {
+    if (only && p.slug !== only) {                    // --only：别的项目原样沿用上一次的数
+      const kept = prev && prev.projects && prev.projects[p.slug];
+      if (kept) { index.projects[p.slug] = kept; index.total += kept.loc; }
+      continue;
+    }
     const dir = path.join(base, p.repo);
     if (!fs.existsSync(dir)) { console.warn(`跳过 ${p.slug}：没有 ${dir}`); continue; }
     const { loc, files } = wcRepo(dir);
